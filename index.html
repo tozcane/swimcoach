@@ -1803,6 +1803,7 @@
                 // Load messages and swim sets
                 loadNotes();
                 loadSwimSets();
+                loadCustomSelectOptions();
                 
                 // Show dashboard
                 showView('dashboard');
@@ -1850,6 +1851,52 @@
             }
         }
 
+        // --- MULTI-USER ISOLATION HELPERS ---
+        function isCoachSet(set) {
+            if (!set) return false;
+            const user = (currentUser || '').toLowerCase();
+            const setCoach = (set.coach || '').toLowerCase();
+            if (!setCoach) return user === 'mustafa';
+            return setCoach === user || setCoach === (displayNames[user] || '').toLowerCase();
+        }
+
+        function getCoachNotesKey() {
+            return `tan_swim_daily_notes_${currentUser || 'default'}`;
+        }
+        function getCoachAttendanceKey() {
+            return `tan_swim_daily_attendance_${currentUser || 'default'}`;
+        }
+        function getCoachSquadKey() {
+            return `tan_swim_squad_${currentUser || 'default'}`;
+        }
+        function getCoachCustomOptionsKey() {
+            return `tan_custom_select_options_${currentUser || 'default'}`;
+        }
+
+        function getCoachDailyNotes() {
+            const userKey = getCoachNotesKey();
+            const val = localStorage.getItem(userKey);
+            if (val !== null) {
+                return JSON.parse(val) || {};
+            }
+            if (currentUser === 'mustafa' && localStorage.getItem('tan_swim_daily_notes')) {
+                return JSON.parse(localStorage.getItem('tan_swim_daily_notes')) || {};
+            }
+            return {};
+        }
+
+        function getCoachDailyAttendance() {
+            const userKey = getCoachAttendanceKey();
+            const val = localStorage.getItem(userKey);
+            if (val !== null) {
+                return JSON.parse(val) || {};
+            }
+            if (currentUser === 'mustafa' && localStorage.getItem('tan_swim_daily_attendance')) {
+                return JSON.parse(localStorage.getItem('tan_swim_daily_attendance')) || {};
+            }
+            return {};
+        }
+
         const sectionWeights = {
             'Warm Up': 1,
             'Pre Set': 2,
@@ -1865,8 +1912,8 @@
             
             const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
             
-            // Sort by Section first, then by ID (creation order)
-            const sets = allSets.filter(s => s.date === selectedDate).sort((a, b) => {
+            // Filter by selectedDate and current Coach, then sort by Section & ID
+            const sets = allSets.filter(s => s.date === selectedDate && isCoachSet(s)).sort((a, b) => {
                 const wA = sectionWeights[a.section] || 99;
                 const wB = sectionWeights[b.section] || 99;
                 if (wA !== wB) return wA - wB;
@@ -2025,8 +2072,7 @@
             document.getElementById('stat-drill-count').textContent = dCount;
 
             // Düşük seviye detayları hesaplamak için localStorage verilerini alıyoruz
-            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
-            const sets = allSets.filter(s => s.date === selectedDate);
+            const sets = allSets.filter(s => s.date === selectedDate && isCoachSet(s));
 
             // 1. Teknik & Stil Dağılımı (9 farklı teknik)
             const styleDist = {
@@ -2183,8 +2229,9 @@
             tbody.innerHTML = '';
 
             const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            const coachSets = allSets.filter(s => isCoachSet(s));
             
-            if (allSets.length === 0) {
+            if (coachSets.length === 0) {
                 const noDataMsg = translations[currentLang]?.no_export_summaries || translations['en'].no_export_summaries;
                 tbody.innerHTML = `
                     <tr>
@@ -2199,7 +2246,7 @@
 
             // Group by date
             const dateGroups = {};
-            allSets.forEach(set => {
+            coachSets.forEach(set => {
                 const date = set.date || 'Unknown';
                 if (!dateGroups[date]) {
                     dateGroups[date] = {
@@ -2267,12 +2314,12 @@
         function exportCurrentDayToWord() {
             const dict = translations[currentLang] || translations['en'];
             const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
-            const dailyNotes = JSON.parse(localStorage.getItem('tan_swim_daily_notes')) || {};
+            const dailyNotes = getCoachDailyNotes();
             const notesText = dailyNotes[selectedDate] || '';
-            const attendance = JSON.parse(localStorage.getItem('tan_swim_daily_attendance')) || {};
+            const attendance = getCoachDailyAttendance();
             const attendedList = attendance[selectedDate] || [];
 
-            const sets = allSets.filter(s => s.date === selectedDate).sort((a, b) => {
+            const sets = allSets.filter(s => s.date === selectedDate && isCoachSet(s)).sort((a, b) => {
                 const wA = sectionWeights[a.section] || 99;
                 const wB = sectionWeights[b.section] || 99;
                 if (wA !== wB) return wA - wB;
@@ -2468,12 +2515,12 @@
         function exportCurrentDayToExcel() {
             const dict = translations[currentLang] || translations['en'];
             const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
-            const dailyNotes = JSON.parse(localStorage.getItem('tan_swim_daily_notes')) || {};
+            const dailyNotes = getCoachDailyNotes();
             const notesText = dailyNotes[selectedDate] || '';
-            const attendance = JSON.parse(localStorage.getItem('tan_swim_daily_attendance')) || {};
+            const attendance = getCoachDailyAttendance();
             const attendedList = attendance[selectedDate] || [];
 
-            const sets = allSets.filter(s => s.date === selectedDate).sort((a, b) => {
+            const sets = allSets.filter(s => s.date === selectedDate && isCoachSet(s)).sort((a, b) => {
                 const wA = sectionWeights[a.section] || 99;
                 const wB = sectionWeights[b.section] || 99;
                 if (wA !== wB) return wA - wB;
@@ -2664,14 +2711,15 @@
         function exportAllSummariesToWord() {
             const dict = translations[currentLang] || translations['en'];
             const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            const coachSets = allSets.filter(s => isCoachSet(s));
             
-            if (allSets.length === 0) {
+            if (coachSets.length === 0) {
                 alert(translations[currentLang]?.no_export_summaries || translations['en'].no_export_summaries);
                 return;
             }
 
             const dateGroups = {};
-            allSets.forEach(set => {
+            coachSets.forEach(set => {
                 const date = set.date || 'Unknown';
                 if (!dateGroups[date]) {
                     dateGroups[date] = {
@@ -2818,7 +2866,7 @@
             const targetTime = document.getElementById('s-target-time').value.trim();
             const interval = document.getElementById('s-interval').value.trim();
             const zone = document.getElementById('s-zone').value;
-            const coach = displayNames[currentUser] || 'Mustafa';
+            const coach = currentUser || 'mustafa';
 
             const sets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
             
@@ -2850,7 +2898,7 @@
             const confirmMsg = translations[currentLang]?.confirm_delete_set || translations['en'].confirm_delete_set;
             if (confirm(confirmMsg)) {
                 let sets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
-                sets = sets.filter(s => s.id !== id);
+                sets = sets.filter(s => !(s.id === id && isCoachSet(s)));
                 localStorage.setItem('tan_swim_sets_v3', JSON.stringify(sets));
                 loadSwimSets();
             }
@@ -2860,16 +2908,16 @@
             const textarea = document.getElementById('daily-workout-notes');
             if (textarea) {
                 const notesText = textarea.value;
-                let dailyNotes = JSON.parse(localStorage.getItem('tan_swim_daily_notes')) || {};
+                let dailyNotes = getCoachDailyNotes();
                 dailyNotes[selectedDate] = notesText;
-                localStorage.setItem('tan_swim_daily_notes', JSON.stringify(dailyNotes));
+                localStorage.setItem(getCoachNotesKey(), JSON.stringify(dailyNotes));
             }
         }
 
         function loadDailyNotes() {
             const textarea = document.getElementById('daily-workout-notes');
             if (textarea && document.activeElement !== textarea) {
-                const dailyNotes = JSON.parse(localStorage.getItem('tan_swim_daily_notes')) || {};
+                const dailyNotes = getCoachDailyNotes();
                 textarea.value = dailyNotes[selectedDate] || '';
             }
         }
@@ -2878,10 +2926,15 @@
         const defaultSquad = ['Ali Yılmaz', 'Derin Kaya', 'Ege Demir', 'Ada Çelik', 'Can Özkan', 'Mira Bulut', 'Aras Şahin', 'Zeynep Koç'];
 
         function getSquad() {
-            let squad = JSON.parse(localStorage.getItem('tan_swim_squad'));
+            const userKey = getCoachSquadKey();
+            let squad = JSON.parse(localStorage.getItem(userKey));
             if (!squad || squad.length === 0) {
-                squad = defaultSquad;
-                localStorage.setItem('tan_swim_squad', JSON.stringify(squad));
+                if (currentUser === 'mustafa' && localStorage.getItem('tan_swim_squad')) {
+                    squad = JSON.parse(localStorage.getItem('tan_swim_squad'));
+                } else {
+                    squad = [...defaultSquad];
+                }
+                localStorage.setItem(userKey, JSON.stringify(squad));
             }
             return squad;
         }
@@ -2895,7 +2948,7 @@
             let squad = getSquad();
             if (!squad.includes(name)) {
                 squad.push(name);
-                localStorage.setItem('tan_swim_squad', JSON.stringify(squad));
+                localStorage.setItem(getCoachSquadKey(), JSON.stringify(squad));
                 renderAttendanceList();
             }
             input.value = '';
@@ -2907,13 +2960,13 @@
             if (confirm(confirmMsg)) {
                 let squad = getSquad();
                 squad = squad.filter(n => n !== name);
-                localStorage.setItem('tan_swim_squad', JSON.stringify(squad));
+                localStorage.setItem(getCoachSquadKey(), JSON.stringify(squad));
                 
                 // Clean up attendance entry
-                let attendance = JSON.parse(localStorage.getItem('tan_swim_daily_attendance')) || {};
+                let attendance = getCoachDailyAttendance();
                 if (attendance[selectedDate]) {
                     attendance[selectedDate] = attendance[selectedDate].filter(n => n !== name);
-                    localStorage.setItem('tan_swim_daily_attendance', JSON.stringify(attendance));
+                    localStorage.setItem(getCoachAttendanceKey(), JSON.stringify(attendance));
                 }
                 
                 renderAttendanceList();
@@ -2931,9 +2984,9 @@
                 }
             });
             
-            let attendance = JSON.parse(localStorage.getItem('tan_swim_daily_attendance')) || {};
+            let attendance = getCoachDailyAttendance();
             attendance[selectedDate] = attendedList;
-            localStorage.setItem('tan_swim_daily_attendance', JSON.stringify(attendance));
+            localStorage.setItem(getCoachAttendanceKey(), JSON.stringify(attendance));
         }
 
         function renderAttendanceList() {
@@ -2942,7 +2995,7 @@
             container.innerHTML = '';
             
             const squad = getSquad();
-            const attendance = JSON.parse(localStorage.getItem('tan_swim_daily_attendance')) || {};
+            const attendance = getCoachDailyAttendance();
             const attendedList = attendance[selectedDate] || [];
             
             squad.forEach(name => {
@@ -3196,18 +3249,35 @@
         }
 
         function saveCustomSelectOptions(selectId, value) {
-            const customOpts = JSON.parse(localStorage.getItem('tan_custom_select_options')) || {};
+            const userKey = getCoachCustomOptionsKey();
+            const customOpts = JSON.parse(localStorage.getItem(userKey)) || {};
             if (!customOpts[selectId]) {
                 customOpts[selectId] = [];
             }
             if (!customOpts[selectId].includes(value)) {
                 customOpts[selectId].push(value);
-                localStorage.setItem('tan_custom_select_options', JSON.stringify(customOpts));
+                localStorage.setItem(userKey, JSON.stringify(customOpts));
             }
         }
 
         function loadCustomSelectOptions() {
-            const customOpts = JSON.parse(localStorage.getItem('tan_custom_select_options')) || {};
+            const userKey = getCoachCustomOptionsKey();
+            let customOpts = JSON.parse(localStorage.getItem(userKey));
+            if (!customOpts && currentUser === 'mustafa') {
+                customOpts = JSON.parse(localStorage.getItem('tan_custom_select_options')) || {};
+            }
+            customOpts = customOpts || {};
+            
+            // Clean up any previously appended custom options first to prevent duplicates when switching coaches
+            document.querySelectorAll('#training-modal select').forEach(select => {
+                const standardValues = ['Warm Up', 'Pre Set', 'Main Set', 'Cool Down', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '16', '20', '24', '25', '50', '75', '100', '150', '200', '300', '400', '800', '1500', 'Freestyle', 'Backstroke', 'Breaststroke', 'Butterfly', 'Medley', 'Swim', 'Kick', 'Drill', 'Stroke', 'Pull', 'None', 'Fins', 'Paddles', 'Board', 'Pullbuoy', 'Snorkels', 'A1', 'A2', 'A3', 'End1', 'End2', 'End3', 'Spr1', 'Spr2', 'Spr3', 'R.P', 'Easy', 'Moderate', 'Hard', 'Max', '', 'ADD_NEW'];
+                for (let i = select.options.length - 2; i >= 0; i--) {
+                    if (!standardValues.includes(select.options[i].value)) {
+                        select.remove(i);
+                    }
+                }
+            });
+
             for (let selectId in customOpts) {
                 const select = document.getElementById(selectId);
                 if (select) {
