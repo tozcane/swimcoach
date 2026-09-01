@@ -168,16 +168,46 @@
 
                 <div>
                     <label for="reg-password" class="block text-xs font-semibold text-gray-700 mb-1" data-i18n="password">Password</label>
-                    <input type="password" id="reg-password" required minlength="4"
+                    <input type="password" id="reg-password" required minlength="6" oninput="validatePasswordRules()"
                         class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue text-sm transition-all"
                         placeholder="••••••••">
                 </div>
 
                 <div>
                     <label for="reg-password-confirm" class="block text-xs font-semibold text-gray-700 mb-1" data-i18n="confirm_password">Confirm Password</label>
-                    <input type="password" id="reg-password-confirm" required minlength="4"
+                    <input type="password" id="reg-password-confirm" required minlength="6" oninput="validatePasswordRules()"
                         class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue text-sm transition-all"
                         placeholder="••••••••">
+                </div>
+
+                <!-- Live Password Rules Checklist -->
+                <div class="p-3 bg-gray-50/90 rounded-2xl border border-gray-200 space-y-1.5 text-[11px]">
+                    <div class="font-bold text-gray-500 text-[10px] uppercase tracking-wider mb-1" data-i18n="pwd_rules_title">Password Requirements:</div>
+                    
+                    <div id="rule-length" class="flex items-center space-x-2 text-gray-400 transition-colors">
+                        <i id="icon-length" class="fa-regular fa-circle text-[10px]"></i>
+                        <span data-i18n="rule_length">At least 6 characters</span>
+                    </div>
+
+                    <div id="rule-letter" class="flex items-center space-x-2 text-gray-400 transition-colors">
+                        <i id="icon-letter" class="fa-regular fa-circle text-[10px]"></i>
+                        <span data-i18n="rule_letter">Contains at least one letter (a-z / A-Z)</span>
+                    </div>
+
+                    <div id="rule-digit" class="flex items-center space-x-2 text-gray-400 transition-colors">
+                        <i id="icon-digit" class="fa-regular fa-circle text-[10px]"></i>
+                        <span data-i18n="rule_digit">Contains at least one number (0-9)</span>
+                    </div>
+
+                    <div id="rule-no-repeat" class="flex items-center space-x-2 text-gray-400 transition-colors">
+                        <i id="icon-no-repeat" class="fa-regular fa-circle text-[10px]"></i>
+                        <span data-i18n="rule_no_repeat">No repeating numbers (e.g. 111, 222)</span>
+                    </div>
+
+                    <div id="rule-match" class="flex items-center space-x-2 text-gray-400 transition-colors">
+                        <i id="icon-match" class="fa-regular fa-circle text-[10px]"></i>
+                        <span data-i18n="rule_match">Passwords match</span>
+                    </div>
                 </div>
 
                 <div class="flex items-start space-x-2 pt-1">
@@ -1188,6 +1218,13 @@
                 email_inbox_notice: "Confirmation Code Dispatched:",
                 verify_and_create_btn: "Verify & Complete Registration",
                 resend_code_btn: "Resend Code",
+                pwd_rules_title: "Password Requirements:",
+                rule_length: "At least 6 characters",
+                rule_letter: "Contains at least one letter (a-z / A-Z)",
+                rule_digit: "Contains at least one number (0-9)",
+                rule_no_repeat: "No repeating numbers (e.g. 111, 222)",
+                rule_match: "Passwords match",
+                error_password_rules: "Please meet all password requirements highlighted below.",
                 error_password_mismatch: "Passwords do not match! Please check again.",
                 error_login: "Invalid email address or password!",
                 error_email_exists: "An account with this email already exists! Please log in.",
@@ -1297,6 +1334,13 @@
                 email_inbox_notice: "Gönderilen Onay Kodu:",
                 verify_and_create_btn: "Onayla & Kaydı Tamamla",
                 resend_code_btn: "Kodu Tekrar Gönder",
+                pwd_rules_title: "Şifre Şartları:",
+                rule_length: "En az 6 karakter",
+                rule_letter: "En az bir harf içermeli (a-z / A-Z)",
+                rule_digit: "En az bir rakam içermeli (0-9)",
+                rule_no_repeat: "Tekrarlayan/ardışık rakamlar olmamalı (örn: 111, 222)",
+                rule_match: "Şifreler birbiriyle eşleşiyor",
+                error_password_rules: "Lütfen aşağıda yeşil yanan tüm şifre kurallarını karşılayın.",
                 error_password_mismatch: "Şifreler birbiriyle eşleşmiyor! Lütfen kontrol edin.",
                 error_email_exists: "Bu e-posta adresiyle kayıtlı bir hesap zaten var! Lütfen giriş yapın.",
                 error_fill_all: "Lütfen tüm zorunlu alanları doldurun.",
@@ -1965,6 +2009,46 @@
         // Temporary Pending Registration Object
         let pendingRegistration = null;
 
+        // Interactive live validation of password requirements
+        function validatePasswordRules() {
+            const pwdEl = document.getElementById('reg-password');
+            const confirmPwdEl = document.getElementById('reg-password-confirm');
+            if (!pwdEl || !confirmPwdEl) return false;
+
+            const pwd = pwdEl.value || '';
+            const confirmPwd = confirmPwdEl.value || '';
+
+            const isLength = pwd.length >= 6;
+            const hasLetter = /[a-zA-ZğüşıöçĞÜŞİÖÇ]/.test(pwd);
+            const hasDigit = /[0-9]/.test(pwd);
+            // No 3 repeating numbers (like 111, 222, 000) and no 4-digit sequences (like 1234, 4321)
+            const hasRepeatingDigits = /(\d)\1{2,}/.test(pwd) || /(0123|1234|2345|3456|4567|5678|6789|9876|8765|7654|6543|5432|4321)/.test(pwd);
+            const isNoRepeat = pwd.length > 0 && !hasRepeatingDigits;
+            const isMatch = pwd.length > 0 && confirmPwd.length > 0 && pwd === confirmPwd;
+
+            function updateRuleUI(ruleId, iconId, isValid) {
+                const el = document.getElementById(ruleId);
+                const icon = document.getElementById(iconId);
+                if (!el || !icon) return;
+
+                if (isValid) {
+                    el.className = "flex items-center space-x-2 text-emerald-600 font-bold transition-all";
+                    icon.className = "fa-solid fa-circle-check text-emerald-600 text-xs";
+                } else {
+                    el.className = "flex items-center space-x-2 text-gray-400 font-medium transition-all";
+                    icon.className = "fa-regular fa-circle text-[10px] text-gray-400";
+                }
+            }
+
+            updateRuleUI('rule-length', 'icon-length', isLength);
+            updateRuleUI('rule-letter', 'icon-letter', hasLetter);
+            updateRuleUI('rule-digit', 'icon-digit', hasDigit);
+            updateRuleUI('rule-no-repeat', 'icon-no-repeat', isNoRepeat);
+            updateRuleUI('rule-match', 'icon-match', isMatch);
+
+            return isLength && hasLetter && hasDigit && isNoRepeat && isMatch;
+        }
+
         // Register form handler
         function handleRegister(event) {
             event.preventDefault();
@@ -1989,8 +2073,8 @@
                 return;
             }
 
-            if (password !== confirmPassword) {
-                errorText.textContent = dict['error_password_mismatch'] || "Passwords do not match! Please check again.";
+            if (!validatePasswordRules()) {
+                errorText.textContent = dict['error_password_rules'] || "Please meet all password requirements highlighted below.";
                 errorContainer.classList.remove('hidden');
                 return;
             }
@@ -2161,6 +2245,7 @@
                 document.getElementById('reg-agree-terms').checked = false;
                 document.getElementById('register-error').classList.add('hidden');
                 pendingRegistration = null;
+                validatePasswordRules();
                 switchAuthMode('login');
             }
         }
