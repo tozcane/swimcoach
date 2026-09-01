@@ -1,0 +1,3315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- iOS / iPad Web App Configuration -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Swim Coach Pro">
+    <link rel="apple-touch-icon" href="assets/logo.png?v=4">
+    <title>Swim Coach Pro - Swim Training Planner</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandBlue: '#000B73',
+                        brandPink: '#E5007D',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts (Plus Jakarta Sans) & FontAwesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS (Excel Export) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body class="bg-white text-brandBlue font-sans min-h-screen flex flex-col justify-between transition-colors duration-500 relative overflow-x-hidden">
+    <!-- Swimmer Background Watermark (Subtle line-art outline) -->
+    <div class="fixed inset-0 pointer-events-none z-0 flex items-center justify-center opacity-[0.03] select-none">
+        <svg class="w-full max-w-5xl h-auto text-brandBlue" viewBox="0 0 1000 500" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <path d="M220 230 C300 220, 380 230, 480 210 C540 200, 600 170, 720 180 C740 182, 780 195, 830 190" stroke-width="3" />
+            <path d="M485 200 C500 180, 530 185, 535 205 C538 220, 520 228, 498 222 Z" fill="currentColor" fill-opacity="0.2" stroke-width="2" />
+            <path d="M510 198 C515 198, 520 202, 518 206 C516 208, 510 206, 508 202 Z" fill="currentColor" />
+            <path d="M465 212 C440 160, 460 110, 500 80 C520 65, 545 60, 530 90 C510 120, 490 170, 485 200" stroke-width="2.5" />
+            <path d="M430 225 C390 260, 360 300, 320 340 C305 355, 290 345, 305 325 C330 290, 370 240, 395 220" stroke-width="2.5" />
+            <path d="M220 230 C170 240, 120 255, 70 270 C55 275, 45 260, 65 250 C110 230, 160 220, 210 225" stroke-width="2" />
+            <path d="M220 230 C180 210, 130 190, 80 175 C65 170, 55 185, 75 195 C115 210, 165 220, 210 225" stroke-width="2" stroke-dasharray="4 2" />
+            <path d="M450 250 C500 260, 560 250, 620 235" stroke-width="1" stroke-dasharray="8 4" />
+            <path d="M380 160 C430 150, 480 160, 530 170" stroke-width="1" stroke-dasharray="6 3" />
+            <path d="M540 215 C560 212, 590 205, 620 208" stroke-width="1.5" />
+            <path d="M500 65 C520 50, 550 55, 570 70" stroke-width="0.75" stroke-dasharray="2 2" />
+        </svg>
+    </div>
+
+    <!-- Header / Navigation Bar -->
+    <header class="p-6 border-b border-gray-50 relative z-10">
+         <div class="max-w-7xl mx-auto flex justify-between items-center">
+             <div class="cursor-pointer flex items-center" onclick="showView('landing')">
+                 <img src="assets/logo.png?v=4" alt="Swim Coach Pro Logo" class="h-10 md:h-12 object-contain">
+             </div>
+             <div class="flex items-center space-x-4">
+                 <!-- Language Selector (Always Visible) -->
+                 <select id="lang-selector" onchange="changeLanguage(this.value)" class="px-3 py-1.5 border border-gray-200 bg-white rounded-xl text-xs font-black text-brandBlue focus:outline-none focus:ring-1 focus:ring-brandBlue cursor-pointer">
+                     <option value="en" selected>English</option>
+                     <option value="tr">Türkçe</option>
+                     <option value="de">Deutsch</option>
+                     <option value="zh">中文</option>
+                     <option value="ja">日本語</option>
+                     <option value="ru">Русский</option>
+                     <option value="es">Español</option>
+                     <option value="it">Italiano</option>
+                 </select>
+                 <div id="header-user-actions" class="hidden flex items-center space-x-4">
+                     <span id="header-username" class="font-semibold text-gray-700"></span>
+                     <button onclick="logout()" class="px-4 py-2 border border-brandPink/20 text-brandPink hover:bg-brandPink hover:text-white rounded-full text-sm font-medium transition-all duration-300" data-i18n="logout">
+                         Log Out
+                     </button>
+                 </div>
+             </div>
+         </div>
+     </header>
+ 
+     <!-- Main Content Container -->
+     <main class="flex-grow flex flex-col items-center justify-center px-4 py-12 relative z-10">
+         
+         <!-- 1. LANDING VIEW -->
+         <div id="landing-view" class="max-w-2xl mx-auto space-y-8 text-center animate-fade-in">
+             <!-- Logo Container -->
+             <div class="relative flex justify-center py-6">
+                 <div class="w-72 h-48 md:w-96 md:h-64 flex items-center justify-center p-4 bg-white rounded-3xl shadow-sm hover:shadow-md transition-all duration-300">
+                     <img src="assets/logo.png?v=4" alt="Swim Coach Pro Logo" class="max-w-full max-h-full object-contain">
+                 </div>
+             </div>
+ 
+             <!-- Welcome message / Action button -->
+             <p class="text-gray-500 text-lg md:text-xl font-medium max-w-md mx-auto" data-i18n="login_title">
+                 Welcome to Swim Coach Pro Panel
+             </p>
+             
+             <button onclick="showView('login')" class="px-8 py-3 bg-brandBlue hover:bg-opacity-90 text-white font-semibold rounded-full shadow-lg shadow-brandBlue/20 hover:shadow-brandBlue/35 transition-all duration-300 transform hover:-translate-y-0.5" data-i18n="login_btn">
+                 Log In
+             </button>
+         </div>
+ 
+         <!-- 2. LOGIN VIEW -->
+         <div id="login-view" class="hidden max-w-md w-full mx-auto space-y-6 bg-white p-8 rounded-3xl shadow-xl border border-gray-150 animate-fade-in">
+             <div class="text-center space-y-2">
+                 <img src="assets/logo.png?v=4" alt="Swim Coach Pro Logo" class="h-20 mx-auto object-contain mb-4">
+                 <h2 class="text-3xl font-extrabold text-brandBlue" data-i18n="login_btn">Log In</h2>
+                 <p class="text-gray-400 text-sm" data-i18n="login_subtitle">Enter your details to continue</p>
+             </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                <!-- Username Input -->
+                <div>
+                    <label for="username" class="block text-sm font-semibold text-gray-700 mb-1" data-i18n="username">Username</label>
+                    <input type="text" id="username" required
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue transition-all"
+                        placeholder="e.g. mustafa or cansu" data-i18n-placeholder="username_placeholder">
+                </div>
+
+                <!-- Password Input -->
+                <div>
+                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-1" data-i18n="password">Password</label>
+                    <input type="password" id="password" required
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue transition-all"
+                        placeholder="••••••••" data-i18n-placeholder="password_placeholder">
+                </div>
+
+                <!-- Error Message -->
+                <div id="login-error" class="hidden text-brandPink text-sm font-medium flex items-center space-x-1.5">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="error-text" data-i18n="error_login">Invalid username or password!</span>
+                </div>
+
+                <!-- Buttons -->
+                <div class="pt-2 flex flex-col space-y-2">
+                    <button type="submit"
+                        class="w-full py-3 bg-brandBlue hover:bg-opacity-95 text-white font-semibold rounded-xl shadow-lg shadow-brandBlue/15 hover:shadow-brandBlue/25 transition-all duration-300" data-i18n="login_btn">
+                        Log In
+                    </button>
+                    <button type="button" onclick="showView('landing')"
+                        class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300" data-i18n="go_back">
+                        Go Back
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 3. DASHBOARD VIEW -->
+        <div id="dashboard-view" class="hidden w-full max-w-6xl mx-auto space-y-8 animate-fade-in px-4">
+            <!-- Top Banner -->
+            <div class="bg-gradient-to-r from-brandBlue to-[#00108A] rounded-2xl py-3 px-6 text-white shadow-md flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0 relative overflow-hidden">
+                <div class="absolute right-0 bottom-0 opacity-[0.03] pointer-events-none transform translate-y-1/4 translate-x-1/4 text-white">
+                    <i class="fa-solid fa-person-swimming text-[120px]"></i>
+                </div>
+                <div class="space-y-0.5 relative z-10">
+                    <h2 class="text-lg md:text-xl font-bold">
+                        <span data-i18n="welcome_user">welcome, </span><span id="user-display-name" class="text-brandPink font-bold">user</span>! 👋
+                    </h2>
+                    <p class="text-blue-100 text-xs" data-i18n="logged_in_message">You have successfully logged into the swim workout planning panel.</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10 text-center relative z-10 flex items-center space-x-3">
+                    <span class="text-brandPink font-bold text-xs uppercase tracking-wider" data-i18n="total_vol_short">Total Volume:</span>
+                    <span id="banner-total-distance" class="text-lg font-black">0 m</span>
+                </div>
+            </div>
+
+            <!-- EXCEL SWIM SETS PLANNER SECTION -->
+            <div class="bg-white border border-gray-100 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-4 border-b border-gray-100">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full lg:w-auto">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-10 h-10 rounded-xl bg-brandBlue/10 text-brandBlue flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-water text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-brandBlue" data-i18n="workout_set_planner">Workout Set Planner</h3>
+                                <p class="text-gray-400 text-xs" data-i18n="workout_set_planner_desc">Track the details and breakdowns of written sets.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Date Filter -->
+                        <div class="flex items-center space-x-2 bg-gray-50 border border-gray-200 rounded-2xl p-1.5 shrink-0">
+                            <button onclick="changeFilterDate(-1)" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-brandBlue flex items-center justify-center transition-all" title="Previous Day">
+                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                            </button>
+                            <input type="date" id="filter-date" onchange="handleFilterDateChange()" 
+                                class="bg-transparent text-brandBlue font-extrabold text-sm focus:outline-none cursor-pointer text-center px-1 w-32">
+                            <button onclick="changeFilterDate(1)" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-brandBlue flex items-center justify-center transition-all" title="Next Day">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3 w-full sm:w-auto">
+                    <div class="relative inline-block text-left w-full sm:w-auto">
+                        <button onclick="toggleExportMenu(event)" id="export-dropdown-btn" class="px-5 py-3 border border-blue-200 text-blue-600 hover:bg-blue-50 font-semibold rounded-2xl transition-all duration-300 flex items-center space-x-2 text-sm w-full sm:w-auto justify-center" title="Export Selected Day's Workout">
+                            <i class="fa-solid fa-download text-base"></i>
+                            <span data-i18n="export">Export</span>
+                            <i class="fa-solid fa-chevron-down text-xs ml-1"></i>
+                        </button>
+                        <div id="export-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 rounded-xl shadow-lg bg-white border border-gray-150 ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                            <div class="py-1">
+                                <a href="javascript:void(0)" onclick="handleExportChoice('word')" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 font-semibold transition-colors">
+                                    <i class="fa-solid fa-file-word text-blue-600 mr-2 text-base"></i>
+                                    <span>Word (.doc)</span>
+                                </a>
+                                <a href="javascript:void(0)" onclick="handleExportChoice('excel')" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 font-semibold transition-colors border-t border-gray-100">
+                                    <i class="fa-solid fa-file-excel text-green-600 mr-2 text-base"></i>
+                                    <span>Excel (.xls)</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                        <button onclick="openSummaryModal()" class="px-5 py-3 border border-brandPink/20 text-brandPink hover:bg-brandPink/5 font-semibold rounded-2xl transition-all duration-300 flex items-center space-x-2 text-sm" title="Total Training Volume for All Days">
+                            <i class="fa-solid fa-list-check"></i>
+                            <span data-i18n="all_days_summary">All Days Summary</span>
+                        </button>
+                        <button onclick="toggleStatsPanel()" id="toggle-stats-btn" class="px-5 py-3 border border-brandBlue/20 text-brandBlue hover:bg-brandBlue/5 font-semibold rounded-2xl transition-all duration-300 flex items-center space-x-2 text-sm">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span data-i18n="show_stats">Show Statistics</span>
+                        </button>
+                        <button onclick="openTrainingModal()" class="px-6 py-3 bg-brandBlue hover:bg-opacity-95 text-white font-semibold rounded-2xl shadow-lg shadow-brandBlue/15 hover:shadow-brandBlue/25 transition-all duration-300 flex items-center space-x-2 text-sm">
+                            <i class="fa-solid fa-plus-circle text-base"></i>
+                            <span data-i18n="add_set">Add Set</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Excel Grid Container -->
+                <div class="overflow-x-auto border border-gray-200 rounded-2xl bg-gray-50/50 shadow-inner">
+                    <table class="w-full border-collapse text-left text-sm text-gray-700 min-w-[1050px]">
+                        <thead>
+                            <tr class="bg-gray-100 text-brandBlue font-extrabold text-xs uppercase border-b border-gray-200">
+                                <th class="py-2 px-4 border-r border-gray-200 text-center w-28 bg-gray-150" data-i18n="section">Section</th>
+                                <th class="py-2 px-4 border-r border-gray-200 text-center w-12" title="Set Reps (Outer Set)" data-i18n="t1">T1</th>
+                                <th class="py-2 px-4 border-r border-gray-200 text-center w-12" title="Sub Reps (Inner Set)" data-i18n="t2">T2</th>
+                                <th class="py-2 px-4 border-r border-gray-200 text-center w-24" data-i18n="distance">Distance</th>
+                                <th class="py-2 px-4 border-r border-gray-200 w-24" data-i18n="stroke">Stroke</th>
+                                <th class="py-2 px-4 border-r border-gray-200 w-24" data-i18n="type">Type</th>
+                                <th class="py-2 px-4 border-r border-gray-200 w-24" data-i18n="equipment">Equipment</th>
+                                <th class="py-2 px-4 border-r border-gray-200 text-center w-24" data-i18n="target_time">Target Time</th>
+                                <th class="py-2 px-4 border-r border-gray-200 text-center w-24" data-i18n="interval">@ Interval</th>
+                                <th class="py-2 px-4 border-r border-gray-200 text-center w-24" data-i18n="intensity">Intensity</th>
+                                <th class="py-2 px-4 border-r border-gray-200 text-right w-24" data-i18n="total">Total</th>
+                                <th class="py-2 px-4 text-center w-16 bg-gray-150" data-i18n="action">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="swim-sets-table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Dynamic Swim Sets will go here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Daily Workout Notes -->
+                <div class="pt-6 border-t border-gray-100 space-y-2 animate-fade-in">
+                    <label for="daily-workout-notes" class="text-xs font-black text-brandBlue uppercase tracking-wider flex items-center space-x-1.5">
+                        <i class="fa-solid fa-pen-to-square text-brandPink"></i>
+                        <span data-i18n="daily_notes">Daily Workout Notes</span>
+                    </label>
+                    <textarea id="daily-workout-notes" oninput="saveDailyNotes()" rows="3"
+                        class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue font-medium text-sm transition-all"
+                        placeholder="Add notes, objectives, or comments for today's workout..." data-i18n-placeholder="notes_placeholder"></textarea>
+                </div>
+            </div>
+
+            <!-- STATS SECTION (SWIM WORKOUT METRICS) -->
+            <div id="statistics-panel" class="hidden space-y-6 animate-fade-in">
+                <div class="border-b border-gray-100 pb-2">
+                    <h4 class="text-xl font-extrabold text-brandBlue flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-line text-brandPink animate-pulse"></i>
+                        <span>Advanced Workout Analytics</span>
+                    </h4>
+                    <p class="text-xs text-gray-400 mt-1">Physiological and technical distribution analysis of training sets for the selected date.</p>
+                </div>
+                
+                <!-- Card Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Stat 1: Total Workout Volume -->
+                    <div class="bg-gradient-to-br from-white to-blue-50/30 border border-gray-150 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider mb-1">Total Volume</div>
+                                <div id="stat-total-volume" class="text-3xl font-black text-brandBlue font-mono">0 m</div>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-brandBlue/10 text-brandBlue flex items-center justify-center">
+                                <i class="fa-solid fa-ruler-horizontal text-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stat 2: Swim Sets -->
+                    <div class="bg-gradient-to-br from-white to-green-50/20 border border-gray-150 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider mb-1">Swim Sets</div>
+                                <div id="stat-swim-count" class="text-3xl font-black text-green-600 font-mono">0</div>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
+                                <i class="fa-solid fa-person-swimming text-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stat 3: Kick Sets -->
+                    <div class="bg-gradient-to-br from-white to-pink-50/20 border border-gray-150 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider mb-1">Kick Sets</div>
+                                <div id="stat-kick-count" class="text-3xl font-black text-brandPink font-mono">0</div>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-brandPink/10 text-brandPink flex items-center justify-center">
+                                <i class="fa-solid fa-shoe-prints text-lg rotate-90"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stat 4: Drill Sets -->
+                    <div class="bg-gradient-to-br from-white to-purple-50/20 border border-gray-150 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider mb-1">Drill Sets</div>
+                                <div id="stat-drill-count" class="text-3xl font-black text-purple-600 font-mono">0</div>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                                <i class="fa-solid fa-graduation-cap text-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Sub-Grid for Detailed Analytics -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Column A: Stil Dağılımı -->
+                    <div class="bg-white border border-gray-150 rounded-2xl p-5 shadow-sm space-y-4">
+                        <h5 class="text-xs font-black uppercase text-brandBlue tracking-wider flex items-center space-x-1.5 border-b border-gray-50 pb-2">
+                            <i class="fa-solid fa-water text-brandPink animate-pulse"></i>
+                            <span data-i18n="stroke_dist">Technique & Stroke Distribution</span>
+                        </h5>
+                        <div class="space-y-2 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+                            <!-- Freestyle -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[11px] font-bold text-gray-600">
+                                    <span data-i18n="freestyle">Freestyle</span>
+                                    <span class="font-mono text-gray-800"><span id="style-Freestyle-val">0 m</span> <span id="style-Freestyle-pct" class="text-blue-600 font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="style-Freestyle-bar" class="h-full bg-blue-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- Backstroke -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[11px] font-bold text-gray-600">
+                                    <span data-i18n="backstroke">Backstroke</span>
+                                    <span class="font-mono text-gray-800"><span id="style-Backstroke-val">0 m</span> <span id="style-Backstroke-pct" class="text-purple-600 font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="style-Backstroke-bar" class="h-full bg-purple-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- Breaststroke -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[11px] font-bold text-gray-600">
+                                    <span data-i18n="breaststroke">Breaststroke</span>
+                                    <span class="font-mono text-gray-800"><span id="style-Breaststroke-val">0 m</span> <span id="style-Breaststroke-pct" class="text-green-600 font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="style-Breaststroke-bar" class="h-full bg-green-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- Butterfly -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[11px] font-bold text-gray-600">
+                                    <span data-i18n="butterfly">Butterfly</span>
+                                    <span class="font-mono text-gray-800"><span id="style-Butterfly-val">0 m</span> <span id="style-Butterfly-pct" class="text-brandPink font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="style-Butterfly-bar" class="h-full bg-brandPink rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- Medley -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[11px] font-bold text-gray-600">
+                                    <span data-i18n="medley">Medley</span>
+                                    <span class="font-mono text-gray-800"><span id="style-Medley-val">0 m</span> <span id="style-Medley-pct" class="text-orange-500 font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="style-Medley-bar" class="h-full bg-orange-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- Kick -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[11px] font-bold text-gray-600">
+                                    <span data-i18n="kick">Kick</span>
+                                    <span class="font-mono text-gray-800"><span id="style-Kick-val">0 m</span> <span id="style-Kick-pct" class="text-red-500 font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="style-Kick-bar" class="h-full bg-red-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- Drill -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[11px] font-bold text-gray-600">
+                                    <span data-i18n="drill">Drill</span>
+                                    <span class="font-mono text-gray-800"><span id="style-Drill-val">0 m</span> <span id="style-Drill-pct" class="text-yellow-600 font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="style-Drill-bar" class="h-full bg-yellow-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- Stroke -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[11px] font-bold text-gray-600">
+                                    <span data-i18n="stroke">Stroke</span>
+                                    <span class="font-mono text-gray-800"><span id="style-Stroke-val">0 m</span> <span id="style-Stroke-pct" class="text-indigo-600 font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="style-Stroke-bar" class="h-full bg-indigo-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- Pull -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[11px] font-bold text-gray-600">
+                                    <span data-i18n="pull">Pull</span>
+                                    <span class="font-mono text-gray-800"><span id="style-Pull-val">0 m</span> <span id="style-Pull-pct" class="text-teal-600 font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="style-Pull-bar" class="h-full bg-teal-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column B: Intensity Zone Distribution -->
+                    <div class="bg-white border border-gray-150 rounded-2xl p-5 shadow-sm space-y-4">
+                        <h5 class="text-xs font-black uppercase text-brandBlue tracking-wider flex items-center space-x-1.5 border-b border-gray-50 pb-2">
+                            <i class="fa-solid fa-gauge-high text-yellow-500 animate-pulse"></i>
+                            <span data-i18n="energy_zones">Intensity & Energy Distribution</span>
+                        </h5>
+                        <div class="space-y-3.5">
+                            <!-- Aerobic (A1-A3) -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-xs font-bold text-gray-600">
+                                    <span class="flex items-center space-x-1">
+                                        <span class="w-2.5 h-2.5 rounded bg-yellow-500 inline-block"></span>
+                                        <span data-i18n="aerobic">Aerobic Capacity (A1-A3)</span>
+                                    </span>
+                                    <span class="font-mono text-gray-800"><span id="zone-Aerobik-val">0 m</span> <span id="zone-Aerobik-pct" class="font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="zone-Aerobik-bar" class="h-full bg-yellow-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- Endurance (End1-End3 / Hard) -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-xs font-bold text-gray-600">
+                                    <span class="flex items-center space-x-1">
+                                        <span class="w-2.5 h-2.5 rounded bg-blue-600 inline-block"></span>
+                                        <span data-i18n="endurance">Lactate Threshold / Endurance (End1-3)</span>
+                                    </span>
+                                    <span class="font-mono text-gray-800"><span id="zone-Dayaniklilik-val">0 m</span> <span id="zone-Dayaniklilik-pct" class="font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="zone-Dayaniklilik-bar" class="h-full bg-blue-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- Sprint (Spr1-Spr3 / Max) -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-xs font-bold text-gray-600">
+                                    <span class="flex items-center space-x-1">
+                                        <span class="w-2.5 h-2.5 rounded bg-red-600 inline-block"></span>
+                                        <span data-i18n="sprint">Sprint & Speed (Spr1-3 / Max)</span>
+                                    </span>
+                                    <span class="font-mono text-gray-800"><span id="zone-Sprint-val">0 m</span> <span id="zone-Sprint-pct" class="font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="zone-Sprint-bar" class="h-full bg-red-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- Race Pace & Other (R.P, Easy, Moderate) -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-xs font-bold text-gray-600">
+                                    <span class="flex items-center space-x-1">
+                                        <span class="w-2.5 h-2.5 rounded bg-purple-600 inline-block"></span>
+                                        <span data-i18n="race_pace">Race Pace & Other (R.P, Easy, Mod)</span>
+                                    </span>
+                                    <span class="font-mono text-gray-800"><span id="zone-YarisHizi-val">0 m</span> <span id="zone-YarisHizi-pct" class="font-bold ml-1">%0</span></span>
+                                </div>
+                                <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="zone-YarisHizi-bar" class="h-full bg-purple-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>                <!-- Contribution Visual Indicator of Set Types (Primary Category breakdown with circular rings!) -->
+                <div class="bg-gradient-to-r from-gray-50 to-white border border-gray-150 rounded-2xl p-5 shadow-sm space-y-4">
+                    <h5 class="text-xs font-black uppercase text-brandBlue tracking-wider flex items-center space-x-1.5 border-b border-gray-50 pb-2">
+                        <i class="fa-solid fa-chart-pie text-brandPink"></i>
+                        <span>Workout Type Distribution Rings</span>
+                    </h5>
+                    
+                    <div class="flex flex-wrap justify-around items-center gap-6 py-2">
+                        <!-- Swim Ring -->
+                        <div class="flex flex-col items-center space-y-2">
+                            <div class="relative w-20 h-20">
+                                <svg class="w-full h-full transform -rotate-90">
+                                    <circle cx="40" cy="40" r="34" stroke="#f3f4f6" stroke-width="6" fill="transparent" />
+                                    <circle id="ring-swim" cx="40" cy="40" r="34" stroke="#10b981" stroke-width="6" fill="transparent" 
+                                        stroke-dasharray="213.6" stroke-dashoffset="213.6" stroke-linecap="round" class="transition-all duration-1000" />
+                                </svg>
+                                <div id="ring-swim-text" class="absolute inset-0 flex items-center justify-center text-xs font-black text-green-600 font-mono">%0</div>
+                            </div>
+                            <span class="text-xs font-extrabold text-green-600 uppercase tracking-wider" data-i18n="swim_vol">Swim Volume</span>
+                        </div>
+
+                        <!-- Kick Ring -->
+                        <div class="flex flex-col items-center space-y-2">
+                            <div class="relative w-20 h-20">
+                                <svg class="w-full h-full transform -rotate-90">
+                                    <circle cx="40" cy="40" r="34" stroke="#f3f4f6" stroke-width="6" fill="transparent" />
+                                    <circle id="ring-kick" cx="40" cy="40" r="34" stroke="#e5007d" stroke-width="6" fill="transparent" 
+                                        stroke-dasharray="213.6" stroke-dashoffset="213.6" stroke-linecap="round" class="transition-all duration-1000" />
+                                </svg>
+                                <div id="ring-kick-text" class="absolute inset-0 flex items-center justify-center text-xs font-black text-brandPink font-mono">%0</div>
+                            </div>
+                            <span class="text-xs font-extrabold text-brandPink uppercase tracking-wider" data-i18n="kick_vol">Kick Volume</span>
+                        </div>
+
+                        <!-- Drill Ring -->
+                        <div class="flex flex-col items-center space-y-2">
+                            <div class="relative w-20 h-20">
+                                <svg class="w-full h-full transform -rotate-90">
+                                    <circle cx="40" cy="40" r="34" stroke="#f3f4f6" stroke-width="6" fill="transparent" />
+                                    <circle id="ring-drill" cx="40" cy="40" r="34" stroke="#9333ea" stroke-width="6" fill="transparent" 
+                                        stroke-dasharray="213.6" stroke-dashoffset="213.6" stroke-linecap="round" class="transition-all duration-1000" />
+                                </svg>
+                                <div id="ring-drill-text" class="absolute inset-0 flex items-center justify-center text-xs font-black text-purple-600 font-mono">%0</div>
+                            </div>
+                            <span class="text-xs font-extrabold text-purple-600 uppercase tracking-wider" data-i18n="drill_vol">Drill Volume</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shared Announcement/Activity Board -->
+            <div class="bg-white border border-gray-100 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+                <div class="flex justify-between items-center border-b border-gray-100 pb-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-10 h-10 rounded-xl bg-brandPink/10 text-brandPink flex items-center justify-center">
+                            <i class="fa-solid fa-comments text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-brandBlue" data-i18n="notes_board_title">Shared Announcement & Message Board</h3>
+                            <p class="text-gray-400 text-xs" data-i18n="notes_board_sub">Messages you post will be visible to other coaches immediately.</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-semibold px-2.5 py-1 bg-brandBlue/5 text-brandBlue rounded-full flex items-center space-x-1">
+                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                        <span data-i18n="shared_space">Shared Space</span>
+                    </span>
+                </div>
+
+                <!-- Live Feed of Notes -->
+                <div id="notes-container" class="space-y-4 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                    <!-- Dynamic Notes will go here -->
+                </div>
+
+                <!-- Add New Note Form -->
+                <form id="add-note-form" onsubmit="addNote(event)" class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 pt-4 border-t border-gray-50">
+                    <input type="text" id="note-input" required
+                        class="flex-grow px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue transition-all text-sm"
+                        placeholder="Write an announcement or leave a message..." data-i18n-placeholder="write_msg_placeholder">
+                    <button type="submit"
+                        class="px-6 py-3 bg-brandPink hover:bg-opacity-95 text-white font-semibold rounded-xl shadow-md shadow-brandPink/15 hover:shadow-brandPink/25 transition-all duration-300 flex items-center justify-center space-x-2 shrink-0">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span data-i18n="share">Share</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <div id="training-modal" class="hidden fixed inset-0 bg-brandBlue/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-4xl rounded-3xl p-8 shadow-2xl border border-gray-150 animate-scale-up space-y-6">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-4">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-table text-xl text-brandPink"></i>
+                    <h3 class="text-2xl font-extrabold text-brandBlue" data-i18n="add_set_title">Add New Training Set</h3>
+                </div>
+                <button onclick="closeTrainingModal()" class="text-gray-400 hover:text-brandPink transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- HORIZONTAL SELECTION TABLE -->
+            <form onsubmit="handleSaveSwimSet(event)" class="space-y-6">
+                <!-- Date Selection -->
+                <div class="flex items-center space-x-3 bg-gray-50 border border-gray-150 p-4 rounded-2xl w-fit">
+                    <i class="fa-regular fa-calendar text-brandBlue text-lg"></i>
+                    <label for="s-date" class="text-xs font-black text-brandBlue uppercase tracking-wider" data-i18n="workout_date">Workout Date:</label>
+                    <input type="date" id="s-date" required onchange="handleModalDateChange()"
+                        class="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue font-extrabold text-xs">
+                </div>
+
+                <div class="overflow-x-auto border border-gray-200 rounded-2xl">
+                    <table class="w-full border-collapse text-left text-sm text-gray-700 min-w-[900px]">
+                        <thead>
+                            <tr class="bg-gray-50 text-brandBlue font-bold text-xs uppercase border-b border-gray-200">
+                                <th class="p-3 border-r border-gray-200 w-32" data-i18n="section">Section</th>
+                                <th class="p-3 border-r border-gray-200 text-center w-16" data-i18n="t1">T1</th>
+                                <th class="p-3 border-r border-gray-200 text-center w-16" data-i18n="t2">T2</th>
+                                <th class="p-3 border-r border-gray-200 text-center w-24" data-i18n="distance">Distance</th>
+                                <th class="p-3 border-r border-gray-200 w-28" data-i18n="stroke">Stroke</th>
+                                <th class="p-3 border-r border-gray-200 w-28" data-i18n="type">Type</th>
+                                <th class="p-3 border-r border-gray-200 w-28" data-i18n="equipment">Equipment</th>
+                                <th class="p-3 border-r border-gray-200 text-center w-28" data-i18n="target_time">Target Time</th>
+                                <th class="p-3 border-r border-gray-200 text-center w-28" data-i18n="interval">@ Interval</th>
+                                <th class="p-3 border-r border-gray-200 text-center w-24" data-i18n="intensity">Intensity</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            <tr>
+                                <!-- Column 1: Section -->
+                                <td class="p-3 border-r border-gray-200">
+                                    <select id="s-section" required class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-bold text-xs">
+                                        <option value="" selected>-</option>
+                                        <option value="Warm Up" data-i18n="warm_up">Warm Up</option>
+                                        <option value="Pre Set" data-i18n="pre_set">Pre Set</option>
+                                        <option value="Main Set" data-i18n="main_set">Main Set</option>
+                                        <option value="Cool Down" data-i18n="cool_down">Cool Down</option>
+                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
+                                    </select>
+                                </td>
+
+                                <!-- Column 2: T1 (Dış Set) -->
+                                <td class="p-3 border-r border-gray-200">
+                                    <select id="s-reps1" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs">
+                                        <option value="" selected>-</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
+                                    </select>
+                                </td>
+
+                                <!-- Column 3: T2 (İç Set) -->
+                                <td class="p-3 border-r border-gray-200">
+                                    <select id="s-reps2" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs">
+                                        <option value="" selected>-</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
+                                    </select>
+                                </td>
+
+                                <!-- Column 4: Mesafe -->
+                                <td class="p-3 border-r border-gray-200">
+                                    <select id="s-distance" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-mono text-center font-bold text-xs">
+                                        <option value="" selected>-</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="75">75</option>
+                                        <option value="100">100</option>
+                                        <option value="125">125</option>
+                                        <option value="150">150</option>
+                                        <option value="175">175</option>
+                                        <option value="200">200</option>
+                                        <option value="250">250</option>
+                                        <option value="300">300</option>
+                                        <option value="350">350</option>
+                                        <option value="400">400</option>
+                                        <option value="500">500</option>
+                                        <option value="600">600</option>
+                                        <option value="700">700</option>
+                                        <option value="800">800</option>
+                                        <option value="900">900</option>
+                                        <option value="1000">1000</option>
+                                        <option value="1200">1200</option>
+                                        <option value="1500">1500</option>
+                                        <option value="2000">2000</option>
+                                        <option value="2500">2500</option>
+                                        <option value="3000">3000</option>
+                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
+                                    </select>
+                                </td>
+                                <!-- Column 5: Stroke (Stil) -->
+                                <td class="p-3 border-r border-gray-200">
+                                    <select id="s-stroke" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-bold text-xs">
+                                        <option value="" selected>-</option>
+                                        <option value="Freestyle" data-i18n="freestyle">Freestyle</option>
+                                        <option value="Backstroke" data-i18n="backstroke">Backstroke</option>
+                                        <option value="Breaststroke" data-i18n="breaststroke">Breaststroke</option>
+                                        <option value="Butterfly" data-i18n="butterfly">Butterfly</option>
+                                        <option value="Medley" data-i18n="medley">Medley</option>
+                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
+                                    </select>
+                                </td>
+                                <!-- Column 5.5: Type (Çalışma Türü) -->
+                                <td class="p-3 border-r border-gray-200">
+                                    <select id="s-type" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-bold text-xs">
+                                        <option value="" selected>-</option>
+                                        <option value="Swim" data-i18n="swim">Swim</option>
+                                        <option value="Kick" data-i18n="kick">Kick</option>
+                                        <option value="Drill" data-i18n="drill">Drill</option>
+                                        <option value="Stroke" data-i18n="stroke_type">Stroke</option>
+                                        <option value="Pull" data-i18n="pull">Pull</option>
+                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
+                                    </select>
+                                </td>
+                                <!-- Column 6: Equipment -->
+                                <td class="p-3 border-r border-gray-200">
+                                    <select id="s-equipment" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-bold text-xs">
+                                        <option value="" selected>-</option>
+                                        <option value="None" data-i18n="none">None</option>
+                                        <option value="Fins" data-i18n="fins">Fins</option>
+                                        <option value="Paddles" data-i18n="paddles">Paddles</option>
+                                        <option value="Board" data-i18n="board">Board</option>
+                                        <option value="Pullbuoy" data-i18n="pullbuoy">Pullbuoy</option>
+                                        <option value="Snorkels" data-i18n="snorkels">Snorkels</option>
+                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
+                                    </select>
+                                </td>
+                                <!-- Column 7: Target Time -->
+                                <td class="p-3 border-r border-gray-200">
+                                    <input type="text" id="s-target-time" placeholder="00:00.00" readonly onclick="openTimeKeypad('s-target-time')"
+                                        class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs cursor-pointer hover:bg-gray-100/50 transition-colors">
+                                </td>
+                                <!-- Column 7.5: @ Interval -->
+                                <td class="p-3 border-r border-gray-200">
+                                    <div class="flex items-center space-x-1">
+                                        <span class="text-gray-400 font-extrabold text-sm">@</span>
+                                        <input type="text" id="s-interval" placeholder="00:00.00" readonly onclick="openTimeKeypad('s-interval')"
+                                            class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs cursor-pointer hover:bg-gray-100/50 transition-colors">
+                                    </div>
+                                </td>
+                                <!-- Column 8: Intensity -->
+                                <td class="p-3 border-r border-gray-200">
+                                    <select id="s-zone" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs">
+                                        <option value="" selected>-</option>
+                                        <option value="A1">A1</option>
+                                        <option value="A2">A2</option>
+                                        <option value="A3">A3</option>
+                                        <option value="End1">End1</option>
+                                        <option value="End2">End2</option>
+                                        <option value="End3">End3</option>
+                                        <option value="Spr1">Spr1</option>
+                                        <option value="Spr2">Spr2</option>
+                                        <option value="Spr3">Spr3</option>
+                                        <option value="R.P">R.P</option>
+                                        <option value="Easy" data-i18n="easy">Easy</option>
+                                        <option value="Moderate" data-i18n="moderate">Moderate</option>
+                                        <option value="Hard" data-i18n="hard">Hard</option>
+                                        <option value="Max" data-i18n="max">Max</option>
+                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Swimmer Attendance (Modal block) -->
+                <div class="p-5 bg-gray-50 border border-gray-150 rounded-2xl space-y-3">
+                    <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                        <label class="text-xs font-black text-brandBlue uppercase tracking-wider flex items-center space-x-1.5">
+                            <i class="fa-solid fa-clipboard-user text-brandPink"></i>
+                            <span data-i18n="attendance">Swimmer Attendance</span>
+                        </label>
+                        
+                        <!-- Add swimmer input -->
+                        <div class="flex items-center space-x-2">
+                            <input type="text" id="new-swimmer-name" placeholder="Swimmer name..." data-i18n-placeholder="add_swimmer_placeholder"
+                                class="px-3 py-1.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue font-bold text-xs w-28 md:w-36 transition-all">
+                            <button type="button" onclick="addSwimmerToSquad()" class="px-2.5 py-1.5 bg-brandBlue hover:bg-opacity-95 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-brandBlue/10 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable swimmer attendance panel -->
+                    <div id="attendance-container" class="max-h-[120px] overflow-y-auto custom-scrollbar grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 py-1">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="closeTrainingModal()" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300" data-i18n="cancel">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-8 py-3 bg-brandPink hover:bg-opacity-95 text-white font-semibold rounded-xl shadow-lg shadow-brandPink/15 transition-all duration-300" data-i18n="save_set">
+                        Save Set
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 5. DAILY SUMMARY MODAL -->
+    <div id="summary-modal" class="hidden fixed inset-0 bg-brandBlue/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-4xl rounded-3xl p-8 shadow-2xl border border-gray-150 animate-scale-up space-y-6 flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="flex justify-between items-center border-b border-gray-100 pb-4 shrink-0">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-list-check text-xl text-brandPink"></i>
+                    <h3 class="text-2xl font-extrabold text-brandBlue" data-i18n="daily_summaries">Daily Workout Summaries</h3>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="exportAllSummariesToWord()" class="px-4 py-2 border border-blue-200 text-blue-600 hover:bg-blue-50 font-bold rounded-xl transition-all duration-300 flex items-center space-x-2 text-xs" title="Download All Days Volume Report as Word">
+                        <i class="fa-solid fa-file-word"></i>
+                        <span data-i18n="export_word_summaries">Export Summaries to Word</span>
+                    </button>
+                    <button onclick="closeSummaryModal()" class="text-gray-400 hover:text-brandPink transition-colors">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Container (Scrollable) -->
+            <div class="overflow-y-auto flex-grow border border-gray-200 rounded-2xl custom-scrollbar bg-gray-50/20">
+                <table class="w-full border-collapse text-left text-sm text-gray-700 min-w-[700px]">
+                    <thead class="sticky top-0 bg-gray-100 z-10">
+                        <tr class="text-brandBlue font-extrabold text-xs uppercase border-b border-gray-200">
+                            <th class="py-2.5 px-4 border-r border-gray-200 text-center" data-i18n="date">Date</th>
+                            <th class="py-2.5 px-4 border-r border-gray-200 text-right" data-i18n="total_vol">Total Volume</th>
+                            <th class="py-2.5 px-4 border-r border-gray-200 text-right text-green-600" data-i18n="swim_vol">Swim Volume</th>
+                            <th class="py-2.5 px-4 border-r border-gray-200 text-right text-brandPink" data-i18n="kick_vol">Kick Volume</th>
+                            <th class="py-2.5 px-4 border-r border-gray-200 text-right text-purple-600" data-i18n="drill_vol">Drill Volume</th>
+                            <th class="py-2.5 px-4 text-center" data-i18n="action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="summary-table-body" class="bg-white divide-y divide-gray-100">
+                        <!-- Dynamically rendered rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer action -->
+            <div class="flex justify-end pt-4 border-t border-gray-100 shrink-0">
+                <button onclick="closeSummaryModal()" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300" data-i18n="close">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIME KEYPAD MODAL -->
+    <div id="time-keypad-modal" class="hidden fixed inset-0 bg-brandBlue/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl border border-gray-150 animate-scale-up space-y-4">
+            <!-- Header -->
+            <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+                <span id="keypad-title" class="text-sm font-black text-brandBlue uppercase tracking-wider" data-i18n="keypad_title">Enter Pacing Time</span>
+                <button type="button" onclick="closeTimeKeypad()" class="text-gray-400 hover:text-brandPink transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Time Display -->
+            <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-center">
+                <div id="keypad-display" class="text-3xl font-black text-brandBlue font-mono">00:00.00</div>
+                <div class="text-[10px] text-gray-400 font-bold uppercase mt-1" data-i18n="keypad_labels">Min : Sec . Centisec</div>
+            </div>
+            
+            <!-- Grid of Numbers -->
+            <div class="grid grid-cols-3 gap-3">
+                <button type="button" onclick="pressKeypadDigit('1')" class="py-4 bg-gray-50 hover:bg-gray-100 text-brandBlue font-extrabold text-xl rounded-2xl transition-all active:scale-95">1</button>
+                <button type="button" onclick="pressKeypadDigit('2')" class="py-4 bg-gray-50 hover:bg-gray-100 text-brandBlue font-extrabold text-xl rounded-2xl transition-all active:scale-95">2</button>
+                <button type="button" onclick="pressKeypadDigit('3')" class="py-4 bg-gray-50 hover:bg-gray-100 text-brandBlue font-extrabold text-xl rounded-2xl transition-all active:scale-95">3</button>
+                <button type="button" onclick="pressKeypadDigit('4')" class="py-4 bg-gray-50 hover:bg-gray-100 text-brandBlue font-extrabold text-xl rounded-2xl transition-all active:scale-95">4</button>
+                <button type="button" onclick="pressKeypadDigit('5')" class="py-4 bg-gray-50 hover:bg-gray-100 text-brandBlue font-extrabold text-xl rounded-2xl transition-all active:scale-95">5</button>
+                <button type="button" onclick="pressKeypadDigit('6')" class="py-4 bg-gray-50 hover:bg-gray-100 text-brandBlue font-extrabold text-xl rounded-2xl transition-all active:scale-95">6</button>
+                <button type="button" onclick="pressKeypadDigit('7')" class="py-4 bg-gray-50 hover:bg-gray-100 text-brandBlue font-extrabold text-xl rounded-2xl transition-all active:scale-95">7</button>
+                <button type="button" onclick="pressKeypadDigit('8')" class="py-4 bg-gray-50 hover:bg-gray-100 text-brandBlue font-extrabold text-xl rounded-2xl transition-all active:scale-95">8</button>
+                <button type="button" onclick="pressKeypadDigit('9')" class="py-4 bg-gray-50 hover:bg-gray-100 text-brandBlue font-extrabold text-xl rounded-2xl transition-all active:scale-95">9</button>
+                <button type="button" onclick="clearKeypad()" class="py-4 bg-red-50 hover:bg-red-100 text-red-500 font-extrabold text-lg rounded-2xl transition-all active:scale-95">C</button>
+                <button type="button" onclick="pressKeypadDigit('0')" class="py-4 bg-gray-50 hover:bg-gray-100 text-brandBlue font-extrabold text-xl rounded-2xl transition-all active:scale-95">0</button>
+                <button type="button" onclick="backspaceKeypad()" class="py-4 bg-gray-150 hover:bg-gray-200 text-brandBlue font-extrabold text-lg rounded-2xl transition-all active:scale-95 flex items-center justify-center">
+                    <i class="fa-solid fa-backspace"></i>
+                </button>
+            </div>
+            
+            <!-- Done Button -->
+            <button type="button" onclick="submitKeypadTime()" class="w-full py-4 bg-brandPink hover:bg-opacity-95 text-white font-extrabold rounded-2xl shadow-lg shadow-brandPink/15 transition-all active:scale-98" data-i18n="confirm">
+                Confirm
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="p-6 text-center text-sm text-gray-400 border-t border-gray-50 relative z-10">
+        &copy; 2026 Swim Coach Pro. All Rights Reserved.
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        // --- MULTI-LANGUAGE TRANSLATIONS (i18n) ---
+        const translations = {
+            en: {
+                login_title: "Welcome to Swim Coach Pro Panel",
+                login_subtitle: "Please select your user account to log in",
+                login_btn: "Log In",
+                password_placeholder: "Enter password",
+                logout: "Log Out",
+                welcome_user: "welcome, ",
+                add_set: "Add New Set",
+                daily_summaries: "Daily Workout Summaries",
+                show_stats: "Show Statistics",
+                hide_stats: "Hide Statistics",
+                workout_date: "Workout Date:",
+                no_sets: "No training sets planned for this date. Click 'Add New Set' to start planning!",
+                daily_notes: "Daily Workout Notes",
+                notes_placeholder: "Add notes, objectives, or comments for today's workout...",
+                attendance: "Swimmer Attendance",
+                add_swimmer_placeholder: "Swimmer name...",
+                export_word_summaries: "Export Summaries to Word",
+                export_word_day_short: "Export to Word",
+                export_word_day: "Export Current Day to Word",
+                metrics_title: "Advanced Workout Analytics",
+                metrics_desc: "Physiological and technical distribution analysis of training sets for the selected date.",
+                total_vol: "Total Planned Volume",
+                total_vol_short: "Total Volume:",
+                total_sets: "Total Planned Sets",
+                total_duration: "Total Duration Estimate",
+                dist_rings: "Workout Type Distribution Rings",
+                swim_vol: "Swim Volume",
+                kick_vol: "Kick Volume",
+                drill_vol: "Drill Volume",
+                swim_sets_count: "Swim Sets",
+                kick_sets_count: "Kick Sets",
+                drill_sets_count: "Drill Sets",
+                stroke_dist: "Technique & Stroke Distribution",
+                energy_zones: "Intensity & Energy Distribution",
+                aerobic: "Aerobic Capacity (A1-A3)",
+                endurance: "Lactate Threshold / Endurance (End1-3)",
+                sprint: "Sprint & Speed (Spr1-3 / Max)",
+                race_pace: "Race Pace & Other (R.P, Easy, Mod)",
+                add_set_title: "Add New Training Set",
+                save_set: "Save Set",
+                cancel: "Cancel",
+                confirm_delete_set: "Are you sure you want to delete this training set?",
+                confirm_remove_swimmer: "Remove {name} from swimmer squad?",
+                no_export_data: "There is no training data to export for this date.",
+                no_export_summaries: "No training data available to export.",
+                no_notes: "No announcements on the board yet. Be the first to write a message!",
+                notes_board_title: "Shared Announcement & Message Board",
+                notes_board_sub: "Messages you post will be visible to other coaches immediately.",
+                shared_space: "Shared Space",
+                write_msg_placeholder: "Write an announcement or leave a message...",
+                share: "Share",
+                keypad_title: "Enter Pacing Time",
+                keypad_target: "Enter Target Time",
+                keypad_interval: "Enter Interval Time",
+                keypad_labels: "Min : Sec . Centisec",
+                confirm: "Confirm",
+                section: "Section",
+                t1: "T1",
+                t2: "T2",
+                distance: "Distance",
+                technique: "Technique",
+                equipment: "Equipment",
+                target_time: "Target Time",
+                interval: "@ Interval",
+                intensity: "Intensity",
+                total: "Total",
+                action: "Action",
+                username: "Username",
+                password: "Password",
+                username_placeholder: "e.g. mustafa or cansu",
+                error_login: "Invalid username or password!",
+                go_back: "Go Back",
+                close: "Close",
+                logged_in_message: "You have successfully logged into the swim workout planning panel.",
+                date: "Date",
+                warm_up: "Warm Up",
+                pre_set: "Pre Set",
+                main_set: "Main Set",
+                cool_down: "Cool Down",
+                none: "None",
+                go_to_detail: "Go to Detail"
+            },
+            tr: {
+                login_title: "Swim Coach Pro Yüzme Antrenör Paneline Hoş Geldiniz",
+                login_subtitle: "Giriş yapmak için lütfen kullanıcı hesabınızı seçin",
+                login_btn: "Giriş Yap",
+                password_placeholder: "Parolayı girin",
+                logout: "Çıkış Yap",
+                welcome_user: "hoş geldin, ",
+                add_set: "Yeni Set Ekle",
+                daily_summaries: "Günlük Antrenman Özetleri",
+                show_stats: "İstatistikleri Göster",
+                hide_stats: "İstatistikleri Gizle",
+                workout_date: "Antrenman Tarihi:",
+                no_sets: "Bu tarih için planlanmış antrenman seti yok. Planlamaya başlamak için 'Yeni Set Ekle'ye tıklayın!",
+                daily_notes: "Günlük Antrenman Notları",
+                notes_placeholder: "Bugünkü antrenman için notlar, hedefler veya yorumlar ekleyin...",
+                attendance: "Sporcu Yoklaması",
+                add_swimmer_placeholder: "Sporcu adı...",
+                export_word_summaries: "Özetleri Word'e Aktar",
+                export_word_day_short: "Word'e Aktar",
+                export_word_day: "Seçili Günü Word'e Aktar",
+                metrics_title: "Gelişmiş Antrenman Analizleri",
+                metrics_desc: "Seçilen tarih için planlanan antrenman setlerinin fizyolojik ve teknik dağılım analizi.",
+                total_vol: "Toplam Planlanan Hacim",
+                total_vol_short: "Toplam Hacim:",
+                total_sets: "Toplam Planlanan Set",
+                total_duration: "Tahmini Toplam Süre",
+                dist_rings: "Çalışma Türü Dağılım Halkaları",
+                swim_vol: "Yüzme Hacmi",
+                kick_vol: "Ayak Hacmi",
+                drill_vol: "Drill Hacmi",
+                swim_sets_count: "Yüzme Seti",
+                kick_sets_count: "Ayak Seti",
+                drill_sets_count: "Drill Seti",
+                stroke_dist: "Teknik ve Stil Dağılımı",
+                energy_zones: "Enerji ve Şiddet Bölgeleri",
+                aerobic: "Aerobik Kapasite (A1-A3)",
+                endurance: "Laktat Eşiği / Dayanıklılık (End1-3)",
+                sprint: "Sprint ve Hız (Spr1-3 / Max)",
+                race_pace: "Yarış Hızı ve Diğer (R.P, Easy, Mod)",
+                add_set_title: "Yeni Antrenman Seti Ekle",
+                save_set: "Seti Kaydet",
+                cancel: "İptal",
+                confirm_delete_set: "Bu antrenman setini silmek istediğinizden emin misiniz?",
+                confirm_remove_swimmer: "{name} sporcu kadrosundan çıkarılsın mı?",
+                no_export_data: "Bu tarih için dışa aktarılacak antrenman verisi bulunamadı.",
+                no_export_summaries: "Dışa aktarılacak antrenman verisi bulunamadı.",
+                no_notes: "Henüz panoda bir duyuru yok. İlk mesajı sen yaz!",
+                notes_board_title: "Ortak Duyuru ve Mesaj Panosu",
+                notes_board_sub: "Yazdığın mesajları diğer antrenörler anında görebilir.",
+                shared_space: "Ortak Alan",
+                write_msg_placeholder: "Pano için bir duyuru yaz veya mesaj bırak...",
+                share: "Paylaş",
+                keypad_title: "Derece Süresi Girin",
+                keypad_target: "Hedef Süre Girin",
+                keypad_interval: "Interval Süresi Girin",
+                keypad_labels: "Dak : San . Salise",
+                confirm: "Onayla",
+                section: "Bölüm",
+                t1: "T1",
+                t2: "T2",
+                distance: "Mesafe",
+                technique: "Teknik",
+                equipment: "Ekipman",
+                target_time: "Hedef Süre",
+                interval: "@ Tempo",
+                intensity: "Şiddet",
+                total: "Toplam",
+                action: "İşlem",
+                username: "Kullanıcı Adı",
+                password: "Şifre",
+                username_placeholder: "Örn: mustafa veya cansu",
+                error_login: "Geçersiz kullanıcı adı veya şifre!",
+                go_back: "Geri Git",
+                close: "Kapat",
+                logged_in_message: "Yüzme antrenmanı planlama paneline başarıyla giriş yaptınız.",
+                date: "Tarih",
+                warm_up: "Isınma",
+                pre_set: "Pre Set",
+                main_set: "Ana Set",
+                cool_down: "Gevşeme",
+                none: "Yok",
+                go_to_detail: "Detaya Git"
+            },
+            de: {
+                login_title: "Willkommen beim Swim Coach Pro Schwimmtrainer-Panel",
+                login_subtitle: "Bitte wählen Sie Ihr Benutzerkonto zum Einloggen aus",
+                login_btn: "Einloggen",
+                password_placeholder: "Passwort eingeben",
+                logout: "Abmelden",
+                welcome_user: "willkommen, ",
+                add_set: "Neuer Satz",
+                daily_summaries: "Tägliche Zusammenfassungen",
+                show_stats: "Statistiken anzeigen",
+                hide_stats: "Statistiken ausblenden",
+                workout_date: "Trainingstermin:",
+                no_sets: "Für dieses Datum sind keine Trainingssätze geplant. Klicken Sie auf 'Neuer Satz', um mit der Planung zu beginnen!",
+                daily_notes: "Tägliche Trainingsnotizen",
+                notes_placeholder: "Fügen Sie Notizen, Ziele oder Kommentare für das heutige Training hinzu...",
+                attendance: "Schwimmer Anwesenheit",
+                add_swimmer_placeholder: "Schwimmername...",
+                export_word_summaries: "Zusammenfassungen in Word exportieren",
+                export_word_day_short: "Word-Export",
+                export_word_day: "Aktuellen Tag in Word exportieren",
+                metrics_title: "Schwimmtrainingsmetriken",
+                metrics_desc: "Physiologische und technische Verteilung der Trainingsserien am gewählten Datum.",
+                total_vol: "Geplantes Gesamtvolumen",
+                total_vol_short: "Gesamtvolumen:",
+                total_sets: "Geplante Sätze gesamt",
+                total_duration: "Geschätzte Gesamtdauer",
+                dist_rings: "Verteilung der Trainingsart",
+                swim_vol: "Schwimmvolumen",
+                kick_vol: "Beinschlagvolumen",
+                drill_vol: "Übungsvolumen",
+                swim_sets_count: "Schwimmsätze",
+                kick_sets_count: "Kick-Sätze",
+                drill_sets_count: "Übungssätze",
+                stroke_dist: "Technik- & Stilverteilung",
+                energy_zones: "Energie- & Intensitätszonen",
+                aerobic: "Aerobe Kapazität (A1-A3)",
+                endurance: "Laktatschwelle / Ausdauer (End1-3)",
+                sprint: "Sprint & Geschwindigkeit (Spr1-3 / Max)",
+                race_pace: "Renntempo & Sonstiges (R.P, Easy, Mod)",
+                add_set_title: "Neuen Trainingssatz hinzufügen",
+                save_set: "Satz speichern",
+                cancel: "Abbrechen",
+                confirm_delete_set: "Sind Sie sicher, dass Sie diesen Trainingssatz löschen möchten?",
+                confirm_remove_swimmer: "{name} aus dem Kader entfernen?",
+                no_export_data: "Für dieses Datum liegen keine Trainingsdaten zum Exportieren vor.",
+                no_export_summaries: "Keine Trainingsdaten zum Exportieren verfügbar.",
+                no_notes: "Noch keine Ankündigungen an der Tafel. Schreiben Sie die erste Nachricht!",
+                notes_board_title: "Gemeinsames Ankündigungs- & Schwarzes Brett",
+                notes_board_sub: "Nachrichten, die Sie senden, sind sofort für andere Trainer sichtbar.",
+                shared_space: "Gemeinsamer Raum",
+                write_msg_placeholder: "Schreiben Sie eine Ankündigung oder hinterlassen Sie eine Nachricht...",
+                share: "Teilen",
+                keypad_title: "Pacing-Zeit eingeben",
+                keypad_target: "Zielzeit eingeben",
+                keypad_interval: "Intervallzeit eingeben",
+                keypad_labels: "Min : Sek . Hundertstel",
+                confirm: "Bestätigen",
+                section: "Bereich",
+                t1: "T1",
+                t2: "T2",
+                distance: "Distanz",
+                technique: "Technique",
+                equipment: "Ausrüstung",
+                target_time: "Zielzeit",
+                interval: "@ Intervall",
+                intensity: "Intensität",
+                total: "Gesamt",
+                action: "Aktion",
+                username: "Benutzername",
+                password: "Passwort",
+                username_placeholder: "z.B. mustafa oder cansu",
+                error_login: "Ungültiger Benutzername oder Passwort!",
+                go_back: "Zurück",
+                close: "Schließen",
+                logged_in_message: "Sie haben sich erfolgreich im Schwimmtrainings-Planungspanel angemeldet.",
+                date: "Datum",
+                warm_up: "Aufwärmen",
+                pre_set: "Vorsatz",
+                main_set: "Hauptsatz",
+                cool_down: "Abkühlen",
+                none: "Keine"
+            },
+            zh: {
+                login_title: "欢迎使用 Swim Coach Pro 游泳教练面板",
+                login_subtitle: "请选择您的账户登录",
+                login_btn: "登录",
+                password_placeholder: "输入密码",
+                logout: "登出",
+                welcome_user: "欢迎，",
+                add_set: "添加新组",
+                daily_summaries: "每日训练摘要",
+                show_stats: "显示统计",
+                hide_stats: "隐藏统计",
+                workout_date: "训练日期：",
+                no_sets: "该日期没有安排训练组。点击“添加新组”开始规划！",
+                daily_notes: "每日训练备忘录",
+                notes_placeholder: "添加今天训练的备注、目标或评论...",
+                attendance: "游泳运动员签到",
+                add_swimmer_placeholder: "运动员姓名...",
+                export_word_summaries: "导出摘要到Word",
+                export_word_day_short: "导出到Word",
+                export_word_day: "导出当天到Word",
+                metrics_title: "游泳训练指标",
+                metrics_desc: "所选日期训练组的技术和强度分布分析。",
+                total_vol: "总计划量",
+                total_vol_short: "总距离：",
+                total_sets: "计划组总数",
+                total_duration: "预估总时长",
+                dist_rings: "训练类型分布环",
+                swim_vol: "游泳量",
+                kick_vol: "打腿量",
+                drill_vol: "技术练习量",
+                swim_sets_count: "游泳组",
+                kick_sets_count: "打腿组",
+                drill_sets_count: "技术练习组",
+                stroke_dist: "技术与泳姿分布",
+                energy_zones: "能量与强度区间",
+                aerobic: "有氧能力 (A1-A3)",
+                endurance: "乳酸阈值 / 耐力 (End1-3)",
+                sprint: "冲刺与速度 (Spr1-3 / Max)",
+                race_pace: "比赛节奏与其他 (R.P, Easy, Mod)",
+                add_set_title: "添加新训练组",
+                save_set: "保存训练组",
+                cancel: "取消",
+                confirm_delete_set: "您确定要删除此训练组吗？",
+                confirm_remove_swimmer: "确定要将 {name} 从队伍中移除吗？",
+                no_export_data: "该日期没有可导出的训练数据。",
+                no_export_summaries: "没有可导出的训练数据。",
+                no_notes: "布告栏上还没有布告。写下第一条消息吧！",
+                notes_board_title: "共享布告栏与留言板",
+                notes_board_sub: "您发布的留言其他教练会立即看到。",
+                shared_space: "共享空间",
+                write_msg_placeholder: "写下布告或留下留言...",
+                share: "分享",
+                keypad_title: "输入节奏时间",
+                keypad_target: "输入目标时间",
+                keypad_interval: "输入出发间隔",
+                keypad_labels: "分 : 秒 . 微秒",
+                confirm: "确认",
+                section: "阶段",
+                t1: "T1",
+                t2: "T2",
+                distance: "距离",
+                technique: "泳姿",
+                equipment: "装备",
+                target_time: "目标时间",
+                interval: "@ 出发间隔",
+                intensity: "强度",
+                total: "总计",
+                action: "操作",
+                username: "用户名",
+                password: "密码",
+                username_placeholder: "例如：mustafa 或 cansu",
+                error_login: "用户名或密码错误！",
+                go_back: "返回",
+                close: "关闭",
+                logged_in_message: "您已成功登录游泳训练管理面板。",
+                date: "日期",
+                warm_up: "准备活动",
+                pre_set: "预备组",
+                main_set: "主组",
+                cool_down: "放松组",
+                none: "无"
+            },
+            ja: {
+                login_title: "Swim Coach Pro スイミングコーチパネルへようこそ",
+                login_subtitle: "ログインするユーザーアカウントを選択してください",
+                login_btn: "ログイン",
+                password_placeholder: "パスワードを入力",
+                logout: "ログアウト",
+                welcome_user: "ようこそ、",
+                add_set: "セットを追加",
+                daily_summaries: "日別トレーニング概要",
+                show_stats: "統計を表示",
+                hide_stats: "統計を非表示",
+                workout_date: "練習日：",
+                no_sets: "この日のトレーニングセットは計画されていません。「セットを追加」をクリックして計画を開始しましょう！",
+                daily_notes: "今日の練習メモ",
+                notes_placeholder: "今日の練習に関するメモ、目的、コメントを追加...",
+                attendance: "選手出席確認",
+                add_swimmer_placeholder: "選手名...",
+                export_word_summaries: "概要をWordに書き出し",
+                export_word_day_short: "Word出力",
+                export_word_day: "選択日の練習をWordに書き出し",
+                metrics_title: "練習メトリクス",
+                metrics_desc: "選択した練習日のセットタイプおよび運動強度の構成比分析。",
+                total_vol: "总計画距離",
+                total_vol_short: "総距離：",
+                total_sets: "総計画セット数",
+                total_duration: "想定総時間",
+                dist_rings: "練習タイプ別構成比",
+                swim_vol: "スイム合計",
+                kick_vol: "キック合計",
+                drill_vol: "ドリル合計",
+                swim_sets_count: "スイムセット",
+                kick_sets_count: "キックセット",
+                drill_sets_count: "ドリルセット",
+                stroke_dist: "種目・ドリル構成比",
+                energy_zones: "強度・エネルギーゾーン分布",
+                aerobic: "有酸素能力 (A1-A3)",
+                endurance: "乳酸閾値 / 耐力 (End1-3)",
+                sprint: "スプリント＆スピード (Spr1-3 / Max)",
+                race_pace: "レースペース＆その他 (R.P, Easy, Mod)",
+                add_set_title: "練習セットを追加",
+                save_set: "セットを保存",
+                cancel: "キャンセル",
+                confirm_delete_set: "このトレーニングセットを削除してもよろしいですか？",
+                confirm_remove_swimmer: "{name} 選手を名簿から削除しますか？",
+                no_export_data: "この日の書き出し対象データがありません。",
+                no_export_summaries: "書き出し可能なトレーニングデータがありません。",
+                no_notes: "掲示板にメッセージはありません。最初の発言をどうぞ！",
+                notes_board_title: "共同連絡掲示板＆メッセージボード",
+                notes_board_sub: "投稿したメッセージは他のコーチにもリアルタイムで表示されます。",
+                shared_space: "共有スペース",
+                write_msg_placeholder: "連絡事項やメッセージを記入...",
+                share: "共有",
+                keypad_title: "ペースタイムを入力",
+                keypad_target: "目標タイムを入力",
+                keypad_interval: "サークル時間を入力",
+                keypad_labels: "分 : 秒 . コンマ秒",
+                confirm: "確定",
+                section: "区分",
+                t1: "T1",
+                t2: "T2",
+                distance: "距離",
+                technique: "種目",
+                equipment: "用具",
+                target_time: "目標タイム",
+                interval: "@ サークル",
+                intensity: "強度",
+                total: "合計",
+                action: "操作",
+                username: "ユーザー名",
+                password: "パスワード",
+                username_placeholder: "例：mustafa または cansu",
+                error_login: "ユーザー名またはパスワードが正しくありません！",
+                go_back: "戻る",
+                close: "閉じる",
+                logged_in_message: "トレーニング計画管理パネルにログインしました。",
+                date: "日付",
+                warm_up: "W-up",
+                pre_set: "Pre-set",
+                main_set: "Main-set",
+                cool_down: "Cool-down",
+                none: "なし"
+            },
+            ru: {
+                login_title: "Добро пожаловать в панель тренера по плаванию Swim Coach Pro",
+                login_subtitle: "Пожалуйста, выберите учетную запись для входа",
+                login_btn: "Войти",
+                password_placeholder: "Введите пароль",
+                logout: "Выйти",
+                welcome_user: "добро пожаловать, ",
+                add_set: "Добавить серию",
+                daily_summaries: "Ежедневные отчеты",
+                show_stats: "Показать статистику",
+                hide_stats: "Скрыть статистику",
+                workout_date: "Дата тренировки:",
+                no_sets: "На эту дату не запланировано тренировочных серий. Нажмите «Добавить серию», чтобы начать!",
+                daily_notes: "Заметки к тренировке",
+                notes_placeholder: "Добавьте примечания, цели или комментарии к сегодняшней тренировке...",
+                attendance: "Посещаемость пловцов",
+                add_swimmer_placeholder: "Имя пловца...",
+                export_word_summaries: "Экспортировать отчеты в Word",
+                export_word_day_short: "Экспорт в Word",
+                export_word_day: "Экспортировать день в Word",
+                metrics_title: "Метрики тренировки",
+                metrics_desc: "Анализ технического и физиологического распределения серий на выбранный день.",
+                total_vol: "Общий запланированный объем",
+                total_vol_short: "Объем:",
+                total_sets: "Всего серий",
+                total_duration: "Примерная длительность",
+                dist_rings: "Распределение по типам серий",
+                swim_vol: "Объем плавания",
+                kick_vol: "Объем работы ногами",
+                drill_vol: "Объем упражнений (Drill)",
+                swim_sets_count: "Серии плавания",
+                kick_sets_count: "Серии работы ногами",
+                drill_sets_count: "Серии упражнений",
+                stroke_dist: "Распределение по технике и стилям",
+                energy_zones: "Зоны интенсивности",
+                aerobic: "Аэробная производительность (A1-A3)",
+                endurance: "Порог лактата / Выносливость (End1-3)",
+                sprint: "Спринт и скорость (Spr1-3 / Max)",
+                race_pace: "Режим (Ре race pace) и др. (R.P, Easy, Mod)",
+                add_set_title: "Добавить тренировочную серию",
+                save_set: "Сохранить серию",
+                cancel: "Отмена",
+                confirm_delete_set: "Вы уверены, что хотите удалить эту тренировочную серию?",
+                confirm_remove_swimmer: "Исключить {name} из списка состава?",
+                no_export_data: "Нет данных тренировок для экспорта на эту дату.",
+                no_export_summaries: "Нет доступных тренировочных данных для экспорта.",
+                no_notes: "На доске объявлений пока нет записей. Напишите первое сообщение!",
+                notes_board_title: "Общая доска объявлений и сообщений",
+                notes_board_sub: "Публикуемые вами сообщения сразу видны другим тренерам.",
+                shared_space: "Общая зона",
+                write_msg_placeholder: "Напишите объявление или оставьте сообщение...",
+                share: "Отправить",
+                keypad_title: "Введите темп времени",
+                keypad_target: "Введите целевое время",
+                keypad_interval: "Введите интервал времени",
+                keypad_labels: "Мин : Сек . Сотые",
+                confirm: "ОК",
+                section: "Часть",
+                t1: "T1",
+                t2: "T2",
+                distance: "Дистанция",
+                technique: "Техника",
+                equipment: "Инвентарь",
+                target_time: "Целевое время",
+                interval: "@ Интервал",
+                intensity: "Интенсивность",
+                total: "Всего",
+                action: "Действие",
+                username: "Имя пользователя",
+                password: "Пароль",
+                username_placeholder: "например, mustafa или cansu",
+                error_login: "Неверное имя пользователя или пароль!",
+                go_back: "Назад",
+                close: "Закрыть",
+                logged_in_message: "Вы успешно вошли в панель планирования тренировок.",
+                date: "Дата",
+                warm_up: "Разминка",
+                pre_set: "Пре-серия",
+                main_set: "Основная серия",
+                cool_down: "Заминка",
+                none: "Нет"
+            },
+            es: {
+                login_title: "Bienvenido al Panel de Entrenador de Natación Swim Coach Pro",
+                login_subtitle: "Por favor, seleccione su cuenta para iniciar sesión",
+                login_btn: "Iniciar Sesión",
+                password_placeholder: "Introducir contraseña",
+                logout: "Cerrar Sesión",
+                welcome_user: "bienvenido, ",
+                add_set: "Añadir Serie",
+                daily_summaries: "Resúmenes Diarios",
+                show_stats: "Mostrar Estadísticas",
+                hide_stats: "Ocultar Estadísticas",
+                workout_date: "Fecha de Entrenamiento:",
+                no_sets: "No hay series de entrenamiento planificadas para esta fecha. ¡Haga clic en 'Añadir Serie' para empezar!",
+                daily_notes: "Notas del Entrenamiento",
+                notes_placeholder: "Añada notas, objetivos o comentarios para el entrenamiento de hoy...",
+                attendance: "Asistencia de Nadadores",
+                add_swimmer_placeholder: "Nombre del nadador...",
+                export_word_summaries: "Exportar Resúmenes a Word",
+                export_word_day_short: "Word",
+                export_word_day: "Exportar Día Actual a Word",
+                metrics_title: "Métricas del Entrenamiento",
+                metrics_desc: "Análisis de distribución fisiológica y técnica de las series de la fecha elegida.",
+                total_vol: "Volumen Total Planificado",
+                total_vol_short: "Volumen:",
+                total_sets: "Total de Series Planificadas",
+                total_duration: "Duración Total Estimada",
+                dist_rings: "Anillos de Distribución del Tipo de Trabajo",
+                swim_vol: "Volumen de Nado",
+                kick_vol: "Volumen de Patada",
+                drill_vol: "Volumen de Técnica",
+                swim_sets_count: "Series Nado",
+                kick_sets_count: "Series Patada",
+                drill_sets_count: "Series Técnica",
+                stroke_dist: "Distribución de Técnica y Estilos",
+                energy_zones: "Zonas de Energía e Intensidad",
+                aerobic: "Capacidad Aeróbica (A1-A3)",
+                endurance: "Umbral de Lactato / Resistencia (End1-3)",
+                sprint: "Sprint y Velocidad (Spr1-3 / Max)",
+                race_pace: "Ritmo de Carrera y Otros (R.P, Easy, Mod)",
+                add_set_title: "Añadir Nueva Serie de Entrenamiento",
+                save_set: "Guardar Serie",
+                cancel: "Cancelar",
+                confirm_delete_set: "¿Está seguro de que desea eliminar esta serie de entrenamiento?",
+                confirm_remove_swimmer: "¿Eliminar a {name} de la lista del equipo?",
+                no_export_data: "No hay datos de entrenamiento para exportar en esta fecha.",
+                no_export_summaries: "No hay datos de entrenamiento disponibles para exportar.",
+                no_notes: "No hay anuncios en la pizarra todavía. ¡Escriba el primer mensaje!",
+                notes_board_title: "Tablón de Anuncios y Mensajes Compartido",
+                notes_board_sub: "Los mensajes que publique serán visibles de inmediato para otros entrenadores.",
+                shared_space: "Espacio Compartido",
+                write_msg_placeholder: "Escriba un anuncio o deje un mensaje...",
+                share: "Compartir",
+                keypad_title: "Introducir Tiempo de Ritmo",
+                keypad_target: "Introducir Tiempo Objetivo",
+                keypad_interval: "Introducir Tiempo de Intervalo",
+                keypad_labels: "Min : Seg . Centésimas",
+                confirm: "Confirmar",
+                section: "Sección",
+                t1: "T1",
+                t2: "T2",
+                distance: "Distancia",
+                technique: "Técnica",
+                equipment: "Equipo",
+                target_time: "Tiempo Objetivo",
+                interval: "@ Intervalo",
+                intensity: "Intensidad",
+                total: "Total",
+                action: "Acción",
+                username: "Usuario",
+                password: "Contraseña",
+                username_placeholder: "ej. mustafa o cansu",
+                error_login: "¡Nombre de usuario o contraseña incorrectos!",
+                go_back: "Volver",
+                close: "Cerrar",
+                logged_in_message: "Ha iniciado sesión con éxito en el panel de planificación de natación.",
+                date: "Fecha",
+                warm_up: "Calentamiento",
+                pre_set: "Pre-serie",
+                main_set: "Serie Principal",
+                cool_down: "Afloje",
+                none: "Ninguno"
+            },
+            it: {
+                login_title: "Swim Coach Pro - Pannello per Allenatori",
+                login_subtitle: "Seleziona il tuo account per accedere",
+                login_btn: "Accedi",
+                password_placeholder: "Inserisci password",
+                logout: "Disconnetti",
+                welcome_user: "benvenuto, ",
+                add_set: "Aggiungi Serie",
+                daily_summaries: "Riepiloghi Giornalieri",
+                show_stats: "Mostra Statistiche",
+                hide_stats: "Nascondi Statistiche",
+                workout_date: "Data Allenamento:",
+                no_sets: "Nessuna serie pianificata per questa data. Clicca su 'Aggiungi Serie' per iniziare!",
+                daily_notes: "Note del Giorno",
+                notes_placeholder: "Aggiungi note, obiettivi o commenti per l'allenamento di oggi...",
+                attendance: "Presenze Nuotatori",
+                add_swimmer_placeholder: "Nome nuotatore...",
+                export_word_summaries: "Esporta Riepiloghi in Word",
+                export_word_day_short: "Word",
+                export_word_day: "Esporta Giorno Corrente in Word",
+                metrics_title: "Metriche Allenamento",
+                metrics_desc: "Analisi della distribuzione tecnica e fisiologica delle serie per il giorno selezionato.",
+                total_vol: "Volume Totale Pianificato",
+                total_vol_short: "Volume:",
+                total_sets: "Totale Serie Pianificate",
+                total_duration: "Durata Totale Stimata",
+                dist_rings: "Anelli di Distribuzione del Tipo di Lavoro",
+                swim_vol: "Volume Nuoto",
+                kick_vol: "Volume Gambe",
+                drill_vol: "Volume Esercizi/Tecnica",
+                swim_sets_count: "Serie Nuoto",
+                kick_sets_count: "Serie Gambe",
+                drill_sets_count: "Serie Tecnica",
+                stroke_dist: "Distribuzione Tecnica e Stili",
+                energy_zones: "Zone di Intensità ed Energia",
+                aerobic: "Capacità Aerobica (A1-A3)",
+                endurance: "Soglia Lattato / Resistenza (End1-3)",
+                sprint: "Sprint e Velocità (Spr1-3 / Max)",
+                race_pace: "Passo Gara e Altro (R.P, Easy, Mod)",
+                add_set_title: "Aggiungi Nuova Serie di Allenamento",
+                save_set: "Salva Serie",
+                cancel: "Annulla",
+                confirm_delete_set: "Sei sicuro di voler eliminare questa serie di allenamento?",
+                confirm_remove_swimmer: "Rimuovere {name} dall'elenco della squadra?",
+                no_export_data: "Non ci sono dati di allenamento da esportare per questa data.",
+                no_export_summaries: "Nessun dato di allenamento disponibile per l'esportazione.",
+                no_notes: "Nessun annuncio sulla bacheca. Scrivi il primo messaggio!",
+                notes_board_title: "Bacheca Condivisa Annunci e Messaggi",
+                notes_board_sub: "I messaggi che pubblichi saranno subito visibili agli altri allenatori.",
+                shared_space: "Spazio Condiviso",
+                write_msg_placeholder: "Scrivi un annuncio o lascia un messaggio...",
+                share: "Condividi",
+                keypad_title: "Inserisci Tempo Passo",
+                keypad_target: "Inserisci Tempo Obiettivo",
+                keypad_interval: "Inserisci Tempo Intervallo",
+                keypad_labels: "Min : Sec . Centesimi",
+                confirm: "Conferma",
+                section: "Sezione",
+                t1: "T1",
+                t2: "T2",
+                distance: "Distanza",
+                technique: "Stile",
+                equipment: "Attrezzatura",
+                target_time: "Tempo Obiettivo",
+                interval: "@ Intervallo",
+                intensity: "Intensità",
+                total: "Totale",
+                action: "Azione",
+                username: "Nome utente",
+                password: "Password",
+                username_placeholder: "es. mustafa o cansu",
+                error_login: "Nome utente o password non corretti!",
+                go_back: "Indietro",
+                close: "Chiudi",
+                logged_in_message: "Accesso effettuato con successo al pannello di pianificazione.",
+                date: "Data",
+                warm_up: "Riscaldamento",
+                pre_set: "Pre-serie",
+                main_set: "Serie Principale",
+                cool_down: "Defaticamento",
+                none: "Nessuno"
+            }
+        };
+
+        const strokeTranslations = {
+            en: {
+                freestyle: "Freestyle", backstroke: "Backstroke", breaststroke: "Breaststroke", butterfly: "Butterfly", medley: "Medley", kick: "Kick", drill: "Drill", stroke: "Stroke", pull: "Pull",
+                none: "None", fins: "Fins", paddles: "Paddles", board: "Board", pullbuoy: "Pullbuoy", snorkels: "Snorkels",
+                easy: "Easy", moderate: "Moderate", hard: "Hard", max: "Max", set_structure: "Set Structure",
+                swim: "Swim", stroke_type: "Stroke",
+                add_new_option: "+ Add New...", enter_custom_value: "Enter custom value:",
+                export: "Export"
+            },
+            tr: {
+                freestyle: "Serbest", backstroke: "Sırtüstü", breaststroke: "Kurbağalama", butterfly: "Kelebek", medley: "Karışık", kick: "Ayak", drill: "Drill", stroke: "Stil", pull: "Pull",
+                none: "Yok", fins: "Palet", paddles: "El Paleti", board: "Tahta", pullbuoy: "Pullbuoy", snorkels: "Şnorkel",
+                easy: "Kolay", moderate: "Orta", hard: "Zor", max: "Maks", set_structure: "Set Yapısı",
+                swim: "Yüzme", stroke_type: "Stil",
+                add_new_option: "+ Yeni Ekle...", enter_custom_value: "Özel değer girin:",
+                export: "Dışa Aktar"
+            },
+            de: {
+                freestyle: "Freistil", backstroke: "Rückenschwimmen", breaststroke: "Brustschwimmen", butterfly: "Schmetterling", medley: "Lagen", kick: "Beinschlag", drill: "Übung", stroke: "Stil", pull: "Armzug",
+                none: "Keine", fins: "Flossen", paddles: "Handbretter", board: "Brett", pullbuoy: "Pullbuoy", snorkels: "Schnorchel",
+                easy: "Leicht", moderate: "Mäßig", hard: "Schwer", max: "Max", set_structure: "Satzstruktur",
+                swim: "Schwimmen", stroke_type: "Stil",
+                add_new_option: "+ Neu hinzufügen...", enter_custom_value: "Geben Sie einen benutzerdefinierten Wert ein:"
+            },
+            zh: {
+                freestyle: "自由泳", backstroke: "仰泳", breaststroke: "蛙泳", butterfly: "蝶泳", medley: "混合泳", kick: "打腿", drill: "技术练习", stroke: "泳姿", pull: "划手",
+                none: "无", fins: "脚蹼", paddles: "划手板", board: "浮板", pullbuoy: "夹腿板", snorkels: "呼吸管",
+                easy: "轻松", moderate: "中等", hard: "困难", max: "最大", set_structure: "组结构",
+                swim: "游泳", stroke_type: "泳姿",
+                add_new_option: "+ 新增...", enter_custom_value: "输入自定义值:"
+            },
+            ja: {
+                freestyle: "クロール", backstroke: "背泳ぎ", breaststroke: "平泳ぎ", butterfly: "バタフライ", medley: "メドレー", kick: "キック", drill: "ドリル", stroke: "ストローク", pull: "プル",
+                none: "なし", fins: "フィン", paddles: "パドル", board: "ビート板", pullbuoy: "プルブイ", snorkels: "シュノーケル",
+                easy: "イージー", moderate: "モデレート", hard: "ハード", max: "マックス", set_structure: "セット構成",
+                swim: "スイム", stroke_type: "ストローク",
+                add_new_option: "+ 新規追加...", enter_custom_value: "カスタム値を入力してください:"
+            },
+            ru: {
+                freestyle: "Вольный стиль", backstroke: "На спине", breaststroke: "Брасс", butterfly: "Баттерфляй", medley: "Комплекс", kick: "Ноги", drill: "Упражнения", stroke: "Стиль", pull: "Руки",
+                none: "Нет", fins: "Ласты", paddles: "Лопатки", board: "Доска", pullbuoy: "Колобашка", snorkels: "Трубка",
+                easy: "Легко", moderate: "Умеренно", hard: "Тяжело", max: "Макс", set_structure: "Структура серии",
+                swim: "Плавание", stroke_type: "Стиль",
+                add_new_option: "+ Добавить...", enter_custom_value: "Введите пользовательское значение:"
+            },
+            es: {
+                freestyle: "Estilo Libre", backstroke: "Espalda", breaststroke: "Braza", butterfly: "Mariposa", medley: "Estilos", kick: "Patada", drill: "Técnica", stroke: "Estilo", pull: "Brazada",
+                none: "Ninguno", fins: "Aletas", paddles: "Palas", board: "Tabla", pullbuoy: "Pullbuoy", snorkels: "Snorkel",
+                easy: "Fácil", moderate: "Moderado", hard: "Difícil", max: "Máximo", set_structure: "Estructura",
+                swim: "Nado", stroke_type: "Estilo",
+                add_new_option: "+ Añadir...", enter_custom_value: "Ingrese valor personalizado:"
+            },
+            it: {
+                freestyle: "Stile Libero", backstroke: "Dorso", breaststroke: "Rana", butterfly: "Delfino", medley: "Misti", kick: "Gambe", drill: "Tecnica", stroke: "Stile", pull: "Braccia",
+                none: "Nessuno", fins: "Pinne", paddles: "Palette", board: "Tavoletta", pullbuoy: "Pullbuoy", snorkels: "Boccaglio",
+                easy: "Facile", moderate: "Moderato", hard: "Difficile", max: "Massimo", set_structure: "Struttura",
+                swim: "Nuoto", stroke_type: "Stile",
+                add_new_option: "+ Aggiungi...", enter_custom_value: "Inserisci valore personalizzato:"
+            }
+        };
+
+        // Merge helper dictionary into main translations
+        Object.keys(strokeTranslations).forEach(lang => {
+            if (translations[lang]) {
+                Object.assign(translations[lang], strokeTranslations[lang]);
+            }
+        });
+
+        let currentLang = localStorage.getItem('tan_app_lang') || 'en';
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('tan_app_lang', lang);
+            
+            // Sync dropdown select value
+            const selector = document.getElementById('lang-selector');
+            if (selector) selector.value = lang;
+            
+            applyTranslations();
+            
+            // Reload components to redraw text where dynamic variables are embedded
+            loadSwimSets();
+            loadNotes();
+            loadSummaryTable();
+        }
+
+        function applyTranslations() {
+            const dict = translations[currentLang] || translations['en'];
+            
+            // 1. Text elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.textContent = dict[key];
+                }
+            });
+
+            // 2. Placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (dict[key]) {
+                    el.setAttribute('placeholder', dict[key]);
+                }
+            });
+            
+            // 3. Special dynamic items like welcome greeting
+            const userGreetingEl = document.getElementById('header-username');
+            if (userGreetingEl && currentUser) {
+                const displayName = displayNames[currentUser] || currentUser;
+                userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${displayName.toLowerCase()}`;
+            }
+
+            // 4. Update keypad display label dynamically if open
+            const keypadTitleEl = document.getElementById('keypad-title');
+            if (keypadTitleEl && activeKeypadInputId) {
+                keypadTitleEl.textContent = activeKeypadInputId === 's-target-time' ? dict['keypad_target'] : dict['keypad_interval'];
+            }
+        }
+
+        // Users Database defined by the user
+        const usersDatabase = {
+            'mustafa': 'mustafa123',
+            'cansu': 'cansu123'
+        };
+
+        // Display Name Mapping
+        const displayNames = {
+            'mustafa': 'Mustafa',
+            'cansu': 'Cansu'
+        };
+
+        // Default Swim Sets Grid rows if empty (Horizontal set builder layout)
+        const defaultSwimSets = [];
+
+        let currentUser = '';
+
+        // Date helpers
+        function getLocalDateString() {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        let selectedDate = getLocalDateString();
+
+        function handleFilterDateChange() {
+            selectedDate = document.getElementById('filter-date').value;
+            loadSwimSets();
+        }
+
+        // Change filter date by day offsets (yesterday/tomorrow)
+        function changeFilterDate(daysOffset) {
+            if (!selectedDate) selectedDate = getLocalDateString();
+            const current = new Date(selectedDate);
+            current.setDate(current.getDate() + daysOffset);
+            
+            const year = current.getFullYear();
+            const month = String(current.getMonth() + 1).padStart(2, '0');
+            const day = String(current.getDate()).padStart(2, '0');
+            
+            selectedDate = `${year}-${month}-${day}`;
+            document.getElementById('filter-date').value = selectedDate;
+            loadSwimSets();
+        }
+
+        // Navigation between views
+        function showView(viewId) {
+            // Hide all views
+            document.getElementById('landing-view').classList.add('hidden');
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.add('hidden');
+
+            // Show selected view
+            document.getElementById(`${viewId}-view`).classList.remove('hidden');
+
+            // Header state
+            const headerActions = document.getElementById('header-user-actions');
+            if (viewId === 'dashboard') {
+                headerActions.classList.remove('hidden');
+            } else {
+                headerActions.classList.add('hidden');
+            }
+
+            // Clear inputs if entering login view
+            if (viewId === 'login') {
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('login-error').classList.add('hidden');
+            }
+        }
+
+        // Login form submission handler
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const usernameInput = document.getElementById('username').value.trim().toLowerCase();
+            const passwordInput = document.getElementById('password').value;
+            const errorContainer = document.getElementById('login-error');
+
+            // Validate credentials
+            if (usersDatabase[usernameInput] && usersDatabase[usernameInput] === passwordInput) {
+                // Success!
+                errorContainer.classList.add('hidden');
+                
+                currentUser = usernameInput;
+                const displayName = displayNames[usernameInput] || usernameInput;
+                document.getElementById('user-display-name').textContent = displayName.toLowerCase();
+                document.getElementById('header-username').textContent = `hoş geldin, ${displayName.toLowerCase()}`;
+                
+                // Initialize Swim Sets data
+                initSwimSetsData();
+                document.getElementById('filter-date').value = selectedDate;
+
+                // Load messages and swim sets
+                loadNotes();
+                loadSwimSets();
+                
+                // Show dashboard
+                showView('dashboard');
+            } else {
+                // Show error
+                errorContainer.classList.remove('hidden');
+            }
+        }
+
+        // Logout handler
+        function logout() {
+            currentUser = '';
+            showView('landing');
+        }
+
+        // --- SWIM SETS GRID LOGIC ---
+        function initSwimSetsData() {
+            if (!localStorage.getItem('tan_swim_sets_v3')) {
+                const todayStr = getLocalDateString();
+                const initializedSets = defaultSwimSets.map(set => ({
+                    ...set,
+                    date: todayStr
+                }));
+                localStorage.setItem('tan_swim_sets_v3', JSON.stringify(initializedSets));
+            }
+            
+            // Migrate old technique fields to separate stroke and type fields
+            let sets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            let migrated = false;
+            sets.forEach(s => {
+                if (s.stroke === undefined || s.type === undefined) {
+                    const tech = s.technique || 'Freestyle';
+                    if (['Kick', 'Drill', 'Stroke', 'Pull'].includes(tech)) {
+                        s.stroke = '';
+                        s.type = tech;
+                    } else {
+                        s.stroke = tech;
+                        s.type = 'Swim';
+                    }
+                    migrated = true;
+                }
+            });
+            if (migrated) {
+                localStorage.setItem('tan_swim_sets_v3', JSON.stringify(sets));
+            }
+        }
+
+        const sectionWeights = {
+            'Warm Up': 1,
+            'Pre Set': 2,
+            'Main Set': 3,
+            'Cool Down': 4
+        };
+
+        function loadSwimSets() {
+            loadDailyNotes();
+            renderAttendanceList();
+            const tbody = document.getElementById('swim-sets-table-body');
+            tbody.innerHTML = '';
+            
+            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            
+            // Sort by Section first, then by ID (creation order)
+            const sets = allSets.filter(s => s.date === selectedDate).sort((a, b) => {
+                const wA = sectionWeights[a.section] || 99;
+                const wB = sectionWeights[b.section] || 99;
+                if (wA !== wB) return wA - wB;
+                return a.id - b.id;
+            });
+            
+            // Calculate workout metrics
+            let totalVolume = 0;
+            let swimVolume = 0;
+            let kickVolume = 0;
+            let drillVolume = 0;
+
+            let swimCount = 0;
+            let kickCount = 0;
+            let drillCount = 0;
+
+            if (sets.length === 0) {
+                const emptyMsg = translations[currentLang]?.no_sets || translations['en'].no_sets;
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="11" class="p-8 text-center text-gray-400 font-medium bg-white">
+                            <i class="fa-solid fa-water-ladder text-3xl mb-2 block"></i>
+                            ${emptyMsg}
+                        </td>
+                    </tr>
+                `;
+                // update metrics to zero
+                updateSwimStats(0, 0, 0, 0, 0, 0, 0);
+                return;
+            }
+
+            sets.forEach((set) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50/50 transition-colors text-sm font-semibold text-gray-800 border-b border-gray-200";
+                
+                const dict = translations[currentLang] || translations['en'];
+
+                // Section Badge
+                let sectionBadge = '';
+                if (set.section === 'Warm Up') sectionBadge = 'bg-yellow-100 text-yellow-800 border border-yellow-200';
+                else if (set.section === 'Pre Set') sectionBadge = 'bg-orange-50 text-orange-700 border border-orange-200';
+                else if (set.section === 'Main Set') sectionBadge = 'bg-red-50 text-red-700 border border-red-200';
+                else if (set.section === 'Cool Down') sectionBadge = 'bg-blue-50 text-blue-700 border border-blue-200';
+                
+                let sectionLabel = set.section || 'Warm Up';
+                const sectionKey = sectionLabel.toLowerCase().replace(' ', '_');
+                if (dict[sectionKey]) sectionLabel = dict[sectionKey];
+
+                let rowHtml = `
+                    <td class="py-1.5 px-4 border-r border-gray-200 text-center bg-gray-50/50">
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-black inline-block ${sectionBadge}">${sectionLabel}</span>
+                    </td>
+                `;
+                
+                // T1
+                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-center font-extrabold text-brandBlue font-mono">${set.reps1 || 1}x</td>`;
+                
+                // T2
+                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-center font-extrabold text-brandBlue font-mono">${set.reps2 || 1}x</td>`;
+                
+                // Distance
+                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-center font-black text-gray-700 font-mono">${set.distance} m</td>`;
+                
+                // Stroke & Type cells
+                let strokeLabel = set.stroke !== undefined ? set.stroke : '';
+                let strokeDisplay = '-';
+                if (strokeLabel) {
+                    const strokeKey = strokeLabel.toLowerCase();
+                    strokeDisplay = dict[strokeKey] || strokeLabel;
+                }
+                
+                let typeLabel = set.type || 'Swim';
+                let typeDisplay = '-';
+                if (typeLabel) {
+                    const typeKey = typeLabel.toLowerCase();
+                    typeDisplay = dict[typeKey] || typeLabel;
+                }
+                
+                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-brandBlue font-bold text-xs">${strokeDisplay}</td>`;
+                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-brandBlue font-bold text-xs">${typeDisplay}</td>`;
+
+                // Equipment
+                let equipmentLabel = set.equipment || 'None';
+                if (equipmentLabel === 'Yok') equipmentLabel = 'None';
+                const equipmentKey = equipmentLabel.toLowerCase().replace(' ', '_');
+                if (dict[equipmentKey]) equipmentLabel = dict[equipmentKey];
+                
+                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-gray-600 text-xs">${equipmentLabel}</td>`;
+
+                // Target Time
+                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-center font-mono font-bold text-xs text-gray-500">${set.targetTime || '-'}</td>`;
+
+                // @ Interval
+                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-center font-mono font-bold text-xs text-brandPink">${set.interval ? '@ ' + set.interval : '-'}</td>`;
+
+                // Zone/Intensity
+                let zoneColor = 'bg-gray-100 text-gray-700';
+                const z = set.zone || 'A1';
+                if (z.startsWith('Spr') || z === 'Max') zoneColor = 'bg-red-500 text-white font-extrabold';
+                else if (z.startsWith('End') || z === 'Hard') zoneColor = 'bg-blue-600 text-white font-extrabold';
+                else if (z === 'R.P') zoneColor = 'bg-purple-600 text-white font-extrabold';
+                else if (z === 'Moderate') zoneColor = 'bg-teal-600 text-white font-extrabold';
+                else if (z === 'Easy') zoneColor = 'bg-green-600 text-white font-extrabold';
+                else zoneColor = 'bg-yellow-500 text-brandBlue font-extrabold'; // A1-A3
+
+                let zoneLabel = z;
+                const zoneKey = z.toLowerCase();
+                if (dict[zoneKey]) zoneLabel = dict[zoneKey];
+
+                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-center align-middle">
+                    <span class="px-2 py-0.5 rounded text-xs ${zoneColor}">${zoneLabel}</span>
+                </td>`;
+
+                // Calculated math (Excel like)
+                const calculatedDistance = (set.reps1 || 1) * (set.reps2 || 1) * (set.distance || 0);
+                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-right font-black text-brandBlue font-mono">${calculatedDistance} m</td>`;
+                
+                // Delete button
+                rowHtml += `
+                    <td class="py-1.5 px-4 text-center bg-gray-50/30">
+                        <button onclick="deleteSwimSet(${set.id})" class="text-red-400 hover:text-red-600 transition-colors px-2 py-0.5" title="Seti Sil">
+                            <i class="fa-solid fa-trash text-base"></i>
+                        </button>
+                    </td>
+                `;
+                
+                // Sum metrics based on Technique mapping
+                totalVolume += calculatedDistance;
+                const tType = set.type || 'Swim';
+                if (tType === 'Kick') {
+                    kickVolume += calculatedDistance;
+                    kickCount++;
+                } else if (tType === 'Drill') {
+                    drillVolume += calculatedDistance;
+                    drillCount++;
+                } else {
+                    swimVolume += calculatedDistance;
+                    swimCount++;
+                }
+
+                tr.innerHTML = rowHtml;
+                tbody.appendChild(tr);
+            });
+
+            // Update stats layout
+            updateSwimStats(totalVolume, swimVolume, kickVolume, drillVolume, swimCount, kickCount, drillCount);
+        }
+
+        // Update Statistics card elements
+        function updateSwimStats(total, swim, kick, drill, sCount, kCount, dCount) {
+            document.getElementById('banner-total-distance').textContent = `${total} m`;
+            document.getElementById('stat-total-volume').textContent = `${total} m`;
+            
+            document.getElementById('stat-swim-count').textContent = sCount;
+            document.getElementById('stat-kick-count').textContent = kCount;
+            document.getElementById('stat-drill-count').textContent = dCount;
+
+            // Düşük seviye detayları hesaplamak için localStorage verilerini alıyoruz
+            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            const sets = allSets.filter(s => s.date === selectedDate);
+
+            // 1. Teknik & Stil Dağılımı (9 farklı teknik)
+            const styleDist = {
+                Freestyle: 0,
+                Backstroke: 0,
+                Breaststroke: 0,
+                Butterfly: 0,
+                Medley: 0,
+                Kick: 0,
+                Drill: 0,
+                Stroke: 0,
+                Pull: 0
+            };
+            
+            // 2. Şiddet / Fizyolojik Enerji Sistemleri
+            const zoneDist = { Aerobik: 0, Dayaniklilik: 0, Sprint: 0, YarisHizi: 0 };
+            
+
+
+            sets.forEach(set => {
+                const dist = (set.reps1 || 1) * (set.reps2 || 1) * set.distance;
+                
+                // Styles & Types
+                const stroke = set.stroke;
+                if (stroke && styleDist[stroke] !== undefined) {
+                    styleDist[stroke] += dist;
+                }
+                const tType = set.type || 'Swim';
+                if (tType && styleDist[tType] !== undefined) {
+                    styleDist[tType] += dist;
+                }
+                
+                // Şiddet Grupları
+                const z = set.zone || 'A1';
+                if (z.startsWith('A')) {
+                    zoneDist.Aerobik += dist;
+                } else if (z.startsWith('End') || z === 'Hard') {
+                    zoneDist.Dayaniklilik += dist;
+                } else if (z.startsWith('Spr') || z === 'Max') {
+                    zoneDist.Sprint += dist;
+                } else {
+                    zoneDist.YarisHizi += dist; // R.P, Easy, Moderate
+                }
+            });
+
+            // DOM Güncellemeleri - Stiller
+            for (let style in styleDist) {
+                const val = styleDist[style];
+                const pct = total > 0 ? Math.round((val / total) * 100) : 0;
+                
+                const valEl = document.getElementById(`style-${style}-val`);
+                const pctEl = document.getElementById(`style-${style}-pct`);
+                const barEl = document.getElementById(`style-${style}-bar`);
+                
+                if (valEl) valEl.textContent = `${val} m`;
+                if (pctEl) pctEl.textContent = `%${pct}`;
+                if (barEl) barEl.style.width = `${pct}%`;
+            }
+
+            // DOM Güncellemeleri - Şiddet Bölgeleri
+            for (let zone in zoneDist) {
+                const val = zoneDist[zone];
+                const pct = total > 0 ? Math.round((val / total) * 100) : 0;
+                
+                const valEl = document.getElementById(`zone-${zone}-val`);
+                const pctEl = document.getElementById(`zone-${zone}-pct`);
+                const barEl = document.getElementById(`zone-${zone}-bar`);
+                
+                if (valEl) valEl.textContent = `${val} m`;
+                if (pctEl) pctEl.textContent = `%${pct}`;
+                if (barEl) barEl.style.width = `${pct}%`;
+            }
+
+            // Birincil Kategori Çubukları - SVG Halka Grafikleri (Yüzme/Ayak/Drill)
+            const ringSwim = document.getElementById('ring-swim');
+            const ringKick = document.getElementById('ring-kick');
+            const ringDrill = document.getElementById('ring-drill');
+
+            const ringSwimText = document.getElementById('ring-swim-text');
+            const ringKickText = document.getElementById('ring-kick-text');
+            const ringDrillText = document.getElementById('ring-drill-text');
+
+            if (ringSwim && ringKick && ringDrill) {
+                if (total > 0) {
+                    const swimPct = Math.round((swim / total) * 100);
+                    const kickPct = Math.round((kick / total) * 100);
+                    const drillPct = 100 - (swimPct + kickPct);
+
+                    // Çember çevresi (Circumference) = 2 * PI * r = 2 * PI * 34 = 213.6
+                    ringSwim.style.strokeDashoffset = 213.6 - (213.6 * swimPct / 100);
+                    ringKick.style.strokeDashoffset = 213.6 - (213.6 * kickPct / 100);
+                    ringDrill.style.strokeDashoffset = 213.6 - (213.6 * drillPct / 100);
+
+                    if (ringSwimText) ringSwimText.textContent = `%${swimPct}`;
+                    if (ringKickText) ringKickText.textContent = `%${kickPct}`;
+                    if (ringDrillText) ringDrillText.textContent = `%${drillPct}`;
+                } else {
+                    ringSwim.style.strokeDashoffset = 213.6;
+                    ringKick.style.strokeDashoffset = 213.6;
+                    ringDrill.style.strokeDashoffset = 213.6;
+
+                    if (ringSwimText) ringSwimText.textContent = `%0`;
+                    if (ringKickText) ringKickText.textContent = `%0`;
+                    if (ringDrillText) ringDrillText.textContent = `%0`;
+                }
+            }
+        }
+
+
+
+        // Modal Control
+        function openTrainingModal() {
+            document.getElementById('training-modal').classList.remove('hidden');
+            document.getElementById('s-date').value = selectedDate;
+            
+            // Reset input values
+            document.getElementById('s-section').value = 'Warm Up';
+            document.getElementById('s-reps1').value = '';
+            document.getElementById('s-reps2').value = '';
+            document.getElementById('s-distance').value = '';
+            document.getElementById('s-stroke').value = '';
+            document.getElementById('s-type').value = '';
+            document.getElementById('s-equipment').value = '';
+            document.getElementById('s-target-time').value = '';
+            document.getElementById('s-interval').value = '';
+            document.getElementById('s-zone').value = '';
+            
+            loadCustomSelectOptions();
+            renderAttendanceList();
+        }
+
+        function closeTrainingModal() {
+            document.getElementById('training-modal').classList.add('hidden');
+            renderAttendanceList();
+        }
+
+        function handleModalDateChange() {
+            renderAttendanceList();
+        }
+
+        // Daily Summary Modal Controls
+        function openSummaryModal() {
+            document.getElementById('summary-modal').classList.remove('hidden');
+            loadSummaryTable();
+        }
+
+        function closeSummaryModal() {
+            document.getElementById('summary-modal').classList.add('hidden');
+        }
+
+        function loadSummaryTable() {
+            const tbody = document.getElementById('summary-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            
+            if (allSets.length === 0) {
+                const noDataMsg = translations[currentLang]?.no_export_summaries || translations['en'].no_export_summaries;
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-gray-400 font-medium bg-white">
+                            <i class="fa-solid fa-folder-open text-3xl mb-2 block"></i>
+                            ${noDataMsg}
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Group by date
+            const dateGroups = {};
+            allSets.forEach(set => {
+                const date = set.date || 'Unknown';
+                if (!dateGroups[date]) {
+                    dateGroups[date] = {
+                        date: date,
+                        total: 0,
+                        swim: 0,
+                        kick: 0,
+                        drill: 0
+                    };
+                }
+                const dist = (set.reps1 || 1) * (set.reps2 || 1) * set.distance;
+                dateGroups[date].total += dist;
+                
+                const tType = set.type || 'Swim';
+                if (tType === 'Kick') dateGroups[date].kick += dist;
+                else if (tType === 'Drill') dateGroups[date].drill += dist;
+                else dateGroups[date].swim += dist;
+            });
+
+            // Convert to array and sort by date descending
+            const sortedSummaries = Object.values(dateGroups).sort((a, b) => {
+                if (a.date === 'Unknown') return 1;
+                if (b.date === 'Unknown') return -1;
+                return new Date(b.date) - new Date(a.date);
+            });
+
+            sortedSummaries.forEach(summary => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50/50 transition-colors text-sm border-b border-gray-100 font-semibold";
+
+                // Format Date for user readability: YYYY-MM-DD to DD.MM.YYYY
+                let readableDate = summary.date;
+                if (summary.date !== 'Unknown') {
+                    const parts = summary.date.split('-');
+                    if (parts.length === 3) readableDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
+                }
+
+                tr.innerHTML = `
+                    <td class="py-2 px-4 border-r border-gray-200 text-center font-bold text-gray-600">${readableDate}</td>
+                    <td class="py-2 px-4 border-r border-gray-200 text-right font-black text-brandBlue font-mono">${summary.total} m</td>
+                    <td class="py-2 px-4 border-r border-gray-200 text-right font-bold text-green-600 font-mono">${summary.swim} m</td>
+                    <td class="py-2 px-4 border-r border-gray-200 text-right font-bold text-brandPink font-mono">${summary.kick} m</td>
+                    <td class="py-2 px-4 border-r border-gray-200 text-right font-bold text-purple-600 font-mono">${summary.drill} m</td>
+                    <td class="py-2 px-4 text-center">
+                        <button onclick="goToSummaryDate('${summary.date}')" class="px-4 py-1.5 bg-brandBlue hover:bg-opacity-90 text-white text-xs font-extrabold rounded-xl shadow-md shadow-brandBlue/10 transition-all duration-300">
+                            ${translations[currentLang]?.go_to_detail || translations['en'].go_to_detail}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function goToSummaryDate(date) {
+            if (date === 'Belirsiz') return;
+            selectedDate = date;
+            const filterInput = document.getElementById('filter-date');
+            if (filterInput) filterInput.value = date;
+            
+            closeSummaryModal();
+            loadSwimSets();
+        }
+
+        // Seçili günün antrenmanını Word (.doc) dosyası olarak dışa aktarır
+        function exportCurrentDayToWord() {
+            const dict = translations[currentLang] || translations['en'];
+            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            const dailyNotes = JSON.parse(localStorage.getItem('tan_swim_daily_notes')) || {};
+            const notesText = dailyNotes[selectedDate] || '';
+            const attendance = JSON.parse(localStorage.getItem('tan_swim_daily_attendance')) || {};
+            const attendedList = attendance[selectedDate] || [];
+
+            const sets = allSets.filter(s => s.date === selectedDate).sort((a, b) => {
+                const wA = sectionWeights[a.section] || 99;
+                const wB = sectionWeights[b.section] || 99;
+                if (wA !== wB) return wA - wB;
+                return a.id - b.id;
+            });
+            
+            if (sets.length === 0) {
+                alert(translations[currentLang]?.no_export_data || translations['en'].no_export_data);
+                return;
+            }
+            
+            let cleanDateStr = selectedDate;
+            const parts = selectedDate.split('-');
+            if (parts.length === 3) cleanDateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
+            
+            const totalVol = sets.reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            const swimVol = sets.filter(s => s.type !== 'Kick' && s.type !== 'Drill').reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            const kickVol = sets.filter(s => s.type === 'Kick').reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            const drillVol = sets.filter(s => s.type === 'Drill').reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            
+            const logoPath = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/assets/logo.png?v=4';
+            
+            let htmlContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <title>Training Program - ${cleanDateStr}</title>
+                    <style>
+                        body { font-family: 'Arial', sans-serif; color: #000B73; margin: 40px; }
+                        .header-title { font-size: 26px; font-weight: bold; color: #E5007D; text-align: center; margin-bottom: 5px; }
+                        .header-sub { font-size: 16px; font-weight: bold; color: #000B73; text-align: center; margin-bottom: 25px; border-bottom: 2px solid #000B73; padding-bottom: 10px; }
+                        .summary-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid #E5007D; padding: 15px; margin-bottom: 20px; }
+                        .summary-title { font-size: 14px; font-weight: bold; color: #000B73; margin-bottom: 8px; text-transform: uppercase; }
+                        .summary-text { font-size: 13px; color: #334155; line-height: 1.5; }
+                        .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                        .data-table th { background-color: #000B73; color: #ffffff; padding: 12px 10px; font-size: 10px; text-transform: uppercase; font-weight: bold; border: 1px solid #cbd5e1; text-align: left; }
+                        .data-table td { padding: 12px 10px; font-size: 12px; color: #1e293b; border: 1px solid #e2e8f0; }
+                        .text-center { text-align: center !important; }
+                        .text-right { text-align: right !important; }
+                        .font-bold { font-weight: bold; }
+                        .badge-swim { color: #16a34a; font-weight: bold; }
+                        .badge-kick { color: #E5007D; font-weight: bold; }
+                        .badge-drill { color: #9333ea; font-weight: bold; }
+                        .date-top-right { text-align: right; font-size: 14px; font-weight: bold; color: #475569; margin-bottom: 15px; }
+                        .footer { margin-top: 60px; font-size: 11px; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="date-top-right">${dict.date || 'Date'}: ${cleanDateStr}</div>
+                    <div style="text-align: center; margin-bottom: 15px; margin-top: -30px;">
+                        <img src="${logoPath}" height="80" style="height: 80px;">
+                    </div>
+                    <div class="header-title">SWIM COACH PRO</div>
+                    <div class="header-sub">${dict.login_title || 'Swim Training Program'}</div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;" class="text-center">No</th>
+                                <th style="width: 12%;" class="text-center">${dict.section || 'Section'}</th>
+                                <th style="width: 15%;" class="text-center">${dict.set_structure || 'Set Structure'}</th>
+                                <th style="width: 12%;">${dict.stroke || 'Stroke'}</th>
+                                <th style="width: 12%;">${dict.type || 'Type'}</th>
+                                <th style="width: 12%;">${dict.equipment || 'Equipment'}</th>
+                                <th style="width: 12%;" class="text-center">${dict.target_time || 'Target Time'}</th>
+                                <th style="width: 10%;" class="text-center">@</th>
+                                <th style="width: 10%;" class="text-center">${dict.intensity || 'Intensity'}</th>
+                                <th style="width: 9%;" class="text-right">${dict.total || 'Total'}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            sets.forEach((set, index) => {
+                let typeClass = '';
+                const tType = set.type || 'Swim';
+                if (tType === 'Kick') typeClass = 'badge-kick';
+                else if (tType === 'Drill') typeClass = 'badge-drill';
+                else typeClass = 'badge-swim';
+                
+                // Translate values for Word rendering
+                let sectionLabel = set.section || 'Warm Up';
+                let sectionKey = sectionLabel.toLowerCase().replace(' ', '_');
+                if (dict[sectionKey]) sectionLabel = dict[sectionKey];
+
+                let strokeLabel = set.stroke || '';
+                let strokeDisplay = '-';
+                if (strokeLabel) {
+                    const strokeKey = strokeLabel.toLowerCase();
+                    strokeDisplay = dict[strokeKey] || strokeLabel;
+                }
+
+                let typeLabel = tType;
+                let typeKey = typeLabel.toLowerCase();
+                if (dict[typeKey]) typeLabel = dict[typeKey];
+
+                let equipLabel = set.equipment || 'None';
+                if (equipLabel === 'Yok') equipLabel = 'None';
+                let equipKey = equipLabel.toLowerCase().replace(' ', '_');
+                if (dict[equipKey]) equipLabel = dict[equipKey];
+
+                let zoneLabel = set.zone || 'A1';
+                let zoneKey = zoneLabel.toLowerCase();
+                if (dict[zoneKey]) zoneLabel = dict[zoneKey];
+
+                htmlContent += `
+                    <tr>
+                        <td class="text-center font-bold" style="color: #64748b;">${index + 1}</td>
+                        <td class="text-center font-bold" style="color: #000B73;">${sectionLabel}</td>
+                        <td class="text-center font-bold" style="color: #000B73;">${set.reps1 || 1}x${set.reps2 || 1}x${set.distance || 0}m</td>
+                        <td class="font-bold" style="color: #000B73;">${strokeDisplay}</td>
+                        <td class="font-bold ${typeClass}">${typeLabel}</td>
+                        <td>${equipLabel}</td>
+                        <td class="text-center font-bold" style="color: #64748b;">${set.targetTime || '-'}</td>
+                        <td class="text-center font-bold" style="color: #E5007D;">${set.interval ? '@ ' + set.interval : '-'}</td>
+                        <td class="text-center font-bold" style="color: #475569;">${zoneLabel}</td>
+                        <td class="text-right font-bold" style="color: #000B73;">${(set.reps1 || 1) * (set.reps2 || 1) * (set.distance || 0)} m</td>
+                    </tr>
+                `;
+            });
+            
+            htmlContent += `
+                        </tbody>
+                    </table>
+                    
+                    ${attendedList.length > 0 ? `
+                    <div class="summary-box" style="margin-top: 30px; border-left: 5px solid #000B73;">
+                        <div class="summary-title" style="color: #000B73;">${dict.attendance || 'ATTENDING SWIMMERS'}</div>
+                        <div class="summary-text" style="font-size: 13px; line-height: 1.6;">
+                            ${attendedList.map(name => `• ${name}`).join('<br/>')}
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="summary-box" style="margin-top: 20px; border-left: 5px solid #E5007D;">
+                        <div class="summary-title">${dict.metrics_title || 'WORKOUT METRICS'}</div>
+                        <div class="summary-text" style="font-size: 13px; line-height: 1.6;">
+                            • ${dict.total_vol || 'Total Training Volume'}: <b>${totalVol} m</b><br/>
+                            • ${dict.swim_vol || 'Swim Volume'}: <span class="badge-swim">${swimVol} m</span><br/>
+                            • ${dict.kick_vol || 'Kick Volume'}: <span class="badge-kick">${kickVol} m</span><br/>
+                            • ${dict.drill_vol || 'Drill Volume'}: <span class="badge-drill">${drillVol} m</span>
+                        </div>
+                    </div>
+                    
+                    ${notesText ? `
+                    <div class="summary-box" style="margin-top: 20px; border-left: 5px solid #000B73;">
+                        <div class="summary-title" style="color: #000B73; font-size: 14px; font-weight: bold; margin-bottom: 8px;">COACH NOTES</div>
+                        <div class="summary-text" style="font-size: 13px; color: #334155; line-height: 1.5; white-space: pre-wrap;">${notesText}</div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="footer">
+                        This document was generated by Swim Coach Pro. All Rights Reserved &copy; 2026.
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `swim_coach_pro_workout_${cleanDateStr}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function toggleExportMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('export-dropdown-menu');
+            if (menu) menu.classList.toggle('hidden');
+        }
+
+        function handleExportChoice(format) {
+            const menu = document.getElementById('export-dropdown-menu');
+            if (menu) menu.classList.add('hidden');
+
+            if (format === 'word') {
+                exportCurrentDayToWord();
+            } else if (format === 'excel') {
+                exportCurrentDayToExcel();
+            }
+        }
+
+        // Close dropdown when clicking elsewhere
+        window.addEventListener('click', () => {
+            const menu = document.getElementById('export-dropdown-menu');
+            if (menu) menu.classList.add('hidden');
+        });
+
+        // Seçili günün antrenmanını Excel (.xls) dosyası olarak dışa aktarır
+        function exportCurrentDayToExcel() {
+            const dict = translations[currentLang] || translations['en'];
+            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            const dailyNotes = JSON.parse(localStorage.getItem('tan_swim_daily_notes')) || {};
+            const notesText = dailyNotes[selectedDate] || '';
+            const attendance = JSON.parse(localStorage.getItem('tan_swim_daily_attendance')) || {};
+            const attendedList = attendance[selectedDate] || [];
+
+            const sets = allSets.filter(s => s.date === selectedDate).sort((a, b) => {
+                const wA = sectionWeights[a.section] || 99;
+                const wB = sectionWeights[b.section] || 99;
+                if (wA !== wB) return wA - wB;
+                return a.id - b.id;
+            });
+            
+            if (sets.length === 0) {
+                alert(translations[currentLang]?.no_export_data || translations['en'].no_export_data);
+                return;
+            }
+            
+            let cleanDateStr = selectedDate;
+            const parts = selectedDate.split('-');
+            if (parts.length === 3) cleanDateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
+            
+            const totalVol = sets.reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            const swimVol = sets.filter(s => s.type !== 'Kick' && s.type !== 'Drill').reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            const kickVol = sets.filter(s => s.type === 'Kick').reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            const drillVol = sets.filter(s => s.type === 'Drill').reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            
+            const logoPath = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/assets/logo.png?v=4';
+            
+            let excelHtml = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <x:ExcelWorkbook>
+                            <x:ExcelWorksheets>
+                                <x:ExcelWorksheet>
+                                    <x:Name>Workout Sheet</x:Name>
+                                    <x:WorksheetOptions>
+                                        <x:DisplayGridlines/>
+                                    </x:WorksheetOptions>
+                                </x:ExcelWorksheet>
+                            </x:ExcelWorksheets>
+                        </x:ExcelWorkbook>
+                    </xml>
+                    <![endif]-->
+                    <meta charset="utf-8">
+                    <style>
+                        table { border-collapse: collapse; font-family: 'Arial', sans-serif; }
+                        th { background-color: #000B73; color: #ffffff; font-weight: bold; border: 1px solid #cbd5e1; padding: 8px; text-transform: uppercase; font-size: 10pt; }
+                        td { border: 1px solid #e2e8f0; padding: 8px; font-size: 10pt; color: #1e293b; }
+                        .title-cell { font-size: 16pt; font-weight: bold; color: #E5007D; text-align: center; }
+                        .subtitle-cell { font-size: 12pt; font-weight: bold; color: #000B73; text-align: center; }
+                        .meta-label { font-weight: bold; color: #000B73; font-size: 11pt; }
+                        .badge-swim { color: #16a34a; font-weight: bold; }
+                        .badge-kick { color: #E5007D; font-weight: bold; }
+                        .badge-drill { color: #9333ea; font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    <table>
+                        <tr>
+                            <td colspan="10" align="center" style="height: 90px; vertical-align: middle;">
+                                <img src="${logoPath}" height="80" style="height: 80px;">
+                            </td>
+                        </tr>
+                        <tr>
+                             <td colspan="10" class="title-cell">SWIM COACH PRO</td>
+                        </tr>
+                        <tr>
+                            <td colspan="10" class="subtitle-cell">${dict.login_title || 'Swim Training Program'} - ${cleanDateStr}</td>
+                        </tr>
+                        <tr><td colspan="10"></td></tr>
+                        
+                        <!-- Table Headers -->
+                        <tr>
+                            <th>No</th>
+                            <th>${dict.section || 'Section'}</th>
+                            <th>${dict.set_structure || 'Set Structure'}</th>
+                            <th>${dict.stroke || 'Stroke'}</th>
+                            <th>${dict.type || 'Type'}</th>
+                            <th>${dict.equipment || 'Equipment'}</th>
+                            <th>${dict.target_time || 'Target Time'}</th>
+                            <th>@</th>
+                            <th>${dict.intensity || 'Intensity'}</th>
+                            <th>${dict.total || 'Total'}</th>
+                        </tr>
+            `;
+
+            sets.forEach((set, index) => {
+                let typeClass = '';
+                const tType = set.type || 'Swim';
+                if (tType === 'Kick') typeClass = 'badge-kick';
+                else if (tType === 'Drill') typeClass = 'badge-drill';
+                else typeClass = 'badge-swim';
+
+                let sectionLabel = set.section || 'Warm Up';
+                let sectionKey = sectionLabel.toLowerCase().replace(' ', '_');
+                if (dict[sectionKey]) sectionLabel = dict[sectionKey];
+
+                let strokeLabel = set.stroke || '';
+                let strokeDisplay = '-';
+                if (strokeLabel) {
+                    const strokeKey = strokeLabel.toLowerCase();
+                    strokeDisplay = dict[strokeKey] || strokeLabel;
+                }
+
+                let typeLabel = tType;
+                let typeKey = typeLabel.toLowerCase();
+                if (dict[typeKey]) typeLabel = dict[typeKey];
+
+                let equipLabel = set.equipment || 'None';
+                if (equipLabel === 'Yok') equipLabel = 'None';
+                let equipKey = equipLabel.toLowerCase().replace(' ', '_');
+                if (dict[equipKey]) equipLabel = dict[equipKey];
+
+                let zoneLabel = set.zone || 'A1';
+                let zoneKey = zoneLabel.toLowerCase();
+                if (dict[zoneKey]) zoneLabel = dict[zoneKey];
+
+                const calculatedDistance = (set.reps1 || 1) * (set.reps2 || 1) * (set.distance || 0);
+
+                excelHtml += `
+                    <tr>
+                        <td align="center" style="font-weight: bold; color: #64748b;">${index + 1}</td>
+                        <td align="center" style="font-weight: bold; color: #000B73;">${sectionLabel}</td>
+                        <td align="center" style="font-weight: bold; color: #000B73;">${set.reps1 || 1}x${set.reps2 || 1}x${set.distance || 0}m</td>
+                        <td style="font-weight: bold; color: #000B73;">${strokeDisplay}</td>
+                        <td class="${typeClass}">${typeLabel}</td>
+                        <td>${equipLabel}</td>
+                        <td align="center" style="font-weight: bold; color: #64748b;">${set.targetTime || '-'}</td>
+                        <td align="center" style="font-weight: bold; color: #E5007D;">${set.interval ? '@ ' + set.interval : '-'}</td>
+                        <td align="center" style="font-weight: bold; color: #475569;">${zoneLabel}</td>
+                        <td align="right" style="font-weight: bold; color: #000B73;">${calculatedDistance} m</td>
+                    </tr>
+                `;
+            });
+
+            excelHtml += `
+                        <tr><td colspan="10"></td></tr>
+                        
+                        <!-- Swimmers -->
+                        ${attendedList.length > 0 ? `
+                        <tr>
+                            <td colspan="10" class="meta-label">${dict.attendance || 'ATTENDING SWIMMERS'}:</td>
+                        </tr>
+                        ${attendedList.map(name => `<tr><td colspan="10" style="color: #334155;">• ${name}</td></tr>`).join('')}
+                        <tr><td colspan="10"></td></tr>
+                        ` : ''}
+
+                        <!-- Metrics -->
+                        <tr>
+                            <td colspan="10" class="meta-label">${dict.metrics_title || 'WORKOUT METRICS'}:</td>
+                        </tr>
+                        <tr>
+                            <td colspan="10" style="color: #334155;">• ${dict.total_vol || 'Total Training Volume'}: <b>${totalVol} m</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="10" style="color: #334155;">• ${dict.swim_vol || 'Swim Volume'}: <span class="badge-swim">${swimVol} m</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="10" style="color: #334155;">• ${dict.kick_vol || 'Kick Volume'}: <span class="badge-kick">${kickVol} m</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="10" style="color: #334155;">• ${dict.drill_vol || 'Drill Volume'}: <span class="badge-drill">${drillVol} m</span></td>
+                        </tr>
+                        
+                        <!-- Coach Notes -->
+                        ${notesText ? `
+                        <tr><td colspan="10"></td></tr>
+                        <tr>
+                            <td colspan="10" class="meta-label">COACH NOTES:</td>
+                        </tr>
+                        <tr>
+                            <td colspan="10" style="white-space: pre-wrap; color: #334155;">${notesText}</td>
+                        </tr>
+                        ` : ''}
+                    </table>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob(['\ufeff' + excelHtml], { type: 'application/vnd.ms-excel' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `swim_coach_pro_workout_${cleanDateStr}.xls`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Tüm günlerin antrenman hacim özetlerini Word (.doc) dosyası olarak dışa aktarır
+        function exportAllSummariesToWord() {
+            const dict = translations[currentLang] || translations['en'];
+            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            
+            if (allSets.length === 0) {
+                alert(translations[currentLang]?.no_export_summaries || translations['en'].no_export_summaries);
+                return;
+            }
+
+            const dateGroups = {};
+            allSets.forEach(set => {
+                const date = set.date || 'Unknown';
+                if (!dateGroups[date]) {
+                    dateGroups[date] = {
+                        date: date,
+                        total: 0,
+                        swim: 0,
+                        kick: 0,
+                        drill: 0
+                    };
+                }
+                const dist = (set.reps1 || 1) * (set.reps2 || 1) * set.distance;
+                dateGroups[date].total += dist;
+                
+                const tech = set.type || 'Swim';
+                if (tech === 'Kick') dateGroups[date].kick += dist;
+                else if (tech === 'Drill') dateGroups[date].drill += dist;
+                else dateGroups[date].swim += dist;
+            });
+
+            const sortedSummaries = Object.values(dateGroups).sort((a, b) => {
+                if (a.date === 'Unknown') return 1;
+                if (b.date === 'Unknown') return -1;
+                return new Date(b.date) - new Date(a.date);
+            });
+
+            const logoPath = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/assets/logo.png?v=4';
+
+            let htmlContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <title>Daily Workout Volume Summaries</title>
+                    <style>
+                        body { font-family: 'Arial', sans-serif; color: #000B73; margin: 40px; }
+                        .header-title { font-size: 26px; font-weight: bold; color: #E5007D; text-align: center; margin-bottom: 5px; }
+                        .header-sub { font-size: 16px; font-weight: bold; color: #000B73; text-align: center; margin-bottom: 25px; border-bottom: 2px solid #000B73; padding-bottom: 10px; }
+                        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                        .data-table th { background-color: #000B73; color: #ffffff; padding: 12px 10px; font-size: 11px; text-transform: uppercase; font-weight: bold; border: 1px solid #cbd5e1; text-align: left; }
+                        .data-table td { padding: 12px 10px; font-size: 13px; color: #1e293b; border: 1px solid #e2e8f0; }
+                        .text-center { text-align: center !important; }
+                        .text-right { text-align: right !important; }
+                        .font-bold { font-weight: bold; }
+                        .badge-swim { color: #16a34a; font-weight: bold; }
+                        .badge-kick { color: #E5007D; font-weight: bold; }
+                        .badge-drill { color: #9333ea; font-weight: bold; }
+                        .footer { margin-top: 60px; font-size: 11px; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+                    </style>
+                </head>
+                <body>
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <img src="${logoPath}" height="80" style="height: 80px;">
+                    </div>
+                    <div class="header-title">SWIM COACH PRO</div>
+                    <div class="header-sub">${dict.daily_summaries || 'Daily Workout Volume Summary Report'}</div>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;" class="text-center">${dict.date || 'Date'}</th>
+                                <th style="width: 20%;" class="text-right">${dict.total || 'Total'}</th>
+                                <th style="width: 18%;" class="text-right">${dict.swim_vol || 'Swim Volume'}</th>
+                                <th style="width: 18%;" class="text-right">${dict.kick_vol || 'Kick Volume'}</th>
+                                <th style="width: 19%;" class="text-right">${dict.drill_vol || 'Drill Volume'}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            sortedSummaries.forEach(summary => {
+                let readableDate = summary.date;
+                if (summary.date !== 'Unknown') {
+                    const parts = summary.date.split('-');
+                    if (parts.length === 3) readableDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
+                }
+
+                htmlContent += `
+                    <tr>
+                        <td class="text-center font-bold" style="color: #64748b;">${readableDate}</td>
+                        <td class="text-right font-bold" style="color: #000B73;">${summary.total} m</td>
+                        <td class="text-right badge-swim">${summary.swim} m</td>
+                        <td class="text-right badge-kick">${summary.kick} m</td>
+                        <td class="text-right badge-drill">${summary.drill} m</td>
+                    </tr>
+                `;
+            });
+
+            htmlContent += `
+                        </tbody>
+                    </table>
+                    
+                    <div class="footer">
+                        This document was generated by Swim Coach Pro. All Rights Reserved &copy; 2026.
+                    </div>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `swim_coach_pro_daily_summaries.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Toggle statistics panel visibility
+        function toggleStatsPanel() {
+            const panel = document.getElementById('statistics-panel');
+            const btn = document.getElementById('toggle-stats-btn');
+            const isHidden = panel.classList.contains('hidden');
+            
+            if (isHidden) {
+                panel.classList.remove('hidden');
+                btn.innerHTML = `
+                    <i class="fa-solid fa-eye-slash"></i>
+                    <span>Hide Statistics</span>
+                `;
+                // Smooth scroll to stats
+                setTimeout(() => {
+                    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            } else {
+                panel.classList.add('hidden');
+                btn.innerHTML = `
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Show Statistics</span>
+                `;
+            }
+        }
+
+        function handleSaveSwimSet(event) {
+            event.preventDefault();
+            
+            const date = document.getElementById('s-date').value;
+            const section = document.getElementById('s-section').value;
+            const reps1 = parseInt(document.getElementById('s-reps1').value) || null;
+            const reps2 = parseInt(document.getElementById('s-reps2').value) || null;
+            const distance = parseInt(document.getElementById('s-distance').value) || null;
+            const stroke = document.getElementById('s-stroke').value;
+            const type = document.getElementById('s-type').value;
+            const equipment = document.getElementById('s-equipment').value;
+            const targetTime = document.getElementById('s-target-time').value.trim();
+            const interval = document.getElementById('s-interval').value.trim();
+            const zone = document.getElementById('s-zone').value;
+            const coach = displayNames[currentUser] || 'Mustafa';
+
+            const sets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            
+            const newSet = {
+                id: Date.now(),
+                date: date,
+                section: section,
+                reps1: reps1,
+                reps2: reps2,
+                distance: distance,
+                stroke: stroke,
+                type: type,
+                technique: stroke || type || 'Freestyle', // Backwards compatibility fallback
+                equipment: equipment,
+                targetTime: targetTime,
+                interval: interval,
+                zone: zone,
+                coach: coach
+            };
+
+            sets.push(newSet);
+            localStorage.setItem('tan_swim_sets_v3', JSON.stringify(sets));
+
+            closeTrainingModal();
+            loadSwimSets();
+        }
+
+        function deleteSwimSet(id) {
+            const confirmMsg = translations[currentLang]?.confirm_delete_set || translations['en'].confirm_delete_set;
+            if (confirm(confirmMsg)) {
+                let sets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+                sets = sets.filter(s => s.id !== id);
+                localStorage.setItem('tan_swim_sets_v3', JSON.stringify(sets));
+                loadSwimSets();
+            }
+        }
+
+        function saveDailyNotes() {
+            const textarea = document.getElementById('daily-workout-notes');
+            if (textarea) {
+                const notesText = textarea.value;
+                let dailyNotes = JSON.parse(localStorage.getItem('tan_swim_daily_notes')) || {};
+                dailyNotes[selectedDate] = notesText;
+                localStorage.setItem('tan_swim_daily_notes', JSON.stringify(dailyNotes));
+            }
+        }
+
+        function loadDailyNotes() {
+            const textarea = document.getElementById('daily-workout-notes');
+            if (textarea && document.activeElement !== textarea) {
+                const dailyNotes = JSON.parse(localStorage.getItem('tan_swim_daily_notes')) || {};
+                textarea.value = dailyNotes[selectedDate] || '';
+            }
+        }
+
+        // --- SWIMMER SQUAD & DAILY ATTENDANCE LOGIC ---
+        const defaultSquad = ['Ali Yılmaz', 'Derin Kaya', 'Ege Demir', 'Ada Çelik', 'Can Özkan', 'Mira Bulut', 'Aras Şahin', 'Zeynep Koç'];
+
+        function getSquad() {
+            let squad = JSON.parse(localStorage.getItem('tan_swim_squad'));
+            if (!squad || squad.length === 0) {
+                squad = defaultSquad;
+                localStorage.setItem('tan_swim_squad', JSON.stringify(squad));
+            }
+            return squad;
+        }
+
+        function addSwimmerToSquad() {
+            const input = document.getElementById('new-swimmer-name');
+            if (!input) return;
+            const name = input.value.trim();
+            if (!name) return;
+            
+            let squad = getSquad();
+            if (!squad.includes(name)) {
+                squad.push(name);
+                localStorage.setItem('tan_swim_squad', JSON.stringify(squad));
+                renderAttendanceList();
+            }
+            input.value = '';
+        }
+
+        function removeSwimmerFromSquad(name) {
+            let confirmMsg = translations[currentLang]?.confirm_remove_swimmer || translations['en'].confirm_remove_swimmer;
+            confirmMsg = confirmMsg.replace('{name}', name);
+            if (confirm(confirmMsg)) {
+                let squad = getSquad();
+                squad = squad.filter(n => n !== name);
+                localStorage.setItem('tan_swim_squad', JSON.stringify(squad));
+                
+                // Clean up attendance entry
+                let attendance = JSON.parse(localStorage.getItem('tan_swim_daily_attendance')) || {};
+                if (attendance[selectedDate]) {
+                    attendance[selectedDate] = attendance[selectedDate].filter(n => n !== name);
+                    localStorage.setItem('tan_swim_daily_attendance', JSON.stringify(attendance));
+                }
+                
+                renderAttendanceList();
+            }
+        }
+
+        function saveAttendance() {
+            const container = document.getElementById('attendance-container');
+            if (!container) return;
+            const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+            const attendedList = [];
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    attendedList.push(cb.value);
+                }
+            });
+            
+            let attendance = JSON.parse(localStorage.getItem('tan_swim_daily_attendance')) || {};
+            attendance[selectedDate] = attendedList;
+            localStorage.setItem('tan_swim_daily_attendance', JSON.stringify(attendance));
+        }
+
+        function renderAttendanceList() {
+            const container = document.getElementById('attendance-container');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            const squad = getSquad();
+            const attendance = JSON.parse(localStorage.getItem('tan_swim_daily_attendance')) || {};
+            const attendedList = attendance[selectedDate] || [];
+            
+            squad.forEach(name => {
+                const isChecked = attendedList.includes(name) ? 'checked' : '';
+                
+                const item = document.createElement('div');
+                item.className = "flex items-center justify-between p-1.5 bg-white border border-gray-150 rounded-xl hover:border-gray-250 transition-colors group";
+                item.innerHTML = `
+                    <label class="flex items-center space-x-2 cursor-pointer select-none text-xs font-bold text-gray-700 w-full truncate">
+                        <input type="checkbox" value="${name}" ${isChecked} onchange="saveAttendance()"
+                            class="rounded border-gray-300 text-brandPink focus:ring-brandPink/30 focus:border-brandPink transition-all">
+                        <span class="truncate">${name}</span>
+                    </label>
+                    <button type="button" onclick="removeSwimmerFromSquad('${name}')" 
+                        class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-0.5" title="Remove Swimmer">
+                        <i class="fa-solid fa-circle-xmark text-xs"></i>
+                    </button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // --- SHARED MESSAGE BOARD LOGIC (localStorage) ---
+        function loadNotes() {
+            const container = document.getElementById('notes-container');
+            container.innerHTML = '';
+            
+            const notes = JSON.parse(localStorage.getItem('tan_club_notes')) || [];
+            
+            if (notes.length === 0) {
+                const emptyMsg = translations[currentLang]?.no_notes || translations['en'].no_notes;
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-400 space-y-2">
+                        <i class="fa-regular fa-comment-dots text-3xl"></i>
+                        <p class="text-sm font-medium">${emptyMsg}</p>
+                    </div>
+                `;
+                updateBoardStats(); // reset board stats
+                return;
+            }
+            
+            notes.forEach(note => {
+                const colorClass = note.username === 'mustafa' ? 'text-brandBlue bg-brandBlue/10 border-brandBlue/20' : 'text-brandPink bg-brandPink/10 border-brandPink/20';
+                
+                const dateObj = new Date(note.timestamp);
+                const formattedDate = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) + ' - ' + dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+                
+                const noteEl = document.createElement('div');
+                noteEl.className = `flex flex-col p-4 rounded-2xl border transition-all duration-300 bg-white border-gray-100 hover:border-gray-200 relative group shadow-sm`;
+                noteEl.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold ${colorClass}">
+                                ${note.displayName}
+                            </span>
+                            <span class="text-[10px] text-gray-400 font-medium">${formattedDate}</span>
+                        </div>
+                        <button onclick="deleteNote(${note.id})" class="text-gray-300 hover:text-brandPink opacity-0 group-hover:opacity-100 transition-opacity duration-200" title="Delete Message">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap font-medium">${note.message}</p>
+                `;
+                container.appendChild(noteEl);
+            });
+            
+            // Update board stats
+            updateBoardStats();
+            
+            // Auto-scroll to bottom of notes container
+            setTimeout(() => {
+                container.scrollTop = container.scrollHeight;
+            }, 50);
+        }
+
+        // Calculate and update board stats in real-time
+        function updateBoardStats() {
+            const notes = JSON.parse(localStorage.getItem('tan_club_notes')) || [];
+            
+            const total = notes.length;
+            const mustafaCount = notes.filter(n => n.username === 'mustafa').length;
+            const cansuCount = notes.filter(n => n.username === 'cansu').length;
+            
+            // Safe DOM updates
+            const totalEl = document.getElementById('stat-total-notes');
+            if (totalEl) totalEl.textContent = total;
+
+            const mustafaEl = document.getElementById('stat-mustafa-notes');
+            if (mustafaEl) mustafaEl.textContent = mustafaCount;
+
+            const cansuEl = document.getElementById('stat-cansu-notes');
+            if (cansuEl) cansuEl.textContent = cansuCount;
+            
+            // Update last activity
+            const lastActivityEl = document.getElementById('stat-last-activity');
+            if (lastActivityEl) {
+                if (total > 0) {
+                    const lastNote = notes[notes.length - 1];
+                    lastActivityEl.textContent = lastNote.displayName;
+                    lastActivityEl.title = lastNote.displayName;
+                } else {
+                    lastActivityEl.textContent = 'Paylaşım yok';
+                    lastActivityEl.title = 'Paylaşım yok';
+                }
+            }
+            
+            // Update contribution visual progress bar and percentages
+            const barMustafa = document.getElementById('bar-mustafa');
+            const barCansu = document.getElementById('bar-cansu');
+            const percentMustafaEl = document.getElementById('percent-mustafa');
+            const percentCansuEl = document.getElementById('percent-cansu');
+
+            if (barMustafa && barCansu && percentMustafaEl && percentCansuEl) {
+                if (total > 0) {
+                    const mustafaPercent = Math.round((mustafaCount / total) * 100);
+                    const cansuPercent = Math.round((cansuCount / total) * 100);
+                    
+                    barMustafa.style.width = `${mustafaPercent}%`;
+                    barCansu.style.width = `${cansuPercent}%`;
+                    
+                    percentMustafaEl.textContent = `%${mustafaPercent}`;
+                    percentCansuEl.textContent = `%${cansuPercent}`;
+                } else {
+                    // Default 50-50 when empty
+                    barMustafa.style.width = '50%';
+                    barCansu.style.width = '50%';
+                    percentMustafaEl.textContent = '%0';
+                    percentCansuEl.textContent = '%0';
+                }
+            }
+        }
+
+        function addNote(event) {
+            event.preventDefault();
+            const input = document.getElementById('note-input');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            const notes = JSON.parse(localStorage.getItem('tan_club_notes')) || [];
+            const newNote = {
+                id: Date.now(),
+                username: currentUser,
+                displayName: displayNames[currentUser] || currentUser,
+                message: message,
+                timestamp: new Date().toISOString()
+            };
+            
+            notes.push(newNote);
+            localStorage.setItem('tan_club_notes', JSON.stringify(notes));
+            
+            input.value = '';
+            loadNotes();
+        }
+
+        function deleteNote(noteId) {
+            let notes = JSON.parse(localStorage.getItem('tan_club_notes')) || [];
+            notes = notes.filter(n => n.id !== noteId);
+            localStorage.setItem('tan_club_notes', JSON.stringify(notes));
+            loadNotes();
+        }
+
+        // --- paceman time keypad controller logic ---
+        let activeKeypadInputId = '';
+        let keypadDigits = ''; // raw digits typed, e.g. "013045"
+
+        function openTimeKeypad(inputId) {
+            activeKeypadInputId = inputId;
+            const inputVal = document.getElementById(inputId).value || '';
+            
+            // Set title based on which input is active
+            const titleEl = document.getElementById('keypad-title');
+            const dict = translations[currentLang] || translations['en'];
+            if (titleEl) {
+                if (inputId === 's-target-time') {
+                    titleEl.textContent = dict.keypad_target || 'Enter Target Time';
+                } else {
+                    titleEl.textContent = dict.keypad_interval || 'Enter Interval Time';
+                }
+            }
+            
+            // Parse existing value if any, to load it
+            // Extract only numeric digits from existing value (e.g. "01:30.45" -> "013045")
+            keypadDigits = inputVal.replace(/[^0-9]/g, '');
+            // Limit to 6 digits max
+            if (keypadDigits.length > 6) {
+                keypadDigits = keypadDigits.substring(keypadDigits.length - 6);
+            }
+            
+            updateKeypadDisplay();
+            document.getElementById('time-keypad-modal').classList.remove('hidden');
+        }
+
+        function closeTimeKeypad() {
+            document.getElementById('time-keypad-modal').classList.add('hidden');
+            activeKeypadInputId = '';
+            keypadDigits = '';
+        }
+
+        function updateKeypadDisplay() {
+            // Format current digits into MM:SS.CC (Dakika : Saniye . Salise)
+            // Pads digits to the left with zeros up to 6 characters
+            const padded = keypadDigits.padStart(6, '0');
+            const mm = padded.substring(0, 2);
+            const ss = padded.substring(2, 4);
+            const cc = padded.substring(4, 6);
+            
+            const displayStr = `${mm}:${ss}.${cc}`;
+            document.getElementById('keypad-display').textContent = displayStr;
+        }
+
+        function pressKeypadDigit(digit) {
+            if (keypadDigits.length < 6) {
+                // If it is just starting and we type '0', ignore it unless we already have digits
+                if (keypadDigits === '' && digit === '0') return;
+                keypadDigits += digit;
+                updateKeypadDisplay();
+            }
+        }
+
+        function clearKeypad() {
+            keypadDigits = '';
+            updateKeypadDisplay();
+        }
+
+        function backspaceKeypad() {
+            if (keypadDigits.length > 0) {
+                keypadDigits = keypadDigits.substring(0, keypadDigits.length - 1);
+                updateKeypadDisplay();
+            }
+        }
+
+        function submitKeypadTime() {
+            if (activeKeypadInputId) {
+                const padded = keypadDigits.padStart(6, '0');
+                const mm = padded.substring(0, 2);
+                const ss = padded.substring(2, 4);
+                const cc = padded.substring(4, 6);
+                
+                // If it is 00:00.00, we can write empty or write the formatted time.
+                // Normally, let's write it only if it is greater than 0
+                if (padded === '000000') {
+                    document.getElementById(activeKeypadInputId).value = '';
+                } else {
+                    document.getElementById(activeKeypadInputId).value = `${mm}:${ss}.${cc}`;
+                }
+                
+                // Trigger change event if needed
+                document.getElementById(activeKeypadInputId).dispatchEvent(new Event('change'));
+            }
+            closeTimeKeypad();
+        }
+
+        function saveCustomSelectOptions(selectId, value) {
+            const customOpts = JSON.parse(localStorage.getItem('tan_custom_select_options')) || {};
+            if (!customOpts[selectId]) {
+                customOpts[selectId] = [];
+            }
+            if (!customOpts[selectId].includes(value)) {
+                customOpts[selectId].push(value);
+                localStorage.setItem('tan_custom_select_options', JSON.stringify(customOpts));
+            }
+        }
+
+        function loadCustomSelectOptions() {
+            const customOpts = JSON.parse(localStorage.getItem('tan_custom_select_options')) || {};
+            for (let selectId in customOpts) {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    customOpts[selectId].forEach(val => {
+                        let exists = false;
+                        for (let i = 0; i < select.options.length; i++) {
+                            if (select.options[i].value === val) {
+                                exists = true;
+                                break;
+                            }
+                        }
+                        if (!exists) {
+                            const opt = document.createElement('option');
+                            opt.value = val;
+                            opt.textContent = val;
+                            select.insertBefore(opt, select.options[select.options.length - 1]);
+                        }
+                    });
+                }
+            }
+        }
+
+        // Development Bypass: Auto-login on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            currentUser = 'mustafa';
+            
+            initSwimSetsData();
+            document.getElementById('filter-date').value = selectedDate;
+            
+            // Apply language and trigger sub-loaders
+            changeLanguage(currentLang);
+            
+            showView('dashboard');
+
+            // Bind change listeners for adding custom dropdown options dynamically
+            document.querySelectorAll('#training-modal select').forEach(select => {
+                select.addEventListener('change', function() {
+                    if (this.value === 'ADD_NEW') {
+                        const dict = translations[currentLang] || translations['en'];
+                        const promptMsg = dict.enter_custom_value || "Enter custom value:";
+                        const newValue = prompt(promptMsg);
+                        
+                        if (newValue && newValue.trim()) {
+                            const val = newValue.trim();
+                            let exists = false;
+                            for (let i = 0; i < this.options.length; i++) {
+                                if (this.options[i].value === val) {
+                                    exists = true;
+                                    this.selectedIndex = i;
+                                    break;
+                                }
+                            }
+                            
+                            if (!exists) {
+                                const opt = document.createElement('option');
+                                opt.value = val;
+                                opt.textContent = val;
+                                this.insertBefore(opt, this.options[this.options.length - 1]);
+                                this.value = val;
+                                saveCustomSelectOptions(this.id, val);
+                            }
+                        } else {
+                            this.value = '';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes scaleUp {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-scale-up {
+            animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        /* Custom scrollbar styling for the notes board */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f9fafb;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e4e4e7;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #d4d4d8;
+        }
+    </style>
+</body>
+</html>
