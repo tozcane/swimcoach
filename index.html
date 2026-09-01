@@ -120,10 +120,10 @@
             <!-- LOGIN FORM -->
             <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
-                    <label for="username" class="block text-xs font-semibold text-gray-700 mb-1" data-i18n="username">Username</label>
-                    <input type="text" id="username" required
+                    <label for="login-email" class="block text-xs font-semibold text-gray-700 mb-1" data-i18n="email">Email Address</label>
+                    <input type="email" id="login-email" required
                         class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue text-sm transition-all"
-                        placeholder="Enter username" data-i18n-placeholder="username_placeholder">
+                        placeholder="coach@example.com" data-i18n-placeholder="email_placeholder">
                 </div>
 
                 <div>
@@ -135,7 +135,7 @@
 
                 <div id="login-error" class="hidden text-brandPink text-xs font-medium flex items-center space-x-1.5">
                     <i class="fa-solid fa-circle-exclamation"></i>
-                    <span id="error-text" data-i18n="error_login">Invalid username or password!</span>
+                    <span id="error-text" data-i18n="error_login">Invalid email or password!</span>
                 </div>
 
                 <div class="pt-2 flex flex-col space-y-2">
@@ -164,13 +164,6 @@
                     <input type="email" id="reg-email" required
                         class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue text-sm transition-all"
                         placeholder="coach@example.com" data-i18n-placeholder="email_placeholder">
-                </div>
-
-                <div>
-                    <label for="reg-username" class="block text-xs font-semibold text-gray-700 mb-1" data-i18n="username">Username</label>
-                    <input type="text" id="reg-username" required
-                        class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue text-sm transition-all"
-                        placeholder="Choose username">
                 </div>
 
                 <div>
@@ -1115,7 +1108,8 @@
                 legal_privacy_link: "Privacy Policy",
                 email: "Email Address",
                 email_placeholder: "coach@example.com",
-                error_user_exists: "Username already taken! Please choose another.",
+                error_login: "Invalid email address or password!",
+                error_email_exists: "An account with this email already exists! Please log in.",
                 error_fill_all: "Please fill in all required fields.",
                 error_must_agree: "Please accept the Terms & Privacy Policy."
             },
@@ -1190,7 +1184,7 @@
                 username: "Kullanıcı Adı",
                 password: "Şifre",
                 username_placeholder: "Kullanıcı adınızı girin",
-                error_login: "Geçersiz kullanıcı adı veya şifre!",
+                error_login: "Geçersiz e-posta adresi veya şifre!",
                 go_back: "Geri Git",
                 close: "Kapat",
                 logged_in_message: "Yüzme antrenmanı planlama paneline başarıyla giriş yaptınız.",
@@ -1212,7 +1206,7 @@
                 legal_privacy_link: "Gizlilik Politikası",
                 email: "E-Posta Adresi",
                 email_placeholder: "ornek@kulup.com",
-                error_user_exists: "Bu kullanıcı adı zaten kullanılıyor! Lütfen başka bir ad seçin.",
+                error_email_exists: "Bu e-posta adresiyle kayıtlı bir hesap zaten var! Lütfen giriş yapın.",
                 error_fill_all: "Lütfen tüm zorunlu alanları doldurun.",
                 error_must_agree: "Lütfen Kullanım Koşulları ve Gizlilik Politikasını onaylayın."
             },
@@ -1880,8 +1874,7 @@
         function handleRegister(event) {
             event.preventDefault();
             const fullName = document.getElementById('reg-fullname').value.trim();
-            const email = document.getElementById('reg-email').value.trim();
-            const username = document.getElementById('reg-username').value.trim().toLowerCase();
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
             const password = document.getElementById('reg-password').value;
             const agreeTerms = document.getElementById('reg-agree-terms').checked;
             const errorContainer = document.getElementById('register-error');
@@ -1894,21 +1887,21 @@
                 return;
             }
 
-            if (!username || !password || !fullName || !email) {
+            if (!email || !password || !fullName) {
                 errorText.textContent = dict['error_fill_all'] || "Please fill in all required fields.";
                 errorContainer.classList.remove('hidden');
                 return;
             }
 
             const users = getRegisteredUsers();
-            if (users[username]) {
-                errorText.textContent = dict['error_user_exists'] || "Username already taken! Please choose another.";
+            if (users[email]) {
+                errorText.textContent = dict['error_email_exists'] || "An account with this email already exists! Please log in.";
                 errorContainer.classList.remove('hidden');
                 return;
             }
 
-            // Save new user
-            users[username] = {
+            // Save new user using email as unique key
+            users[email] = {
                 password: password,
                 displayName: fullName,
                 email: email,
@@ -1918,7 +1911,7 @@
 
             // Log in as new user immediately
             errorContainer.classList.add('hidden');
-            currentUser = username;
+            currentUser = email;
             
             document.getElementById('user-display-name').textContent = fullName.toLowerCase();
             const userGreetingEl = document.getElementById('header-username');
@@ -1991,12 +1984,11 @@
 
             // Clear inputs if entering login view
             if (viewId === 'login') {
-                document.getElementById('username').value = '';
+                document.getElementById('login-email').value = '';
                 document.getElementById('password').value = '';
                 document.getElementById('login-error').classList.add('hidden');
                 document.getElementById('reg-fullname').value = '';
                 document.getElementById('reg-email').value = '';
-                document.getElementById('reg-username').value = '';
                 document.getElementById('reg-password').value = '';
                 document.getElementById('reg-agree-terms').checked = false;
                 document.getElementById('register-error').classList.add('hidden');
@@ -2008,20 +2000,20 @@
         function handleLogin(event) {
             event.preventDefault();
             
-            const usernameInput = document.getElementById('username').value.trim().toLowerCase();
+            const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
             const passwordInput = document.getElementById('password').value;
             const errorContainer = document.getElementById('login-error');
             const dict = translations[currentLang] || translations['en'];
 
             const users = getRegisteredUsers();
 
-            // Validate credentials
-            if (users[usernameInput] && users[usernameInput].password === passwordInput) {
+            // Validate credentials by email
+            if (users[emailInput] && users[emailInput].password === passwordInput) {
                 // Success!
                 errorContainer.classList.add('hidden');
                 
-                currentUser = usernameInput;
-                const displayName = users[usernameInput].displayName || usernameInput;
+                currentUser = emailInput;
+                const displayName = users[emailInput].displayName || emailInput;
                 document.getElementById('user-display-name').textContent = displayName.toLowerCase();
                 const userGreetingEl = document.getElementById('header-username');
                 if (userGreetingEl) {
