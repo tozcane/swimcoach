@@ -3230,9 +3230,9 @@
             }
         }
 
-        // Development Bypass: Auto-login on page load
+        // App Initialization: Start on Landing Welcome Page
         window.addEventListener('DOMContentLoaded', () => {
-            currentUser = 'mustafa';
+            currentUser = '';
             
             initSwimSetsData();
             document.getElementById('filter-date').value = selectedDate;
@@ -3240,7 +3240,7 @@
             // Apply language and trigger sub-loaders
             changeLanguage(currentLang);
             
-            showView('dashboard');
+            showView('landing');
 
             // Bind change listeners for adding custom dropdown options dynamically
             document.querySelectorAll('#training-modal select').forEach(select => {
