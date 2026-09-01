@@ -102,46 +102,98 @@
                  Log In
              </button>
          </div>
- 
-         <!-- 2. LOGIN VIEW -->
-         <div id="login-view" class="hidden max-w-md w-full mx-auto space-y-6 bg-white p-8 rounded-3xl shadow-xl border border-gray-150 animate-fade-in">
-             <div class="text-center space-y-2">
-                 <img src="assets/logo.png?v=4" alt="Swim Coach Pro Logo" class="h-20 mx-auto object-contain mb-4">
-                 <h2 class="text-3xl font-extrabold text-brandBlue" data-i18n="login_btn">Log In</h2>
-                 <p class="text-gray-400 text-sm" data-i18n="login_subtitle">Enter your details to continue</p>
-             </div>
 
+        <!-- 2. LOGIN / REGISTER VIEW -->
+        <div id="login-view" class="hidden max-w-md w-full mx-auto space-y-6 bg-white p-8 rounded-3xl shadow-xl border border-gray-150 animate-fade-in">
+            <div class="text-center space-y-2">
+                <img src="assets/logo.png?v=4" alt="Swim Coach Pro Logo" class="h-16 mx-auto object-contain mb-2">
+                <h2 id="auth-title" class="text-2xl font-extrabold text-brandBlue" data-i18n="login_btn">Log In</h2>
+                <p id="auth-subtitle" class="text-gray-400 text-xs" data-i18n="login_subtitle">Enter your details to continue</p>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="flex p-1 bg-gray-100 rounded-2xl">
+                <button type="button" id="tab-login" onclick="switchAuthMode('login')" class="flex-1 py-2 rounded-xl text-xs font-bold text-brandBlue bg-white shadow-sm transition-all" data-i18n="login_btn">Log In</button>
+                <button type="button" id="tab-register" onclick="switchAuthMode('register')" class="flex-1 py-2 rounded-xl text-xs font-bold text-gray-500 hover:text-gray-800 transition-all" data-i18n="register_btn">Sign Up</button>
+            </div>
+
+            <!-- LOGIN FORM -->
             <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
-                <!-- Username Input -->
                 <div>
-                    <label for="username" class="block text-sm font-semibold text-gray-700 mb-1" data-i18n="username">Username</label>
+                    <label for="username" class="block text-xs font-semibold text-gray-700 mb-1" data-i18n="username">Username</label>
                     <input type="text" id="username" required
-                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue transition-all"
-                        placeholder="e.g. mustafa or cansu" data-i18n-placeholder="username_placeholder">
+                        class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue text-sm transition-all"
+                        placeholder="Enter username" data-i18n-placeholder="username_placeholder">
                 </div>
 
-                <!-- Password Input -->
                 <div>
-                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-1" data-i18n="password">Password</label>
+                    <label for="password" class="block text-xs font-semibold text-gray-700 mb-1" data-i18n="password">Password</label>
                     <input type="password" id="password" required
-                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue transition-all"
+                        class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue text-sm transition-all"
                         placeholder="••••••••" data-i18n-placeholder="password_placeholder">
                 </div>
 
-                <!-- Error Message -->
-                <div id="login-error" class="hidden text-brandPink text-sm font-medium flex items-center space-x-1.5">
+                <div id="login-error" class="hidden text-brandPink text-xs font-medium flex items-center space-x-1.5">
                     <i class="fa-solid fa-circle-exclamation"></i>
                     <span id="error-text" data-i18n="error_login">Invalid username or password!</span>
                 </div>
 
-                <!-- Buttons -->
                 <div class="pt-2 flex flex-col space-y-2">
                     <button type="submit"
-                        class="w-full py-3 bg-brandBlue hover:bg-opacity-95 text-white font-semibold rounded-xl shadow-lg shadow-brandBlue/15 hover:shadow-brandBlue/25 transition-all duration-300" data-i18n="login_btn">
+                        class="w-full py-3 bg-brandBlue hover:bg-opacity-95 text-white font-semibold rounded-xl shadow-lg shadow-brandBlue/15 hover:shadow-brandBlue/25 transition-all duration-300 text-sm" data-i18n="login_btn">
                         Log In
                     </button>
                     <button type="button" onclick="showView('landing')"
-                        class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300" data-i18n="go_back">
+                        class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300 text-xs" data-i18n="go_back">
+                        Go Back
+                    </button>
+                </div>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="register-form" onsubmit="handleRegister(event)" class="hidden space-y-4">
+                <div>
+                    <label for="reg-fullname" class="block text-xs font-semibold text-gray-700 mb-1" data-i18n="reg_fullname">Coach / Full Name</label>
+                    <input type="text" id="reg-fullname" required
+                        class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue text-sm transition-all"
+                        placeholder="e.g. Coach Alex">
+                </div>
+
+                <div>
+                    <label for="reg-username" class="block text-xs font-semibold text-gray-700 mb-1" data-i18n="username">Username</label>
+                    <input type="text" id="reg-username" required
+                        class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue text-sm transition-all"
+                        placeholder="Choose username">
+                </div>
+
+                <div>
+                    <label for="reg-password" class="block text-xs font-semibold text-gray-700 mb-1" data-i18n="password">Password</label>
+                    <input type="password" id="reg-password" required minlength="4"
+                        class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue text-sm transition-all"
+                        placeholder="••••••••">
+                </div>
+
+                <div class="flex items-start space-x-2 pt-1">
+                    <input type="checkbox" id="reg-agree-terms" required class="mt-0.5 rounded text-brandBlue focus:ring-brandBlue cursor-pointer">
+                    <label for="reg-agree-terms" class="text-[11px] text-gray-600 leading-tight">
+                        <span data-i18n="agree_prefix">I accept the</span> 
+                        <button type="button" onclick="openLegalModal('terms')" class="text-brandBlue font-bold underline" data-i18n="legal_terms_link">Terms of Service</button> & 
+                        <button type="button" onclick="openLegalModal('privacy')" class="text-brandBlue font-bold underline" data-i18n="legal_privacy_link">Privacy Policy</button>.
+                    </label>
+                </div>
+
+                <div id="register-error" class="hidden text-brandPink text-xs font-medium flex items-center space-x-1.5">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="reg-error-text">Registration error</span>
+                </div>
+
+                <div class="pt-2 flex flex-col space-y-2">
+                    <button type="submit"
+                        class="w-full py-3 bg-brandPink hover:bg-opacity-95 text-white font-semibold rounded-xl shadow-lg shadow-brandPink/15 hover:shadow-brandPink/25 transition-all duration-300 text-sm" data-i18n="register_btn">
+                        Create Account
+                    </button>
+                    <button type="button" onclick="showView('landing')"
+                        class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300 text-xs" data-i18n="go_back">
                         Go Back
                     </button>
                 </div>
@@ -916,9 +968,47 @@
         </div>
     </div>
 
+    <!-- 4. LEGAL / PRIVACY & TERMS MODAL -->
+    <div id="legal-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-gray-100 animate-fade-in overflow-hidden">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-brandBlue/10 text-brandBlue flex items-center justify-center font-black">
+                        <i class="fa-solid fa-shield-halved text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 id="legal-modal-title" class="text-lg font-bold text-brandBlue">Terms of Service & Privacy Policy</h3>
+                        <p class="text-xs text-gray-400">&copy; 2026 Swim Coach Pro &bull; Legal Protections & Disclaimers</p>
+                    </div>
+                </div>
+                <button onclick="closeLegalModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <!-- Modal Content -->
+            <div id="legal-modal-body" class="p-6 overflow-y-auto space-y-4 text-xs text-gray-600 leading-relaxed font-medium">
+                <!-- Injected dynamically based on language & tab -->
+            </div>
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-gray-100 bg-gray-50/50 flex justify-end">
+                <button onclick="closeLegalModal()" class="px-6 py-2 bg-brandBlue text-white font-bold rounded-xl text-xs hover:bg-opacity-90 transition-all">
+                    Close / Kapat
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
-    <footer class="p-6 text-center text-sm text-gray-400 border-t border-gray-50 relative z-10">
-        &copy; 2026 Swim Coach Pro. All Rights Reserved.
+    <footer class="p-6 text-center text-xs text-gray-400 border-t border-gray-100 relative z-10 space-y-1.5">
+        <div>&copy; 2026 Swim Coach Pro. All Rights Reserved.</div>
+        <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-gray-500">
+            <button type="button" onclick="openLegalModal('terms')" class="hover:text-brandBlue hover:underline transition-colors" data-i18n="legal_terms">Terms of Service</button>
+            <span>&bull;</span>
+            <button type="button" onclick="openLegalModal('privacy')" class="hover:text-brandBlue hover:underline transition-colors" data-i18n="legal_privacy">Privacy Policy & Local Security</button>
+            <span>&bull;</span>
+            <button type="button" onclick="openLegalModal('disclaimer')" class="hover:text-brandBlue hover:underline transition-colors" data-i18n="legal_disclaimer">Health & Medical Disclaimer</button>
+        </div>
     </footer>
 
     <!-- JavaScript logic -->
@@ -1006,7 +1096,19 @@
                 main_set: "Main Set",
                 cool_down: "Cool Down",
                 none: "None",
-                go_to_detail: "Go to Detail"
+                go_to_detail: "Go to Detail",
+                register_btn: "Sign Up",
+                reg_fullname: "Coach / Full Name",
+                register_subtitle: "Create your private coach account",
+                legal_terms: "Terms of Service",
+                legal_privacy: "Privacy Policy & Zero-Knowledge Security",
+                legal_disclaimer: "Health & Medical Disclaimer",
+                agree_prefix: "I accept the",
+                legal_terms_link: "Terms of Service",
+                legal_privacy_link: "Privacy Policy",
+                error_user_exists: "Username already taken! Please choose another.",
+                error_fill_all: "Please fill in all required fields.",
+                error_must_agree: "Please accept the Terms & Privacy Policy."
             },
             tr: {
                 login_title: "Swim Coach Pro Yüzme Antrenör Paneline Hoş Geldiniz",
@@ -1044,7 +1146,7 @@
                 stroke_dist: "Teknik ve Stil Dağılımı",
                 energy_zones: "Enerji ve Şiddet Bölgeleri",
                 aerobic: "Aerobik Kapasite (A1-A3)",
-                endurance: "Laktat Eşiği / Dayanıklılık (End1-3)",
+                endurance: "Lactate Threshold / Dayanıklılık (End1-3)",
                 sprint: "Sprint ve Hız (Spr1-3 / Max)",
                 race_pace: "Yarış Hızı ve Diğer (R.P, Easy, Mod)",
                 add_set_title: "Yeni Antrenman Seti Ekle",
@@ -1078,7 +1180,7 @@
                 action: "İşlem",
                 username: "Kullanıcı Adı",
                 password: "Şifre",
-                username_placeholder: "Örn: mustafa veya cansu",
+                username_placeholder: "Kullanıcı adınızı girin",
                 error_login: "Geçersiz kullanıcı adı veya şifre!",
                 go_back: "Geri Git",
                 close: "Kapat",
@@ -1089,7 +1191,19 @@
                 main_set: "Ana Set",
                 cool_down: "Gevşeme",
                 none: "Yok",
-                go_to_detail: "Detaya Git"
+                go_to_detail: "Detaya Git",
+                register_btn: "Kayıt Ol",
+                reg_fullname: "Antrenör / Ad Soyad",
+                register_subtitle: "Kendi özel antrenör hesabınızı oluşturun",
+                legal_terms: "Kullanım Koşulları",
+                legal_privacy: "Gizlilik Politikası & Sıfır Bilgi Güvenliği",
+                legal_disclaimer: "Sağlık ve Sorumluluk Reddi",
+                agree_prefix: "Kabul ediyorum:",
+                legal_terms_link: "Kullanım Koşulları",
+                legal_privacy_link: "Gizlilik Politikası",
+                error_user_exists: "Bu kullanıcı adı zaten kullanılıyor! Lütfen başka bir ad seçin.",
+                error_fill_all: "Lütfen tüm zorunlu alanları doldurun.",
+                error_must_agree: "Lütfen Kullanım Koşulları ve Gizlilik Politikasını onaylayın."
             },
             de: {
                 login_title: "Willkommen beim Swim Coach Pro Schwimmtrainer-Panel",
@@ -1704,19 +1818,111 @@
             }
         }
 
-        // Users Database defined by the user
-        const usersDatabase = {
-            'mustafa': 'mustafa123',
-            'cansu': 'cansu123'
-        };
+        // Dynamic Registered Users Storage (No Hardcoded Users)
+        function getRegisteredUsers() {
+            let users = JSON.parse(localStorage.getItem('tan_registered_users'));
+            if (!users || typeof users !== 'object') {
+                users = {};
+                localStorage.setItem('tan_registered_users', JSON.stringify(users));
+            }
+            return users;
+        }
 
-        // Display Name Mapping
-        const displayNames = {
-            'mustafa': 'Mustafa',
-            'cansu': 'Cansu'
-        };
+        function getUserDisplayName(username) {
+            const users = getRegisteredUsers();
+            if (users[username] && users[username].displayName) {
+                return users[username].displayName;
+            }
+            return username;
+        }
 
-        // Default Swim Sets Grid rows if empty (Horizontal set builder layout)
+        // Switch between Login and Register tabs
+        function switchAuthMode(mode) {
+            const loginForm = document.getElementById('login-form');
+            const regForm = document.getElementById('register-form');
+            const tabLogin = document.getElementById('tab-login');
+            const tabReg = document.getElementById('tab-register');
+            const titleEl = document.getElementById('auth-title');
+            const subEl = document.getElementById('auth-subtitle');
+            const dict = translations[currentLang] || translations['en'];
+
+            if (mode === 'register') {
+                loginForm.classList.add('hidden');
+                regForm.classList.remove('hidden');
+                tabReg.className = "flex-1 py-2 rounded-xl text-xs font-bold text-brandPink bg-white shadow-sm transition-all";
+                tabLogin.className = "flex-1 py-2 rounded-xl text-xs font-bold text-gray-500 hover:text-gray-800 transition-all";
+                titleEl.textContent = dict['register_btn'] || "Sign Up";
+                subEl.textContent = dict['register_subtitle'] || "Create your private coach account";
+                document.getElementById('register-error').classList.add('hidden');
+            } else {
+                regForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                tabLogin.className = "flex-1 py-2 rounded-xl text-xs font-bold text-brandBlue bg-white shadow-sm transition-all";
+                tabReg.className = "flex-1 py-2 rounded-xl text-xs font-bold text-gray-500 hover:text-gray-800 transition-all";
+                titleEl.textContent = dict['login_btn'] || "Log In";
+                subEl.textContent = dict['login_subtitle'] || "Enter your details to continue";
+                document.getElementById('login-error').classList.add('hidden');
+            }
+        }
+
+        // Register form handler
+        function handleRegister(event) {
+            event.preventDefault();
+            const fullName = document.getElementById('reg-fullname').value.trim();
+            const username = document.getElementById('reg-username').value.trim().toLowerCase();
+            const password = document.getElementById('reg-password').value;
+            const agreeTerms = document.getElementById('reg-agree-terms').checked;
+            const errorContainer = document.getElementById('register-error');
+            const errorText = document.getElementById('reg-error-text');
+            const dict = translations[currentLang] || translations['en'];
+
+            if (!agreeTerms) {
+                errorText.textContent = dict['error_must_agree'] || "Please accept the Terms & Privacy Policy.";
+                errorContainer.classList.remove('hidden');
+                return;
+            }
+
+            if (!username || !password || !fullName) {
+                errorText.textContent = dict['error_fill_all'] || "Please fill in all required fields.";
+                errorContainer.classList.remove('hidden');
+                return;
+            }
+
+            const users = getRegisteredUsers();
+            if (users[username]) {
+                errorText.textContent = dict['error_user_exists'] || "Username already taken! Please choose another.";
+                errorContainer.classList.remove('hidden');
+                return;
+            }
+
+            // Save new user
+            users[username] = {
+                password: password,
+                displayName: fullName,
+                createdAt: new Date().toISOString()
+            };
+            localStorage.setItem('tan_registered_users', JSON.stringify(users));
+
+            // Log in as new user immediately
+            errorContainer.classList.add('hidden');
+            currentUser = username;
+            
+            document.getElementById('user-display-name').textContent = fullName.toLowerCase();
+            const userGreetingEl = document.getElementById('header-username');
+            if (userGreetingEl) {
+                userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${fullName.toLowerCase()}`;
+            }
+
+            initSwimSetsData();
+            document.getElementById('filter-date').value = selectedDate;
+
+            loadNotes();
+            loadSwimSets();
+            loadCustomSelectOptions();
+            showView('dashboard');
+        }
+
+        // Default Swim Sets Grid rows if empty
         const defaultSwimSets = [];
 
         let currentUser = '';
@@ -1775,6 +1981,12 @@
                 document.getElementById('username').value = '';
                 document.getElementById('password').value = '';
                 document.getElementById('login-error').classList.add('hidden');
+                document.getElementById('reg-fullname').value = '';
+                document.getElementById('reg-username').value = '';
+                document.getElementById('reg-password').value = '';
+                document.getElementById('reg-agree-terms').checked = false;
+                document.getElementById('register-error').classList.add('hidden');
+                switchAuthMode('login');
             }
         }
 
@@ -1785,16 +1997,22 @@
             const usernameInput = document.getElementById('username').value.trim().toLowerCase();
             const passwordInput = document.getElementById('password').value;
             const errorContainer = document.getElementById('login-error');
+            const dict = translations[currentLang] || translations['en'];
+
+            const users = getRegisteredUsers();
 
             // Validate credentials
-            if (usersDatabase[usernameInput] && usersDatabase[usernameInput] === passwordInput) {
+            if (users[usernameInput] && users[usernameInput].password === passwordInput) {
                 // Success!
                 errorContainer.classList.add('hidden');
                 
                 currentUser = usernameInput;
-                const displayName = displayNames[usernameInput] || usernameInput;
+                const displayName = users[usernameInput].displayName || usernameInput;
                 document.getElementById('user-display-name').textContent = displayName.toLowerCase();
-                document.getElementById('header-username').textContent = `hoş geldin, ${displayName.toLowerCase()}`;
+                const userGreetingEl = document.getElementById('header-username');
+                if (userGreetingEl) {
+                    userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${displayName.toLowerCase()}`;
+                }
                 
                 // Initialize Swim Sets data
                 initSwimSetsData();
@@ -1817,6 +2035,115 @@
         function logout() {
             currentUser = '';
             showView('landing');
+        }
+
+        // --- LEGAL / PRIVACY MODAL LOGIC ---
+        function openLegalModal(tab) {
+            const modal = document.getElementById('legal-modal');
+            const titleEl = document.getElementById('legal-modal-title');
+            const bodyEl = document.getElementById('legal-modal-body');
+            const isTr = currentLang === 'tr';
+
+            if (!modal || !bodyEl) return;
+
+            if (isTr) {
+                titleEl.textContent = "Kullanım Koşulları, Telif Koruması & Gizlilik Politikası";
+                bodyEl.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="p-3.5 bg-blue-50/70 border border-blue-200 rounded-2xl">
+                            <h4 class="font-extrabold text-brandBlue text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-lock text-brandPink"></i>
+                                1. %100 Yerel Güvenlik & Sıfır Bilgi (Zero-Knowledge) Gizliliği
+                            </h4>
+                            <p class="mt-1.5 text-gray-700 leading-relaxed text-xs">
+                                Swim Coach Pro, <strong>"Local-First" (Önce Yerel Cihaz)</strong> gizlilik mimarisine sahiptir. Sisteme girdiğiniz hiçbir sporcu listesi, antrenman planı, yoklama kaydı, sporcu yaşı veya özel notlar üçüncü taraf sunuculara veya harici bir veritabanına aktarılmaz. Tüm veriler yalnızca sizin kendi cihazınızın tarayıcı belleğinde (localStorage) saklanır ve işlenir. Uygulama sahibi veya geliştirici bu verilere asla erişemez ve göremez.
+                            </p>
+                        </div>
+
+                        <div class="p-3.5 bg-gray-50 border border-gray-200 rounded-2xl">
+                            <h4 class="font-extrabold text-brandBlue text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-copyright text-brandBlue"></i>
+                                2. Telif Hakkı & Mülkiyet Koruması
+                            </h4>
+                            <p class="mt-1.5 text-gray-700 leading-relaxed text-xs">
+                                &copy; 2026 Swim Coach Pro. Tüm hakları saklıdır. Bu yazılımın kaynak kodları, arayüz mimarisi, logo tasarımları, set hesaplama algoritmaları ve görsel bileşenleri telif hakları yasaları kapsamında tescillidir ve korunmaktadır. Yazılımın izinsiz kopyalanması, dağıtılması, satılması veya ticari olarak çoğaltılması kesinlikle yasaktır.
+                            </p>
+                        </div>
+
+                        <div class="p-3.5 bg-amber-50/70 border border-amber-200 rounded-2xl">
+                            <h4 class="font-extrabold text-amber-900 text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-notes-medical text-amber-700"></i>
+                                3. Sağlık, Tıbbi Uyarı & Sorumluluk Reddi (Legal Disclaimer)
+                            </h4>
+                            <p class="mt-1.5 text-amber-950 leading-relaxed text-xs">
+                                Bu platform yalnızca sertifikalı yüzme antrenörlerine yönelik bir planlama ve hesaplama aracıdır. Programda yer alan antrenman şiddetleri, enerji bölgeleri, tempo süreleri ve mesafe hesaplamaları öneri niteliğinde matematiksel modellemelerdir. Uygulamanın kullanımından, antrenman planlarından veya yapılan fiziksel çalışmalardan doğabilecek herhangi bir sakatlık, sağlık problemi, aşırı yüklenme veya performans kaybından Swim Coach Pro ve yazılım geliştiricileri <strong>hiçbir şekilde hukuki veya cezai olarak sorumlu tutulamaz</strong>. Tüm sporcuların antrenman öncesinde geçerli bir sağlık raporuna sahip olması kullanıcının (antrenör ve kulübün) kendi sorumluluğundadır.
+                            </p>
+                        </div>
+
+                        <div class="p-3.5 bg-gray-50 border border-gray-200 rounded-2xl">
+                            <h4 class="font-extrabold text-brandBlue text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-cloud-arrow-down text-brandBlue"></i>
+                                4. Veri Yedekleme Sorumluluğu
+                            </h4>
+                            <p class="mt-1.5 text-gray-700 leading-relaxed text-xs">
+                                Veriler cihazınızın yerel hafızasında tutulduğu için, tarayıcı geçmişinin silinmesi veya cihaz sıfırlanması durumlarında veri kaybı yaşanmaması adına antrenmanlarınızı düzenli olarak Word (.doc) ve Excel (.xls) butonları üzerinden bilgisayarınıza/iPad'inize indirmeniz önemle tavsiye edilir.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                titleEl.textContent = "Terms of Service, Copyright & Privacy Policy";
+                bodyEl.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="p-3.5 bg-blue-50/70 border border-blue-200 rounded-2xl">
+                            <h4 class="font-extrabold text-brandBlue text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-lock text-brandPink"></i>
+                                1. 100% Client-Side Zero-Knowledge Privacy Architecture
+                            </h4>
+                            <p class="mt-1.5 text-gray-700 leading-relaxed text-xs">
+                                Swim Coach Pro operates on a strict <strong>Local-First / Zero-Knowledge</strong> privacy architecture. No swimmer rosters, workout plans, attendance records, or private notes are ever transmitted to or stored on external servers. All information resides strictly within your local device browser storage (localStorage). The application owners and developers have zero access to your data.
+                            </p>
+                        </div>
+
+                        <div class="p-3.5 bg-gray-50 border border-gray-200 rounded-2xl">
+                            <h4 class="font-extrabold text-brandBlue text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-copyright text-brandBlue"></i>
+                                2. Intellectual Property & Copyright Protection
+                            </h4>
+                            <p class="mt-1.5 text-gray-700 leading-relaxed text-xs">
+                                &copy; 2026 Swim Coach Pro. All Rights Reserved. All software architecture, algorithmic pacing formulas, user interface components, and branding assets are the proprietary intellectual property of Swim Coach Pro. Unauthorized decompilation, reproduction, or redistribution is strictly prohibited.
+                            </p>
+                        </div>
+
+                        <div class="p-3.5 bg-amber-50/70 border border-amber-200 rounded-2xl">
+                            <h4 class="font-extrabold text-amber-900 text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-notes-medical text-amber-700"></i>
+                                3. Health, Medical & Training Liability Disclaimer
+                            </h4>
+                            <p class="mt-1.5 text-amber-950 leading-relaxed text-xs">
+                                This application is intended strictly as a workout planning utility for certified swimming professionals. Pacing intervals, heart rate intensity zones, and volume calculations are mathematical estimations. Swim Coach Pro, its creators, and affiliates <strong>disclaim all liability and legal responsibility</strong> for any injury, physiological condition, physical fatigue, or damages resulting from workouts designed using this platform. Coaches and organizations are solely responsible for ensuring athletes possess valid medical clearance.
+                            </p>
+                        </div>
+
+                        <div class="p-3.5 bg-gray-50 border border-gray-200 rounded-2xl">
+                            <h4 class="font-extrabold text-brandBlue text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-cloud-arrow-down text-brandBlue"></i>
+                                4. Data Backup Responsibility
+                            </h4>
+                            <p class="mt-1.5 text-gray-700 leading-relaxed text-xs">
+                                Since records are maintained on your local device browser cache, users are advised to routinely export completed training plans using the built-in Word (.doc) and Excel (.xls) exporters to prevent data loss.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeLegalModal() {
+            const modal = document.getElementById('legal-modal');
+            if (modal) modal.classList.add('hidden');
         }
 
         // --- SWIM SETS GRID LOGIC ---
@@ -2923,17 +3250,13 @@
         }
 
         // --- SWIMMER SQUAD & DAILY ATTENDANCE LOGIC ---
-        const defaultSquad = ['Ali Yılmaz', 'Derin Kaya', 'Ege Demir', 'Ada Çelik', 'Can Özkan', 'Mira Bulut', 'Aras Şahin', 'Zeynep Koç'];
+        const defaultSquad = [];
 
         function getSquad() {
             const userKey = getCoachSquadKey();
             let squad = JSON.parse(localStorage.getItem(userKey));
-            if (!squad || squad.length === 0) {
-                if (currentUser === 'mustafa' && localStorage.getItem('tan_swim_squad')) {
-                    squad = JSON.parse(localStorage.getItem('tan_swim_squad'));
-                } else {
-                    squad = [...defaultSquad];
-                }
+            if (!squad) {
+                squad = [];
                 localStorage.setItem(userKey, JSON.stringify(squad));
             }
             return squad;
