@@ -2322,7 +2322,7 @@
 
             errorContainer.classList.add('hidden');
 
-            // Save new user using email as unique key immediately!
+            // 1. Save new user immediately!
             users[email] = {
                 password: password,
                 displayName: fullName,
@@ -2331,20 +2331,29 @@
             };
             localStorage.setItem('tan_registered_users', JSON.stringify(users));
 
-            // Track registered user for success modal actions
-            registeredSuccessUser = {
-                email: email,
-                fullName: fullName,
-                password: password
-            };
+            // 2. Log in directly and go straight to dashboard!
+            currentUser = email;
+            const displayNameEl = document.getElementById('user-display-name');
+            if (displayNameEl) displayNameEl.textContent = fullName.toLowerCase();
+            const userGreetingEl = document.getElementById('header-username');
+            if (userGreetingEl) {
+                userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${fullName.toLowerCase()}`;
+            }
 
-            renderSavedAccountsList();
-            refreshRegCaptcha();
+            // 3. Immediately display dashboard view
+            showView('dashboard');
 
-            // Display Celebration / Registration Success Modal!
-            document.getElementById('success-modal-name').textContent = fullName;
-            document.getElementById('success-modal-email').textContent = email;
-            document.getElementById('reg-success-modal').classList.remove('hidden');
+            // 4. Safely load user data
+            try {
+                initSwimSetsData();
+                const filterDateEl = document.getElementById('filter-date');
+                if (filterDateEl) filterDateEl.value = selectedDate;
+                loadNotes();
+                loadSwimSets();
+                loadCustomSelectOptions();
+            } catch(e) {
+                console.warn('Post-registration load notice:', e);
+            }
         }
 
         let registeredSuccessUser = null;
@@ -2379,14 +2388,7 @@
         }
 
         function goToLoginFromSuccess() {
-            document.getElementById('reg-success-modal').classList.add('hidden');
-            switchAuthMode('login');
-            if (registeredSuccessUser) {
-                document.getElementById('login-email').value = registeredSuccessUser.email;
-                document.getElementById('password').value = registeredSuccessUser.password || '';
-                const pwdEl = document.getElementById('password');
-                if (pwdEl) pwdEl.focus();
-            }
+            enterDirectlyFromSuccess();
         }
 
         function enterDirectlyFromSuccess() {
@@ -2402,13 +2404,18 @@
                     userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${displayName.toLowerCase()}`;
                 }
 
-                initSwimSetsData();
-                document.getElementById('filter-date').value = selectedDate;
-
-                loadNotes();
-                loadSwimSets();
-                loadCustomSelectOptions();
                 showView('dashboard');
+
+                try {
+                    initSwimSetsData();
+                    const filterDateEl = document.getElementById('filter-date');
+                    if (filterDateEl) filterDateEl.value = selectedDate;
+                    loadNotes();
+                    loadSwimSets();
+                    loadCustomSelectOptions();
+                } catch(e) {
+                    console.warn(e);
+                }
             }
         }
 
@@ -2536,8 +2543,8 @@
 
             if (!matchedUser) {
                 errorText.innerHTML = isTr
-                    ? `Bu kullanıcı ("<strong>${userInput}</strong>") bulunamadı! Lütfen kontrol edin veya <button type="button" onclick="switchAuthMode('register')" class="underline font-bold text-brandBlue ml-1">Yeni Hesap Oluşturun</button>`
-                    : `Account ("<strong>${userInput}</strong>") not found! <button type="button" onclick="switchAuthMode('register')" class="underline font-bold text-brandBlue ml-1">Sign Up</button>`;
+                    ? `Bu kullanıcı ("<strong>${userInput}</strong>") henüz kayıtlı değil! <button type="button" onclick="quickRegisterAndLogin('${userInput}', '${passwordInput}')" class="underline font-bold text-brandBlue ml-1">Bu Bilgilerle Hemen Gir & Kaydol</button>`
+                    : `Account ("<strong>${userInput}</strong>") not registered yet! <button type="button" onclick="quickRegisterAndLogin('${userInput}', '${passwordInput}')" class="underline font-bold text-brandBlue ml-1">Quick Enter & Register</button>`;
                 errorContainer.classList.remove('hidden');
                 return;
             }
@@ -2561,17 +2568,20 @@
                 userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${displayName.toLowerCase()}`;
             }
             
-            // Initialize Swim Sets data
-            initSwimSetsData();
-            document.getElementById('filter-date').value = selectedDate;
-
-            // Load messages and swim sets
-            loadNotes();
-            loadSwimSets();
-            loadCustomSelectOptions();
-            
-            // Show dashboard
+            // Show dashboard first!
             showView('dashboard');
+
+            // Safely initialize Swim Sets data and loaders
+            try {
+                initSwimSetsData();
+                const filterDateEl = document.getElementById('filter-date');
+                if (filterDateEl) filterDateEl.value = selectedDate;
+                loadNotes();
+                loadSwimSets();
+                loadCustomSelectOptions();
+            } catch(e) {
+                console.warn('Dashboard loader notice:', e);
+            }
         }
 
         // Quick register & login fallback so user is NEVER blocked
@@ -2971,6 +2981,7 @@
             document.getElementById('stat-drill-count').textContent = dCount;
 
             // Düşük seviye detayları hesaplamak için localStorage verilerini alıyoruz
+            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
             const sets = allSets.filter(s => s.date === selectedDate && isCoachSet(s));
 
             // 1. Teknik & Stil Dağılımı (9 farklı teknik)
