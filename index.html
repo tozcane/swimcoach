@@ -123,15 +123,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SheetJS (Excel Export) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <!-- EmailJS SDK (Official Client-side Dispatch) -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script>
-        (function() {
-            emailjs.init({
-                publicKey: "EITWtVGZ_QjoDaPGs"
-            });
-        })();
-    </script>
 </head>
 <body class="bg-white text-brandBlue font-sans min-h-screen flex flex-col justify-between transition-colors duration-500 relative overflow-x-hidden">
     <!-- Swimmer Background Watermark (Subtle line-art outline) -->
@@ -282,6 +273,28 @@
                     </div>
                 </div>
 
+                <!-- Human Verification (CAPTCHA) -->
+                <div class="p-3 bg-gray-50 border border-gray-200 rounded-2xl space-y-2">
+                    <div class="flex items-center justify-between text-xs">
+                        <label for="login-captcha-input" class="font-bold text-gray-700 flex items-center space-x-1.5">
+                            <i class="fa-solid fa-shield-halved text-brandBlue"></i>
+                            <span data-i18n="captcha_label">Ben İnsanım (Güvenlik Kodu)</span>
+                        </label>
+                        <button type="button" onclick="refreshLoginCaptcha()" class="text-brandPink hover:text-brandBlue text-[11px] font-bold flex items-center space-x-1 transition-colors" title="Kodu Yenile">
+                            <i class="fa-solid fa-rotate text-[10px]"></i>
+                            <span data-i18n="refresh_code">Yenile</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div id="login-captcha-display" class="px-4 py-1.5 bg-white border border-gray-300 rounded-xl flex items-center justify-center font-mono tracking-widest text-lg font-black select-none shadow-inner min-w-[120px] h-10">
+                            <!-- Injected JS -->
+                        </div>
+                        <input type="text" id="login-captcha-input" required maxlength="6" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false"
+                            class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue font-mono font-bold text-sm text-center uppercase tracking-widest transition-all"
+                            placeholder="Kodu yazın" data-i18n-placeholder="captcha_placeholder">
+                    </div>
+                </div>
+
                 <div id="login-error" class="hidden text-brandPink text-xs font-medium flex items-center space-x-1.5 p-2 bg-red-50/70 border border-red-200 rounded-xl">
                     <i class="fa-solid fa-circle-exclamation flex-shrink-0"></i>
                     <span id="error-text" data-i18n="error_login">Invalid email or password!</span>
@@ -383,6 +396,28 @@
                     </label>
                 </div>
 
+                <!-- Human Verification (CAPTCHA) -->
+                <div class="p-3 bg-gray-50 border border-gray-200 rounded-2xl space-y-2">
+                    <div class="flex items-center justify-between text-xs">
+                        <label for="reg-captcha-input" class="font-bold text-gray-700 flex items-center space-x-1.5">
+                            <i class="fa-solid fa-shield-halved text-brandPink"></i>
+                            <span data-i18n="captcha_label">Ben İnsanım (Güvenlik Kodu)</span>
+                        </label>
+                        <button type="button" onclick="refreshRegCaptcha()" class="text-brandBlue hover:text-brandPink text-[11px] font-bold flex items-center space-x-1 transition-colors" title="Kodu Yenile">
+                            <i class="fa-solid fa-rotate text-[10px]"></i>
+                            <span data-i18n="refresh_code">Yenile</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div id="reg-captcha-display" class="px-4 py-1.5 bg-white border border-gray-300 rounded-xl flex items-center justify-center font-mono tracking-widest text-lg font-black select-none shadow-inner min-w-[120px] h-10">
+                            <!-- Injected JS -->
+                        </div>
+                        <input type="text" id="reg-captcha-input" required maxlength="6" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false"
+                            class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandPink/20 focus:border-brandPink text-brandBlue font-mono font-bold text-sm text-center uppercase tracking-widest transition-all"
+                            placeholder="Kodu yazın" data-i18n-placeholder="captcha_placeholder">
+                    </div>
+                </div>
+
                 <div id="register-error" class="hidden text-brandPink text-xs font-medium flex items-center space-x-1.5">
                     <i class="fa-solid fa-circle-exclamation"></i>
                     <span id="reg-error-text">Registration error</span>
@@ -391,8 +426,7 @@
                 <div class="pt-2 flex flex-col space-y-2">
                     <button type="submit" id="btn-register-submit"
                         class="w-full py-3 bg-brandPink hover:bg-opacity-95 text-white font-semibold rounded-xl shadow-lg shadow-brandPink/15 hover:shadow-brandPink/25 transition-all duration-300 text-sm flex items-center justify-center space-x-2">
-                        <i id="btn-register-spinner" class="fa-solid fa-circle-notch fa-spin hidden text-xs"></i>
-                        <span id="btn-register-text" data-i18n="continue_verify_btn">Devam Et & E-Posta Doğrula</span>
+                        <span id="btn-register-text" data-i18n="register_btn">Kayıt Ol</span>
                     </button>
                     <button type="button" onclick="showView('landing')"
                         class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300 text-xs" data-i18n="go_back">
@@ -1170,59 +1204,6 @@
         </div>
     </div>
 
-    <!-- 4.5 EMAIL VERIFICATION OTP MODAL -->
-    <div id="email-verify-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center space-y-5 shadow-2xl border border-gray-100 animate-fade-in overflow-hidden">
-            <div class="w-16 h-16 mx-auto rounded-3xl bg-blue-50 text-brandBlue flex items-center justify-center shadow-lg shadow-brandBlue/10">
-                <i class="fa-solid fa-envelope-circle-check text-3xl text-brandBlue"></i>
-            </div>
-
-            <div class="space-y-1.5">
-                <h3 class="text-xl font-black text-brandBlue" data-i18n="verify_email_title">E-Posta Adresinizi Doğrulayın</h3>
-                <p class="text-xs text-gray-500" data-i18n="verify_email_sub">6 haneli onay kodunu girin</p>
-            </div>
-
-            <div class="p-3.5 bg-blue-50/70 rounded-2xl border border-blue-200 text-xs text-gray-700 leading-relaxed text-left space-y-1.5">
-                <div class="text-[11px] text-gray-500" data-i18n="verify_code_sent_to">Doğrulama kodu bu e-posta adresine gönderildi:</div>
-                <div class="font-bold text-brandBlue break-all flex items-center space-x-1.5">
-                    <i class="fa-solid fa-at text-brandPink text-xs"></i>
-                    <span id="verify-modal-email"></span>
-                </div>
-                <div id="verify-service-notice" class="text-[10px] text-gray-500 pt-0.5">
-                    * Lütfen gelen kutunuzu (ve spam / gereksiz klasörünü) kontrol edin.
-                </div>
-            </div>
-
-            <!-- OTP input -->
-            <div class="space-y-2">
-                <label for="verify-code-input" class="block text-xs font-semibold text-gray-700 text-left" data-i18n="enter_verification_code">Onay Kodu</label>
-                <input type="text" id="verify-code-input" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="••••••"
-                    class="w-full text-center tracking-[0.5em] text-2xl font-black py-3 bg-gray-50 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-brandBlue focus:bg-white text-brandBlue font-mono transition-all">
-                <div id="verify-modal-error" class="hidden text-brandPink text-xs font-medium flex items-center justify-center space-x-1.5 p-2 bg-red-50/70 border border-red-200 rounded-xl">
-                    <i class="fa-solid fa-circle-exclamation flex-shrink-0"></i>
-                    <span id="verify-modal-error-text" data-i18n="error_invalid_code">Geçersiz onay kodu! Lütfen tekrar deneyin.</span>
-                </div>
-            </div>
-
-            <div class="pt-1 flex flex-col space-y-2">
-                <button type="button" id="btn-submit-verify" onclick="submitEmailVerification()"
-                    class="w-full py-3 bg-brandBlue hover:bg-opacity-95 text-white font-bold rounded-xl shadow-lg shadow-brandBlue/15 hover:shadow-brandBlue/25 transition-all text-sm flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-check text-xs"></i>
-                    <span data-i18n="verify_and_create_btn">Onayla & Kaydı Tamamla</span>
-                </button>
-                <button type="button" id="btn-resend-code" onclick="resendVerificationEmail()"
-                    class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all text-xs flex items-center justify-center space-x-1.5">
-                    <i class="fa-solid fa-rotate-right text-xs"></i>
-                    <span data-i18n="resend_code_btn">Kodu Tekrar Gönder</span>
-                </button>
-                <button type="button" onclick="closeEmailVerifyModal()"
-                    class="text-xs text-gray-400 hover:text-gray-600 transition-colors pt-1" data-i18n="cancel">
-                    İptal
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- 5. REGISTRATION SUCCESS CELEBRATION MODAL -->
     <div id="reg-success-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center space-y-5 shadow-2xl border border-gray-100 animate-fade-in overflow-hidden">
@@ -1435,7 +1416,11 @@
                 feat_ana_title: "Physiological Energy Analytics",
                 feat_ana_desc: "Track planned volumes across Aerobic Capacity, Lactate Threshold, and Sprint zones with real-time distribution charts.",
                 feat_exp_title: "Word & Excel Export",
-                feat_exp_desc: "Download formatted training tables, athlete attendance, and coach notes in Word (.doc) or Excel (.xls) formats with one click."
+                feat_exp_desc: "Download formatted training tables, athlete attendance, and coach notes in Word (.doc) or Excel (.xls) formats with one click.",
+                captcha_label: "I am Human (Security Code)",
+                captcha_placeholder: "Enter code",
+                refresh_code: "Refresh",
+                error_captcha: "Incorrect security code! Please check and type again."
             },
             tr: {
                 login_title: "Swim Coach Pro Yüzme Antrenör Paneline Hoş Geldiniz",
@@ -1565,7 +1550,11 @@
                 feat_ana_title: "Fizyolojik Şiddet ve Enerji Analizi",
                 feat_ana_desc: "Aerobik Kapasite (A1-A3), Laktat Eşiği (End1-3) ve Sprint bölgelerinde planlanan toplam hacimleri interaktif halka ve dağılım grafiklerinde anlık takip edin.",
                 feat_exp_title: "Word ve Excel Formatında Dışa Aktarma",
-                feat_exp_desc: "Günün antrenman programını, katılan sporcu yoklamasını ve koç notlarını havuz kenarında basmak üzere tek tıkla profesyonel Word (.doc) ve Excel (.xls) olarak indirin."
+                feat_exp_desc: "Günün antrenman programını, katılan sporcu yoklamasını ve koç notlarını havuz kenarında basmak üzere tek tıkla profesyonel Word (.doc) ve Excel (.xls) olarak indirin.",
+                captcha_label: "Ben İnsanım (Güvenlik Kodu)",
+                captcha_placeholder: "Kodu yazın",
+                refresh_code: "Yenile",
+                error_captcha: "Güvenlik kodu hatalı! Lütfen kutudaki kodu kontrol edip tekrar yazın."
             },
             de: {
                 login_title: "Willkommen beim Swim Coach Pro Schwimmtrainer-Panel",
@@ -2199,6 +2188,46 @@
         }
 
         // Switch between Login and Register tabs
+        // --- ANTI-BOT "I AM HUMAN" CAPTCHA SYSTEM ---
+        let currentLoginCaptcha = '';
+        let currentRegCaptcha = '';
+
+        function generateCaptcha(length = 5) {
+            const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'; // clear characters, no 0/O, 1/I
+            let code = '';
+            for (let i = 0; i < length; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        function refreshLoginCaptcha() {
+            currentLoginCaptcha = generateCaptcha(5);
+            renderCaptchaVisual('login-captcha-display', currentLoginCaptcha);
+            const input = document.getElementById('login-captcha-input');
+            if (input) input.value = '';
+        }
+
+        function refreshRegCaptcha() {
+            currentRegCaptcha = generateCaptcha(5);
+            renderCaptchaVisual('reg-captcha-display', currentRegCaptcha);
+            const input = document.getElementById('reg-captcha-input');
+            if (input) input.value = '';
+        }
+
+        function renderCaptchaVisual(containerId, code) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const colors = ['#000B73', '#E5007D', '#0284C7', '#059669', '#7C3AED'];
+            const html = code.split('').map((char, index) => {
+                const color = colors[index % colors.length];
+                const rotate = (index % 2 === 0 ? 1 : -1) * (4 + (index * 3) % 12);
+                return `<span style="color: ${color}; transform: rotate(${rotate}deg); display: inline-block; font-size: 1.25rem; font-weight: 800; font-family: monospace; letter-spacing: 0.18em; user-select: none; text-shadow: 1px 1px 2px rgba(0,0,0,0.08);">${char}</span>`;
+            }).join('');
+            container.innerHTML = html;
+        }
+
+        // Switch between Login and Register tabs
         function switchAuthMode(mode) {
             const loginForm = document.getElementById('login-form');
             const regForm = document.getElementById('register-form');
@@ -2216,6 +2245,7 @@
                 titleEl.textContent = dict['register_btn'] || "Sign Up";
                 subEl.textContent = dict['register_subtitle'] || "Create your private coach account";
                 document.getElementById('register-error').classList.add('hidden');
+                refreshRegCaptcha();
             } else {
                 regForm.classList.add('hidden');
                 loginForm.classList.remove('hidden');
@@ -2225,11 +2255,9 @@
                 subEl.textContent = dict['login_subtitle'] || "Enter your details to continue";
                 document.getElementById('login-error').classList.add('hidden');
                 renderSavedAccountsList();
+                refreshLoginCaptcha();
             }
         }
-
-        // Temporary Pending Registration Object
-        let pendingRegistration = null;
 
         // Interactive live validation of password requirements
         function validatePasswordRules() {
@@ -2271,7 +2299,7 @@
             return isLength && hasLetter && hasDigit && isNoRepeat && isMatch;
         }
 
-        // Register form handler
+        // Register form handler with instant CAPTCHA verification
         function handleRegister(event) {
             event.preventDefault();
             const fullName = document.getElementById('reg-fullname').value.trim();
@@ -2301,167 +2329,48 @@
                 return;
             }
 
+            const captchaInput = document.getElementById('reg-captcha-input').value.trim().toUpperCase();
+            if (!captchaInput || captchaInput !== currentRegCaptcha) {
+                errorText.textContent = dict['error_captcha'] || "Güvenlik kodu hatalı! Lütfen kodu kontrol edin.";
+                errorContainer.classList.remove('hidden');
+                refreshRegCaptcha();
+                return;
+            }
+
             const users = getRegisteredUsers();
             if (users[email]) {
                 const loginBtnLabel = dict['login_btn'] || (currentLang === 'tr' ? 'Giriş Yap' : 'Log In');
                 errorText.innerHTML = `${dict['error_email_exists'] || 'Bu e-posta zaten kayıtlı.'} <button type="button" onclick="switchToLoginWithEmail('${email}')" class="underline font-bold text-brandBlue ml-1">${loginBtnLabel}</button>`;
                 errorContainer.classList.remove('hidden');
+                refreshRegCaptcha();
                 return;
             }
 
             errorContainer.classList.add('hidden');
 
-            // Generate 6-digit confirmation code
-            const verificationCode = String(Math.floor(100000 + Math.random() * 900000));
-            pendingRegistration = {
-                fullName: fullName,
-                email: email,
+            // Save new user using email as unique key immediately!
+            users[email] = {
                 password: password,
-                code: verificationCode,
-                sentAt: Date.now()
-            };
-
-            // Loading state on button
-            const submitBtn = document.getElementById('btn-register-submit');
-            const spinner = document.getElementById('btn-register-spinner');
-            const btnText = document.getElementById('btn-register-text');
-            if (submitBtn) submitBtn.disabled = true;
-            if (spinner) spinner.classList.remove('hidden');
-            if (btnText) btnText.textContent = (currentLang === 'tr') ? "Onay Kodu Gönderiliyor..." : "Sending Verification Code...";
-
-            const templateParams = {
-                to_email: email,
-                to_name: fullName,
-                user_name: fullName,
+                displayName: fullName,
                 email: email,
-                recipient: email,
-                verify_code: verificationCode,
-                code: verificationCode,
-                message: `Swim Coach Pro Giriş Onay Kodunuz: ${verificationCode}`
-            };
-
-            emailjs.send("service_idku8xo", "template_kw07y5n", templateParams)
-                .then(function(response) {
-                    console.log('EmailJS Sent Successfully!', response.status, response.text);
-                    openVerifyModal(email, verificationCode, true);
-                })
-                .catch(function(err) {
-                    console.warn('EmailJS Notice:', err);
-                    // Email service fallback: allow user to complete verification seamlessly
-                    openVerifyModal(email, verificationCode, false);
-                })
-                .finally(function() {
-                    if (submitBtn) submitBtn.disabled = false;
-                    if (spinner) spinner.classList.add('hidden');
-                    if (btnText) btnText.textContent = dict['continue_verify_btn'] || "Devam Et & E-Posta Doğrula";
-                });
-        }
-
-        function openVerifyModal(email, code, emailSent) {
-            document.getElementById('verify-modal-email').textContent = email;
-            document.getElementById('verify-code-input').value = '';
-            document.getElementById('verify-modal-error').classList.add('hidden');
-            const noticeEl = document.getElementById('verify-service-notice');
-            if (noticeEl) {
-                if (emailSent) {
-                    noticeEl.className = "text-[11px] text-emerald-700 font-semibold pt-0.5 flex items-center space-x-1";
-                    noticeEl.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 text-xs"></i> <span>Doğrulama kodu e-posta adresinize gönderildi.</span>';
-                } else {
-                    noticeEl.className = "text-[11px] text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200 space-y-1 mt-1 text-left";
-                    noticeEl.innerHTML = `<div><i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1"></i> EmailJS servisi bağlanırken, onay kodunuz: <strong class="font-mono text-sm text-brandBlue bg-white px-2 py-0.5 rounded border border-amber-300 select-all">${code}</strong> <button type="button" onclick="autoFillVerificationCode('${code}')" class="underline font-bold text-brandPink ml-1 cursor-pointer">Tek Tıkla Doğrula</button></div>`;
-                }
-            }
-            document.getElementById('email-verify-modal').classList.remove('hidden');
-            setTimeout(() => {
-                const codeInput = document.getElementById('verify-code-input');
-                if (codeInput) codeInput.focus();
-            }, 100);
-        }
-
-        function autoFillVerificationCode(code) {
-            const input = document.getElementById('verify-code-input');
-            if (input) {
-                input.value = code;
-                submitEmailVerification();
-            }
-        }
-
-        function submitEmailVerification() {
-            if (!pendingRegistration) return;
-            const enteredCode = document.getElementById('verify-code-input').value.trim();
-            const errorEl = document.getElementById('verify-modal-error');
-            const errorTextEl = document.getElementById('verify-modal-error-text');
-            const dict = translations[currentLang] || translations['en'];
-
-            if (!enteredCode || enteredCode !== pendingRegistration.code) {
-                errorTextEl.textContent = dict['error_invalid_code'] || "Geçersiz onay kodu! Lütfen e-postanıza gelen 6 haneli kodu kontrol edin.";
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
-            // Verification Successful!
-            errorEl.classList.add('hidden');
-            document.getElementById('email-verify-modal').classList.add('hidden');
-
-            const users = getRegisteredUsers();
-            users[pendingRegistration.email] = {
-                password: pendingRegistration.password,
-                displayName: pendingRegistration.fullName,
-                email: pendingRegistration.email,
                 createdAt: new Date().toISOString()
             };
             localStorage.setItem('tan_registered_users', JSON.stringify(users));
 
+            // Track registered user for success modal actions
             registeredSuccessUser = {
-                email: pendingRegistration.email,
-                fullName: pendingRegistration.fullName,
-                password: pendingRegistration.password
+                email: email,
+                fullName: fullName,
+                password: password
             };
 
             renderSavedAccountsList();
+            refreshRegCaptcha();
 
             // Display Celebration / Registration Success Modal!
-            document.getElementById('success-modal-name').textContent = pendingRegistration.fullName;
-            document.getElementById('success-modal-email').textContent = pendingRegistration.email;
+            document.getElementById('success-modal-name').textContent = fullName;
+            document.getElementById('success-modal-email').textContent = email;
             document.getElementById('reg-success-modal').classList.remove('hidden');
-            pendingRegistration = null;
-        }
-
-        function resendVerificationEmail() {
-            if (!pendingRegistration) return;
-            const newCode = String(Math.floor(100000 + Math.random() * 900000));
-            pendingRegistration.code = newCode;
-            pendingRegistration.sentAt = Date.now();
-
-            const resendBtn = document.getElementById('btn-resend-code');
-            if (resendBtn) resendBtn.disabled = true;
-
-            const templateParams = {
-                to_email: pendingRegistration.email,
-                to_name: pendingRegistration.fullName,
-                user_name: pendingRegistration.fullName,
-                email: pendingRegistration.email,
-                recipient: pendingRegistration.email,
-                verify_code: newCode,
-                code: newCode,
-                message: `Swim Coach Pro Giriş Onay Kodunuz: ${newCode}`
-            };
-
-            emailjs.send("service_idku8xo", "template_kw07y5n", templateParams)
-                .then(function() {
-                    alert(currentLang === 'tr' ? "Yeni onay kodu e-posta adresinize gönderildi!" : "A new verification code has been dispatched to your email!");
-                })
-                .catch(function(err) {
-                    console.error('EmailJS Resend Error:', err);
-                    alert(currentLang === 'tr' ? "Kod gönderilirken bir sorun oluştu." : "Failed to resend code.");
-                })
-                .finally(function() {
-                    if (resendBtn) resendBtn.disabled = false;
-                });
-        }
-
-        function closeEmailVerifyModal() {
-            document.getElementById('email-verify-modal').classList.add('hidden');
         }
 
         let registeredSuccessUser = null;
@@ -2649,6 +2558,14 @@
             const errorText = document.getElementById('error-text');
             const dict = translations[currentLang] || translations['en'];
 
+            const captchaInput = document.getElementById('login-captcha-input').value.trim().toUpperCase();
+            if (!captchaInput || captchaInput !== currentLoginCaptcha) {
+                errorText.textContent = dict['error_captcha'] || "Güvenlik kodu hatalı! Lütfen kodu kontrol edin.";
+                errorContainer.classList.remove('hidden');
+                refreshLoginCaptcha();
+                return;
+            }
+
             const users = getRegisteredUsers();
 
             if (!users[emailInput]) {
@@ -2657,6 +2574,7 @@
                     ? `Bu e-posta (<strong>${emailInput}</strong>) ile kayıtlı bir hesap bulunamadı! <button type="button" onclick="switchAuthMode('register')" class="underline font-bold text-brandBlue ml-1">Hemen Kayıt Ol</button>`
                     : `No account found for (<strong>${emailInput}</strong>)! <button type="button" onclick="switchAuthMode('register')" class="underline font-bold text-brandBlue ml-1">Sign Up</button>`;
                 errorContainer.classList.remove('hidden');
+                refreshLoginCaptcha();
                 return;
             }
 
@@ -2666,6 +2584,7 @@
                     ? `Girdiğiniz şifre hatalı! Lütfen şifrenizi kontrol edin veya şifreyi görmek için göz simgesine tıklayın.`
                     : `Incorrect password! Please check your password or click the eye icon to view.`;
                 errorContainer.classList.remove('hidden');
+                refreshLoginCaptcha();
                 return;
             }
 
@@ -4294,6 +4213,8 @@
             
             // Apply language and trigger sub-loaders
             changeLanguage(currentLang);
+            refreshLoginCaptcha();
+            refreshRegCaptcha();
             
             showView('landing');
 
