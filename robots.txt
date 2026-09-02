@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tozcane.github.io/swimcoach/sitemap.xml
