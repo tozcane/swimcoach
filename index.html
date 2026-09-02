@@ -35,28 +35,64 @@
 
     <!-- Schema.org JSON-LD Structured Data for Google Rich Results -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Swim Coach Pro",
-      "alternateName": "Swim Training Planner",
-      "url": "https://tozcane.github.io/swimcoach/",
-      "applicationCategory": "SportsApplication",
-      "operatingSystem": "All (Web, iOS, iPadOS, Android, Windows, macOS)",
-      "description": "Profesyonel yüzme antrenörleri için tasarlanmış kapsamlı antrenman planlama, fizyolojik şiddet analizi, sporcu yoklaması ve Word/Excel aktarım yazılımı.",
-      "browserRequirements": "Requires JavaScript. Requires HTML5.",
-      "image": "https://tozcane.github.io/swimcoach/assets/logo.png",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Swim Coach Pro",
+        "alternateName": "Swim Training Planner",
+        "url": "https://tozcane.github.io/swimcoach/",
+        "applicationCategory": "SportsApplication",
+        "operatingSystem": "All (Web, iOS, iPadOS, Android, Windows, macOS)",
+        "description": "Profesyonel yüzme antrenörleri için tasarlanmış kapsamlı antrenman planlama, fizyolojik şiddet analizi, sporcu yoklaması ve Word/Excel aktarım yazılımı.",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "image": "https://tozcane.github.io/swimcoach/assets/logo.png",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "author": {
+          "@type": "Organization",
+          "name": "Swim Coach Pro"
+        }
       },
-      "author": {
-        "@type": "Organization",
-        "name": "Swim Coach Pro"
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Swim Coach Pro nedir?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Swim Coach Pro, profesyonel yüzme antrenörleri ve spor kulüpleri için antrenman seti planlama, sporcu yoklaması alma, fizyolojik şiddet dağılımı analizi yapma ve Word/Excel formatında çıktı alma imkanı sunan modern bir yüzme koçluğu yazılımıdır."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Swim Coach Pro ücretsiz mi kullanılabilir?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Evet, tüm yüzme antrenörleri ve eğitmenler e-posta adresleriyle ücretsiz hesap oluşturup antrenmanlarını hemen planlamaya başlayabilirler."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Antrenman programları ve sporcu verileri nerede saklanır?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sıfır Bilgi Güvenliği (Zero-Knowledge) mimarisi gereğince tüm verileriniz yalnızca sizin cihazınızda yerel olarak saklanır. Hiçbir antrenör bir başkasının verisini göremez."
+            }
+          }
+        ]
       }
-    }
+    ]
     </script>
+    
+    <!-- Search Engine Ownership Verifications Placeholder -->
+    <meta name="google-site-verification" content="swimcoach-pro-google-verification">
+    <meta name="msvalidate.01" content="swimcoach-pro-bing-verification">
     
     <!-- iOS / iPad Web App Configuration -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -138,23 +174,60 @@
      <main class="flex-grow flex flex-col items-center justify-center px-4 py-12 relative z-10">
          
          <!-- 1. LANDING VIEW -->
-         <div id="landing-view" class="max-w-2xl mx-auto space-y-8 text-center animate-fade-in">
-             <!-- Logo Container -->
-             <div class="relative flex justify-center py-6">
-                 <div class="w-72 h-48 md:w-96 md:h-64 flex items-center justify-center p-4 bg-white rounded-3xl shadow-sm hover:shadow-md transition-all duration-300">
-                     <img src="assets/logo.png?v=4" alt="Swim Coach Pro Logo" class="max-w-full max-h-full object-contain">
-                 </div>
-             </div>
- 
-             <!-- Welcome message / Action button -->
-             <p class="text-gray-500 text-lg md:text-xl font-medium max-w-md mx-auto" data-i18n="login_title">
-                 Welcome to Swim Coach Pro Panel
-             </p>
-             
-             <button onclick="showView('login')" class="px-8 py-3 bg-brandBlue hover:bg-opacity-90 text-white font-semibold rounded-full shadow-lg shadow-brandBlue/20 hover:shadow-brandBlue/35 transition-all duration-300 transform hover:-translate-y-0.5" data-i18n="login_btn">
-                 Log In
-             </button>
-         </div>
+          <div id="landing-view" class="max-w-4xl mx-auto space-y-12 text-center animate-fade-in py-2">
+              <!-- Hero Block -->
+              <div class="space-y-6">
+                  <!-- Logo Container -->
+                  <div class="relative flex justify-center py-2">
+                      <div class="w-72 h-44 md:w-96 md:h-56 flex items-center justify-center p-4 bg-white rounded-3xl shadow-sm hover:shadow-md transition-all duration-300">
+                          <img src="assets/logo.png?v=4" alt="Swim Coach Pro Logo" class="max-w-full max-h-full object-contain">
+                      </div>
+                  </div>
+
+                  <div class="space-y-3 max-w-2xl mx-auto">
+                      <h1 class="text-2xl md:text-3xl font-extrabold text-brandBlue tracking-tight" data-i18n="hero_h1">
+                          Swim Coach Pro - Profesyonel Yüzme Antrenmanı ve Sporcu Yönetim Platformu
+                      </h1>
+                      <p class="text-gray-500 text-sm md:text-base font-medium leading-relaxed" data-i18n="hero_sub">
+                          Yüzme antrenörleri ve kulüpler için antrenman hazırlama, set planlama, sporcu yoklaması ve detaylı hacim analizi.
+                      </p>
+                  </div>
+                  
+                  <div class="pt-2 flex justify-center items-center">
+                      <button onclick="showView('login')" class="px-8 py-3.5 bg-brandBlue hover:bg-opacity-95 text-white font-bold rounded-2xl shadow-lg shadow-brandBlue/20 hover:shadow-brandBlue/35 transition-all duration-300 transform hover:-translate-y-0.5 text-sm flex items-center space-x-2.5">
+                          <i class="fa-solid fa-right-to-bracket text-xs"></i>
+                          <span data-i18n="login_btn">Giriş Yap / Kayıt Ol</span>
+                      </button>
+                  </div>
+              </div>
+
+              <!-- SEO Feature Cards Grid (Search engines index these high-ranking terms) -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-left pt-6 border-t border-gray-100">
+                  <div class="p-5 bg-gray-50/90 rounded-2xl border border-gray-200/80 space-y-2.5 hover:bg-white hover:shadow-md transition-all">
+                      <div class="w-10 h-10 rounded-xl bg-brandBlue/10 text-brandBlue flex items-center justify-center font-bold text-lg">
+                          <i class="fa-solid fa-person-swimming"></i>
+                      </div>
+                      <h2 class="text-sm font-bold text-brandBlue" data-i18n="feat_plan_title">Detaylı Antrenman Seti Planlama</h2>
+                      <p class="text-xs text-gray-500 leading-relaxed" data-i18n="feat_plan_desc">Warm Up, Pre Set, Main Set ve Cool Down; stil, çalışma türü, mesafe, hedef derece ve tempo aralıklarıyla antrenmanlarınızı saniyeler içinde kurgulayın.</p>
+                  </div>
+
+                  <div class="p-5 bg-gray-50/90 rounded-2xl border border-gray-200/80 space-y-2.5 hover:bg-white hover:shadow-md transition-all">
+                      <div class="w-10 h-10 rounded-xl bg-brandPink/10 text-brandPink flex items-center justify-center font-bold text-lg">
+                          <i class="fa-solid fa-chart-pie"></i>
+                      </div>
+                      <h2 class="text-sm font-bold text-brandBlue" data-i18n="feat_ana_title">Fizyolojik Şiddet ve Enerji Analizi</h2>
+                      <p class="text-xs text-gray-500 leading-relaxed" data-i18n="feat_ana_desc">Aerobik Kapasite (A1-A3), Laktat Eşiği (End1-3) ve Sprint bölgelerinde planlanan toplam hacimleri interaktif halka ve dağılım grafiklerinde anlık takip edin.</p>
+                  </div>
+
+                  <div class="p-5 bg-gray-50/90 rounded-2xl border border-gray-200/80 space-y-2.5 hover:bg-white hover:shadow-md transition-all">
+                      <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg">
+                          <i class="fa-solid fa-file-export"></i>
+                      </div>
+                      <h2 class="text-sm font-bold text-brandBlue" data-i18n="feat_exp_title">Word ve Excel Formatında Dışa Aktarma</h2>
+                      <p class="text-xs text-gray-500 leading-relaxed" data-i18n="feat_exp_desc">Günün antrenman programını, katılan sporcu yoklamasını ve koç notlarını havuz kenarında basmak üzere tek tıkla profesyonel Word (.doc) ve Excel (.xls) olarak indirin.</p>
+                  </div>
+              </div>
+          </div>
 
         <!-- 2. LOGIN / REGISTER VIEW -->
         <div id="login-view" class="hidden max-w-md w-full mx-auto space-y-6 bg-white p-8 rounded-3xl shadow-xl border border-gray-150 animate-fade-in">
@@ -1291,7 +1364,15 @@
                 direct_enter_btn: "Go Directly to Dashboard",
                 reset_accounts: "Clear saved test accounts (Start Fresh)",
                 saved_accounts_title: "Registered Accounts on this device:",
-                click_to_fill: "Click to auto-fill"
+                click_to_fill: "Click to auto-fill",
+                hero_h1: "Swim Coach Pro - Professional Swim Workout & Squad Management",
+                hero_sub: "Advanced swim workout planning, interval pacing, athlete attendance, and physiological volume analytics for coaches.",
+                feat_plan_title: "Structured Workout Planning",
+                feat_plan_desc: "Plan Warm Up, Pre Set, Main Set, and Cool Down with stroke, type, distance, target time, and cycle intervals in seconds.",
+                feat_ana_title: "Physiological Energy Analytics",
+                feat_ana_desc: "Track planned volumes across Aerobic Capacity, Lactate Threshold, and Sprint zones with real-time distribution charts.",
+                feat_exp_title: "Word & Excel Export",
+                feat_exp_desc: "Download formatted training tables, athlete attendance, and coach notes in Word (.doc) or Excel (.xls) formats with one click."
             },
             tr: {
                 login_title: "Swim Coach Pro Yüzme Antrenör Paneline Hoş Geldiniz",
@@ -1413,7 +1494,15 @@
                 direct_enter_btn: "Doğrudan Panele Git",
                 reset_accounts: "Test hesaplarını sıfırla (Sıfırdan Kayıt Ol)",
                 saved_accounts_title: "Bu Cihazdaki Kayıtlı Hesaplar:",
-                click_to_fill: "Tıkla ve Doldur"
+                click_to_fill: "Tıkla ve Doldur",
+                hero_h1: "Swim Coach Pro - Profesyonel Yüzme Antrenmanı ve Sporcu Yönetim Platformu",
+                hero_sub: "Yüzme antrenörleri ve spor kulüpleri için antrenman hazırlama, set planlama, sporcu yoklaması ve detaylı hacim analizi.",
+                feat_plan_title: "Detaylı Antrenman Seti Planlama",
+                feat_plan_desc: "Warm Up, Pre Set, Main Set ve Cool Down bölümleri; stil, çalışma türü, mesafe, hedef derece ve tempo aralıklarıyla antrenmanlarınızı saniyeler içinde kurgulayın.",
+                feat_ana_title: "Fizyolojik Şiddet ve Enerji Analizi",
+                feat_ana_desc: "Aerobik Kapasite (A1-A3), Laktat Eşiği (End1-3) ve Sprint bölgelerinde planlanan toplam hacimleri interaktif halka ve dağılım grafiklerinde anlık takip edin.",
+                feat_exp_title: "Word ve Excel Formatında Dışa Aktarma",
+                feat_exp_desc: "Günün antrenman programını, katılan sporcu yoklamasını ve koç notlarını havuz kenarında basmak üzere tek tıkla profesyonel Word (.doc) ve Excel (.xls) olarak indirin."
             },
             de: {
                 login_title: "Willkommen beim Swim Coach Pro Schwimmtrainer-Panel",
