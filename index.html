@@ -147,6 +147,11 @@
                         class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300 text-xs" data-i18n="go_back">
                         Go Back
                     </button>
+                    <div class="text-center pt-1.5">
+                        <button type="button" onclick="resetAllRegisteredUsers()" class="text-[11px] text-gray-400 hover:text-red-500 transition-colors underline" data-i18n="reset_accounts">
+                            Test hesaplarını sıfırla (Sıfırdan Kayıt Ol)
+                        </button>
+                    </div>
                 </div>
             </form>
 
@@ -226,8 +231,8 @@
 
                 <div class="pt-2 flex flex-col space-y-2">
                     <button type="submit"
-                        class="w-full py-3 bg-brandPink hover:bg-opacity-95 text-white font-semibold rounded-xl shadow-lg shadow-brandPink/15 hover:shadow-brandPink/25 transition-all duration-300 text-sm" data-i18n="continue_verify_btn">
-                        Continue & Verify Email
+                        class="w-full py-3 bg-brandPink hover:bg-opacity-95 text-white font-semibold rounded-xl shadow-lg shadow-brandPink/15 hover:shadow-brandPink/25 transition-all duration-300 text-sm" data-i18n="register_btn">
+                        Create Account
                     </button>
                     <button type="button" onclick="showView('landing')"
                         class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300 text-xs" data-i18n="go_back">
@@ -1005,65 +1010,38 @@
         </div>
     </div>
 
-    <!-- 5. EMAIL VERIFICATION MODAL -->
-    <div id="email-verify-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full flex flex-col shadow-2xl border border-gray-100 animate-fade-in overflow-hidden">
-            <!-- Header -->
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-xl bg-brandPink/10 text-brandPink flex items-center justify-center font-black">
-                        <i class="fa-solid fa-envelope-circle-check text-lg"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-brandBlue" data-i18n="verify_email_title">Verify Your Email</h3>
-                        <p class="text-xs text-gray-400" data-i18n="verify_email_sub">Enter the 6-digit confirmation code</p>
-                    </div>
-                </div>
-                <button onclick="closeEmailVerifyModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition-colors">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+    <!-- 5. REGISTRATION SUCCESS CELEBRATION MODAL -->
+    <div id="reg-success-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center space-y-5 shadow-2xl border border-gray-100 animate-fade-in overflow-hidden">
+            <div class="w-16 h-16 mx-auto rounded-3xl bg-emerald-50 text-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/10">
+                <i class="fa-solid fa-circle-check text-4xl"></i>
             </div>
 
-            <!-- Body -->
-            <div class="p-6 space-y-4">
-                <!-- Info text -->
-                <p class="text-xs text-gray-600 leading-relaxed">
-                    <span data-i18n="verify_code_sent_to">We have dispatched a 6-digit verification code to:</span><br>
-                    <strong id="verify-modal-email" class="text-brandBlue font-bold">coach@example.com</strong>
-                </p>
+            <div class="space-y-1.5">
+                <h3 class="text-xl font-black text-brandBlue" data-i18n="reg_success_title">Kayıt İşlemi Başarıyla Tamamlandı!</h3>
+                <p class="text-xs text-gray-500" data-i18n="reg_success_sub">Hesabınız kullanıma hazır.</p>
+            </div>
 
-                <!-- Code Input -->
-                <div>
-                    <label for="verify-code-input" class="block text-xs font-semibold text-gray-700 mb-1.5" data-i18n="enter_verification_code">Confirmation Code</label>
-                    <input type="text" id="verify-code-input" maxlength="6"
-                        class="w-full text-center py-3 bg-gray-50 border-2 border-brandBlue/30 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-2xl font-extrabold text-brandBlue tracking-widest placeholder:text-gray-300 placeholder:tracking-widest"
-                        placeholder="••••••" autocomplete="one-time-code">
+            <div class="p-4 bg-gray-50 rounded-2xl border border-gray-200 text-xs text-gray-700 leading-relaxed text-left space-y-1.5">
+                <div><span class="text-gray-400 font-semibold" data-i18n="reg_fullname">Antrenör / Ad Soyad:</span> <strong id="success-modal-name" class="text-brandBlue"></strong></div>
+                <div><span class="text-gray-400 font-semibold" data-i18n="email">E-Posta:</span> <strong id="success-modal-email" class="text-brandBlue"></strong></div>
+                <div class="pt-1 text-[11px] text-emerald-700 font-medium flex items-center space-x-1.5">
+                    <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                    <span data-i18n="reg_success_msg">Artık bu e-posta ve şifrenizle sisteme giriş yapabilirsiniz.</span>
                 </div>
+            </div>
 
-                <div id="verify-error" class="hidden text-brandPink text-xs font-medium flex items-center space-x-1.5">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                    <span id="verify-error-text" data-i18n="error_invalid_code">Invalid confirmation code!</span>
-                </div>
-
-                <!-- Simulation Info Banner -->
-                <div class="p-3 bg-blue-50/80 border border-blue-200 rounded-2xl flex items-start space-x-2.5">
-                    <i class="fa-solid fa-inbox text-brandBlue mt-0.5 text-sm"></i>
-                    <div class="text-[11px] text-gray-700 leading-tight">
-                        <span class="font-bold text-brandBlue" data-i18n="email_inbox_notice">Email Sent!</span>
-                        <div id="verify-code-sim-box" class="mt-1 font-mono font-bold text-brandPink text-xs select-all">Code: ------</div>
-                    </div>
-                </div>
-
-                <div class="pt-2 flex flex-col space-y-2">
-                    <button type="button" onclick="confirmEmailVerification()"
-                        class="w-full py-3 bg-brandPink hover:bg-opacity-95 text-white font-bold rounded-xl shadow-lg shadow-brandPink/15 hover:shadow-brandPink/25 transition-all duration-300 text-sm" data-i18n="verify_and_create_btn">
-                        Verify & Complete Registration
-                    </button>
-                    <button type="button" onclick="resendVerificationCode()"
-                        class="w-full py-2 text-xs font-semibold text-gray-500 hover:text-brandBlue transition-colors" data-i18n="resend_code_btn">
-                        Resend Code
-                    </button>
-                </div>
+            <div class="pt-1 flex flex-col space-y-2">
+                <button type="button" onclick="goToLoginFromSuccess()"
+                    class="w-full py-3 bg-brandBlue hover:bg-opacity-95 text-white font-bold rounded-xl shadow-lg shadow-brandBlue/15 hover:shadow-brandBlue/25 transition-all text-sm flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-right-to-bracket text-xs"></i>
+                    <span data-i18n="login_btn">Giriş Yap</span>
+                </button>
+                <button type="button" onclick="enterDirectlyFromSuccess()"
+                    class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl shadow-sm transition-all text-xs flex items-center justify-center space-x-1.5">
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                    <span data-i18n="direct_enter_btn">Doğrudan Panele Git</span>
+                </button>
             </div>
         </div>
     </div>
@@ -1229,7 +1207,12 @@
                 error_login: "Invalid email address or password!",
                 error_email_exists: "An account with this email already exists! Please log in.",
                 error_fill_all: "Please fill in all required fields.",
-                error_must_agree: "Please accept the Terms & Privacy Policy."
+                error_must_agree: "Please accept the Terms & Privacy Policy.",
+                reg_success_title: "Registration Completed Successfully!",
+                reg_success_sub: "Your coach account is active and ready to use.",
+                reg_success_msg: "You can now log in using your registered email and password.",
+                direct_enter_btn: "Go Directly to Dashboard",
+                reset_accounts: "Clear saved test accounts (Start Fresh)"
             },
             tr: {
                 login_title: "Swim Coach Pro Yüzme Antrenör Paneline Hoş Geldiniz",
@@ -1344,7 +1327,12 @@
                 error_password_mismatch: "Şifreler birbiriyle eşleşmiyor! Lütfen kontrol edin.",
                 error_email_exists: "Bu e-posta adresiyle kayıtlı bir hesap zaten var! Lütfen giriş yapın.",
                 error_fill_all: "Lütfen tüm zorunlu alanları doldurun.",
-                error_must_agree: "Lütfen Kullanım Koşulları ve Gizlilik Politikasını onaylayın."
+                error_must_agree: "Lütfen Kullanım Koşulları ve Gizlilik Politikasını onaylayın.",
+                reg_success_title: "Kayıt İşlemi Başarıyla Tamamlandı!",
+                reg_success_sub: "Antrenör hesabınız hazır.",
+                reg_success_msg: "Artık bu e-posta ve şifrenizle sisteme giriş yapabilirsiniz.",
+                direct_enter_btn: "Doğrudan Panele Git",
+                reset_accounts: "Test hesaplarını sıfırla (Sıfırdan Kayıt Ol)"
             },
             de: {
                 login_title: "Willkommen beim Swim Coach Pro Schwimmtrainer-Panel",
@@ -2081,102 +2069,89 @@
 
             const users = getRegisteredUsers();
             if (users[email]) {
-                errorText.textContent = dict['error_email_exists'] || "An account with this email already exists! Please log in.";
+                const loginBtnLabel = dict['login_btn'] || (currentLang === 'tr' ? 'Giriş Yap' : 'Log In');
+                errorText.innerHTML = `${dict['error_email_exists'] || 'Bu e-posta zaten kayıtlı.'} <button type="button" onclick="switchToLoginWithEmail('${email}')" class="underline font-bold text-brandBlue ml-1">${loginBtnLabel}</button>`;
                 errorContainer.classList.remove('hidden');
                 return;
             }
 
             errorContainer.classList.add('hidden');
 
-            // Generate 6-digit confirmation code
-            const code = String(Math.floor(100000 + Math.random() * 900000));
-            
-            // Save pending registration in memory
-            pendingRegistration = {
-                fullName: fullName,
-                email: email,
+            // Save new user using email as unique key
+            users[email] = {
                 password: password,
-                code: code,
-                createdAt: Date.now()
-            };
-
-            // Open Email Verification Modal
-            document.getElementById('verify-modal-email').textContent = email;
-            document.getElementById('verify-code-sim-box').textContent = `${dict['email_inbox_notice'] || 'Code:'} ${code}`;
-            document.getElementById('verify-code-input').value = '';
-            document.getElementById('verify-error').classList.add('hidden');
-            document.getElementById('email-verify-modal').classList.remove('hidden');
-            
-            setTimeout(() => {
-                const inputEl = document.getElementById('verify-code-input');
-                if (inputEl) inputEl.focus();
-            }, 100);
-        }
-
-        // Confirm 6-Digit Email Code & Activate Account
-        function confirmEmailVerification() {
-            const codeEntered = document.getElementById('verify-code-input').value.trim();
-            const verifyError = document.getElementById('verify-error');
-            const verifyErrorText = document.getElementById('verify-error-text');
-            const dict = translations[currentLang] || translations['en'];
-
-            if (!pendingRegistration) {
-                verifyErrorText.textContent = "Registration session expired. Please start again.";
-                verifyError.classList.remove('hidden');
-                return;
-            }
-
-            if (codeEntered !== pendingRegistration.code) {
-                verifyErrorText.textContent = dict['error_invalid_code'] || "Invalid confirmation code! Please try again.";
-                verifyError.classList.remove('hidden');
-                return;
-            }
-
-            // Code Verified! Officially activate and save user
-            const users = getRegisteredUsers();
-            users[pendingRegistration.email] = {
-                password: pendingRegistration.password,
-                displayName: pendingRegistration.fullName,
-                email: pendingRegistration.email,
+                displayName: fullName,
+                email: email,
                 createdAt: new Date().toISOString()
             };
             localStorage.setItem('tan_registered_users', JSON.stringify(users));
 
-            // Log in as new user immediately
-            currentUser = pendingRegistration.email;
-            const displayName = pendingRegistration.fullName;
-            pendingRegistration = null;
+            // Track registered user for success modal actions
+            registeredSuccessUser = {
+                email: email,
+                fullName: fullName
+            };
 
-            closeEmailVerifyModal();
+            // Display Celebration / Registration Success Modal!
+            document.getElementById('success-modal-name').textContent = fullName;
+            document.getElementById('success-modal-email').textContent = email;
+            document.getElementById('reg-success-modal').classList.remove('hidden');
+        }
 
-            document.getElementById('user-display-name').textContent = displayName.toLowerCase();
-            const userGreetingEl = document.getElementById('header-username');
-            if (userGreetingEl) {
-                userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${displayName.toLowerCase()}`;
+        let registeredSuccessUser = null;
+
+        function goToLoginFromSuccess() {
+            document.getElementById('reg-success-modal').classList.add('hidden');
+            switchAuthMode('login');
+            if (registeredSuccessUser) {
+                document.getElementById('login-email').value = registeredSuccessUser.email;
+                document.getElementById('password').value = '';
+                const pwdEl = document.getElementById('password');
+                if (pwdEl) pwdEl.focus();
             }
-
-            initSwimSetsData();
-            document.getElementById('filter-date').value = selectedDate;
-
-            loadNotes();
-            loadSwimSets();
-            loadCustomSelectOptions();
-            showView('dashboard');
         }
 
-        function resendVerificationCode() {
-            if (!pendingRegistration) return;
-            const dict = translations[currentLang] || translations['en'];
-            const newCode = String(Math.floor(100000 + Math.random() * 900000));
-            pendingRegistration.code = newCode;
-            document.getElementById('verify-code-sim-box').textContent = `${dict['email_inbox_notice'] || 'Code:'} ${newCode}`;
-            document.getElementById('verify-code-input').value = '';
-            document.getElementById('verify-error').classList.add('hidden');
+        function enterDirectlyFromSuccess() {
+            document.getElementById('reg-success-modal').classList.add('hidden');
+            if (registeredSuccessUser) {
+                currentUser = registeredSuccessUser.email;
+                const displayName = registeredSuccessUser.fullName;
+                const dict = translations[currentLang] || translations['en'];
+                
+                document.getElementById('user-display-name').textContent = displayName.toLowerCase();
+                const userGreetingEl = document.getElementById('header-username');
+                if (userGreetingEl) {
+                    userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${displayName.toLowerCase()}`;
+                }
+
+                initSwimSetsData();
+                document.getElementById('filter-date').value = selectedDate;
+
+                loadNotes();
+                loadSwimSets();
+                loadCustomSelectOptions();
+                showView('dashboard');
+            }
         }
 
-        function closeEmailVerifyModal() {
-            const modal = document.getElementById('email-verify-modal');
-            if (modal) modal.classList.add('hidden');
+        function switchToLoginWithEmail(email) {
+            switchAuthMode('login');
+            document.getElementById('login-email').value = email;
+            document.getElementById('password').value = '';
+            const pwdEl = document.getElementById('password');
+            if (pwdEl) pwdEl.focus();
+        }
+
+        function resetAllRegisteredUsers() {
+            const isTr = currentLang === 'tr';
+            const msg = isTr 
+                ? "Tüm kayıtlı test hesapları silinecektir. Sıfırdan tekrar kayıt olabileceksiniz. Onaylıyor musunuz?"
+                : "All registered test accounts will be cleared. Are you sure you want to reset?";
+            if (confirm(msg)) {
+                localStorage.removeItem('tan_registered_users');
+                alert(isTr ? "Kayıtlı hesaplar temizlendi! Şimdi sıfırdan kayıt olabilirsiniz." : "Registered accounts cleared! You can now register fresh.");
+                location.reload();
+            }
         }
 
         // Default Swim Sets Grid rows if empty
@@ -2244,7 +2219,7 @@
                 document.getElementById('reg-password-confirm').value = '';
                 document.getElementById('reg-agree-terms').checked = false;
                 document.getElementById('register-error').classList.add('hidden');
-                pendingRegistration = null;
+                registeredSuccessUser = null;
                 validatePasswordRules();
                 switchAuthMode('login');
             }
