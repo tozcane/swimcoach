@@ -998,112 +998,168 @@
                     </table>
                 </div>
 
-                <!-- MOBILE & TABLET RESPONSIVE TOUCH SET BUILDER (< 1024px) -->
-                <div class="block lg:hidden space-y-4 bg-gray-50/70 p-4 rounded-2xl border border-gray-200 shadow-xs">
-                    <!-- 1. Section (Bölüm) -->
-                    <div class="space-y-1.5">
+                <!-- MOBILE & TABLET RESPONSIVE TOUCH SET BUILDER (< 1024px: ALT ALTA KOLAY KULLANIM) -->
+                <div class="block lg:hidden space-y-3 bg-gray-50/80 p-3.5 sm:p-4 rounded-3xl border border-gray-200 shadow-sm">
+                    <!-- 1. Bölüm (Section) -->
+                    <div class="space-y-1.5 bg-white p-3.5 rounded-2xl border border-gray-200/90 shadow-2xs">
                         <div class="flex items-center justify-between">
-                            <label class="text-[11px] font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1">
-                                <i class="fa-solid fa-layer-group text-brandPink text-xs"></i>
-                                <span data-i18n="section">Bölüm / Section</span>
+                            <label class="text-xs font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1.5">
+                                <i class="fa-solid fa-layer-group text-brandPink text-sm"></i>
+                                <span data-i18n="section">1. Bölüm (Section)</span>
                             </label>
-                            <button type="button" onclick="openColumnCustomDropdown('s-section', event)" class="text-[10px] text-brandPink font-bold hover:underline cursor-pointer">
+                            <button type="button" onclick="openColumnCustomDropdown('s-section', event)" class="text-[11px] text-brandPink font-bold hover:underline cursor-pointer">
                                 <span data-i18n="more_options">+ Diğer / Özel</span>
                             </button>
                         </div>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="mob-section-buttons">
-                            <button type="button" onclick="selectCustomDropdownValue('s-section', 'Warm Up')" id="mob-sec-Warm-Up" class="py-2.5 px-2 rounded-xl border text-xs font-black transition-all bg-brandBlue text-white border-brandBlue shadow-xs cursor-pointer">
-                                <span data-i18n="warm_up">Warm Up</span>
+                        <div class="grid grid-cols-2 gap-2 pt-1" id="mob-section-buttons">
+                            <button type="button" onclick="selectCustomDropdownValue('s-section', 'Warm Up')" id="mob-sec-Warm-Up" class="py-3 px-3 rounded-xl border text-xs font-black transition-all bg-brandBlue text-white border-brandBlue shadow-xs cursor-pointer text-center">
+                                <span data-i18n="warm_up">Warm Up (Isınma)</span>
                             </button>
-                            <button type="button" onclick="selectCustomDropdownValue('s-section', 'Pre Set')" id="mob-sec-Pre-Set" class="py-2.5 px-2 rounded-xl border text-xs font-black transition-all bg-white text-gray-700 border-gray-200 hover:bg-gray-100 cursor-pointer">
-                                <span data-i18n="pre_set">Pre Set</span>
+                            <button type="button" onclick="selectCustomDropdownValue('s-section', 'Pre Set')" id="mob-sec-Pre-Set" class="py-3 px-3 rounded-xl border text-xs font-black transition-all bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 cursor-pointer text-center">
+                                <span data-i18n="pre_set">Pre Set (Hazırlık)</span>
                             </button>
-                            <button type="button" onclick="selectCustomDropdownValue('s-section', 'Main Set')" id="mob-sec-Main-Set" class="py-2.5 px-2 rounded-xl border text-xs font-black transition-all bg-white text-gray-700 border-gray-200 hover:bg-gray-100 cursor-pointer">
-                                <span data-i18n="main_set">Main Set</span>
+                            <button type="button" onclick="selectCustomDropdownValue('s-section', 'Main Set')" id="mob-sec-Main-Set" class="py-3 px-3 rounded-xl border text-xs font-black transition-all bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 cursor-pointer text-center">
+                                <span data-i18n="main_set">Main Set (Ana Set)</span>
                             </button>
-                            <button type="button" onclick="selectCustomDropdownValue('s-section', 'Cool Down')" id="mob-sec-Cool-Down" class="py-2.5 px-2 rounded-xl border text-xs font-black transition-all bg-white text-gray-700 border-gray-200 hover:bg-gray-100 cursor-pointer">
-                                <span data-i18n="cool_down">Cool Down</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 2. T1, T2 & Mesafe (3 Cards) -->
-                    <div class="grid grid-cols-3 gap-2">
-                        <div class="space-y-1">
-                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="t1">T1 (Dış Set)</label>
-                            <button type="button" onclick="openColumnCustomDropdown('s-reps1', event)" class="w-full py-3 px-2 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-black text-sm flex items-center justify-between shadow-2xs cursor-pointer">
-                                <span id="mob-label-s-reps1" class="truncate w-full text-center">-</span>
-                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
-                            </button>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="t2">T2 (İç Set)</label>
-                            <button type="button" onclick="openColumnCustomDropdown('s-reps2', event)" class="w-full py-3 px-2 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-black text-sm flex items-center justify-between shadow-2xs cursor-pointer">
-                                <span id="mob-label-s-reps2" class="truncate w-full text-center">-</span>
-                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
-                            </button>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="distance">Mesafe (m)</label>
-                            <button type="button" onclick="openColumnCustomDropdown('s-distance', event)" class="w-full py-3 px-2 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-sm flex items-center justify-between shadow-2xs cursor-pointer">
-                                <span id="mob-label-s-distance" class="truncate w-full text-center">-</span>
-                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
+                            <button type="button" onclick="selectCustomDropdownValue('s-section', 'Cool Down')" id="mob-sec-Cool-Down" class="py-3 px-3 rounded-xl border text-xs font-black transition-all bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 cursor-pointer text-center">
+                                <span data-i18n="cool_down">Cool Down (Bitiriş)</span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- 3. Stil & Tür -->
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="space-y-1">
-                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="stroke">Stil / Stroke</label>
-                            <button type="button" onclick="openColumnCustomDropdown('s-stroke', event)" class="w-full py-2.5 px-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-bold text-xs flex items-center justify-between shadow-2xs cursor-pointer">
-                                <span id="mob-label-s-stroke" class="truncate">-</span>
-                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400 ml-1"></i>
-                            </button>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="type">Tür / Type</label>
-                            <button type="button" onclick="openColumnCustomDropdown('s-type', event)" class="w-full py-2.5 px-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-bold text-xs flex items-center justify-between shadow-2xs cursor-pointer">
-                                <span id="mob-label-s-type" class="truncate">-</span>
-                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400 ml-1"></i>
-                            </button>
-                        </div>
+                    <!-- 2. Set Tekrarı T1 (Dış Set) -->
+                    <div class="space-y-1.5 bg-white p-3.5 rounded-2xl border border-gray-200/90 shadow-2xs">
+                        <label class="text-xs font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1.5">
+                            <i class="fa-solid fa-repeat text-blue-600 text-sm"></i>
+                            <span data-i18n="t1">2. Dış Set Tekrarı (T1)</span>
+                        </label>
+                        <button type="button" id="mob-trigger-s-reps1" onclick="openColumnCustomDropdown('s-reps1', event)" class="w-full py-3 px-4 bg-gray-50 hover:bg-blue-50/50 border border-gray-200 rounded-xl text-brandBlue font-black text-sm flex items-center justify-between shadow-2xs cursor-pointer transition-all">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs text-gray-400 font-bold">Tekrar:</span>
+                                <span id="mob-label-s-reps1" class="text-base font-black text-brandBlue">-</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
                     </div>
 
-                    <!-- 4. Ekipman & Şiddet -->
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="space-y-1">
-                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="equipment">Ekipman</label>
-                            <button type="button" onclick="openColumnCustomDropdown('s-equipment', event)" class="w-full py-2.5 px-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-bold text-xs flex items-center justify-between shadow-2xs cursor-pointer">
-                                <span id="mob-label-s-equipment" class="truncate">-</span>
-                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400 ml-1"></i>
-                            </button>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="intensity">Şiddet / Zone</label>
-                            <button type="button" onclick="openColumnCustomDropdown('s-zone', event)" class="w-full py-2.5 px-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-black text-xs flex items-center justify-between shadow-2xs cursor-pointer">
-                                <span id="mob-label-s-zone" class="truncate w-full text-center">-</span>
-                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400 ml-1"></i>
-                            </button>
-                        </div>
+                    <!-- 3. Alt Tekrar T2 (İç Set) -->
+                    <div class="space-y-1.5 bg-white p-3.5 rounded-2xl border border-gray-200/90 shadow-2xs">
+                        <label class="text-xs font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1.5">
+                            <i class="fa-solid fa-rotate text-indigo-600 text-sm"></i>
+                            <span data-i18n="t2">3. İç Set / Alt Tekrar (T2)</span>
+                        </label>
+                        <button type="button" id="mob-trigger-s-reps2" onclick="openColumnCustomDropdown('s-reps2', event)" class="w-full py-3 px-4 bg-gray-50 hover:bg-blue-50/50 border border-gray-200 rounded-xl text-brandBlue font-black text-sm flex items-center justify-between shadow-2xs cursor-pointer transition-all">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs text-gray-400 font-bold">Alt Tekrar:</span>
+                                <span id="mob-label-s-reps2" class="text-base font-black text-brandBlue">-</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
                     </div>
 
-                    <!-- 5. Hedef Süre & @ Tempo -->
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="space-y-1">
-                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="target_time">Hedef Süre</label>
-                            <button type="button" onclick="openTimeKeypad('s-target-time')" class="w-full py-2.5 px-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-xs flex items-center justify-center space-x-1 shadow-2xs cursor-pointer">
-                                <i class="fa-regular fa-clock text-gray-400 text-[10px]"></i>
-                                <span id="mob-label-s-target-time">00:00.00</span>
-                            </button>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="interval">@ Tempo</label>
-                            <button type="button" onclick="openTimeKeypad('s-interval')" class="w-full py-2.5 px-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-xs flex items-center justify-center space-x-1 shadow-2xs cursor-pointer">
-                                <span class="text-gray-400 font-black text-xs">@</span>
-                                <span id="mob-label-s-interval">00:00.00</span>
-                            </button>
-                        </div>
+                    <!-- 4. Mesafe (Distance) -->
+                    <div class="space-y-1.5 bg-white p-3.5 rounded-2xl border border-gray-200/90 shadow-2xs">
+                        <label class="text-xs font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1.5">
+                            <i class="fa-solid fa-ruler-horizontal text-emerald-600 text-sm"></i>
+                            <span data-i18n="distance">4. Yüzme Mesafesi (Metre)</span>
+                        </label>
+                        <button type="button" id="mob-trigger-s-distance" onclick="openColumnCustomDropdown('s-distance', event)" class="w-full py-3 px-4 bg-gray-50 hover:bg-emerald-50/50 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-base flex items-center justify-between shadow-2xs cursor-pointer transition-all">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs text-gray-400 font-bold font-sans">Mesafe:</span>
+                                <span id="mob-label-s-distance" class="text-base font-black text-brandBlue">-</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                    </div>
+
+                    <!-- 5. Stil (Stroke) -->
+                    <div class="space-y-1.5 bg-white p-3.5 rounded-2xl border border-gray-200/90 shadow-2xs">
+                        <label class="text-xs font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1.5">
+                            <i class="fa-solid fa-person-swimming text-cyan-600 text-sm"></i>
+                            <span data-i18n="stroke">5. Stil (Stroke)</span>
+                        </label>
+                        <button type="button" id="mob-trigger-s-stroke" onclick="openColumnCustomDropdown('s-stroke', event)" class="w-full py-3 px-4 bg-gray-50 hover:bg-cyan-50/50 border border-gray-200 rounded-xl text-brandBlue font-bold text-sm flex items-center justify-between shadow-2xs cursor-pointer transition-all">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs text-gray-400 font-bold">Stil:</span>
+                                <span id="mob-label-s-stroke" class="text-sm font-black text-brandBlue truncate">-</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                    </div>
+
+                    <!-- 6. Çalışma Türü (Type) -->
+                    <div class="space-y-1.5 bg-white p-3.5 rounded-2xl border border-gray-200/90 shadow-2xs">
+                        <label class="text-xs font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1.5">
+                            <i class="fa-solid fa-stopwatch text-teal-600 text-sm"></i>
+                            <span data-i18n="type">6. Çalışma Türü (Type)</span>
+                        </label>
+                        <button type="button" id="mob-trigger-s-type" onclick="openColumnCustomDropdown('s-type', event)" class="w-full py-3 px-4 bg-gray-50 hover:bg-teal-50/50 border border-gray-200 rounded-xl text-brandBlue font-bold text-sm flex items-center justify-between shadow-2xs cursor-pointer transition-all">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs text-gray-400 font-bold">Tür:</span>
+                                <span id="mob-label-s-type" class="text-sm font-black text-brandBlue truncate">-</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                    </div>
+
+                    <!-- 7. Ekipman (Equipment) -->
+                    <div class="space-y-1.5 bg-white p-3.5 rounded-2xl border border-gray-200/90 shadow-2xs">
+                        <label class="text-xs font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1.5">
+                            <i class="fa-solid fa-vest-patches text-purple-600 text-sm"></i>
+                            <span data-i18n="equipment">7. Ekipman (Equipment)</span>
+                        </label>
+                        <button type="button" id="mob-trigger-s-equipment" onclick="openColumnCustomDropdown('s-equipment', event)" class="w-full py-3 px-4 bg-gray-50 hover:bg-purple-50/50 border border-gray-200 rounded-xl text-brandBlue font-bold text-sm flex items-center justify-between shadow-2xs cursor-pointer transition-all">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs text-gray-400 font-bold">Ekipman:</span>
+                                <span id="mob-label-s-equipment" class="text-sm font-black text-brandBlue truncate">-</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                    </div>
+
+                    <!-- 8. Hedef Süre (Target Time) -->
+                    <div class="space-y-1.5 bg-white p-3.5 rounded-2xl border border-gray-200/90 shadow-2xs">
+                        <label class="text-xs font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1.5">
+                            <i class="fa-regular fa-clock text-amber-500 text-sm"></i>
+                            <span data-i18n="target_time">8. Hedef Süre</span>
+                        </label>
+                        <button type="button" onclick="openTimeKeypad('s-target-time')" class="w-full py-3 px-4 bg-gray-50 hover:bg-amber-50/50 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-base flex items-center justify-between shadow-2xs cursor-pointer transition-all">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs text-gray-400 font-bold font-sans">Süre:</span>
+                                <span id="mob-label-s-target-time" class="text-base font-black text-brandBlue">00:00.00</span>
+                            </div>
+                            <i class="fa-solid fa-keyboard text-xs text-gray-400"></i>
+                        </button>
+                    </div>
+
+                    <!-- 9. @ Tempo (Interval) -->
+                    <div class="space-y-1.5 bg-white p-3.5 rounded-2xl border border-gray-200/90 shadow-2xs">
+                        <label class="text-xs font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1.5">
+                            <i class="fa-solid fa-stopwatch-20 text-orange-500 text-sm"></i>
+                            <span data-i18n="interval">9. @ Tempo / Dinlenme Aralığı</span>
+                        </label>
+                        <button type="button" onclick="openTimeKeypad('s-interval')" class="w-full py-3 px-4 bg-gray-50 hover:bg-orange-50/50 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-base flex items-center justify-between shadow-2xs cursor-pointer transition-all">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs text-gray-400 font-bold font-sans">Tempo:</span>
+                                <span id="mob-label-s-interval" class="text-base font-black text-brandBlue">@ 00:00.00</span>
+                            </div>
+                            <i class="fa-solid fa-keyboard text-xs text-gray-400"></i>
+                        </button>
+                    </div>
+
+                    <!-- 10. Şiddet (Intensity / Zone) -->
+                    <div class="space-y-1.5 bg-white p-3.5 rounded-2xl border border-gray-200/90 shadow-2xs">
+                        <label class="text-xs font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1.5">
+                            <i class="fa-solid fa-gauge-high text-brandPink text-sm"></i>
+                            <span data-i18n="intensity">10. Antrenman Şiddeti (Zone)</span>
+                        </label>
+                        <button type="button" id="mob-trigger-s-zone" onclick="openColumnCustomDropdown('s-zone', event)" class="w-full py-3 px-4 bg-gray-50 hover:bg-pink-50/50 border border-gray-200 rounded-xl text-brandBlue font-black text-sm flex items-center justify-between shadow-2xs cursor-pointer transition-all">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs text-gray-400 font-bold">Şiddet:</span>
+                                <span id="mob-label-s-zone" class="text-sm font-black text-brandPink">-</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -6667,7 +6723,7 @@
             closeOptionContextMenu();
 
             const popover = document.getElementById('column-custom-dropdown-popover');
-            const trigger = document.getElementById(`trigger-${selectId}`);
+            const trigger = event?.currentTarget || document.getElementById(`trigger-${selectId}`) || document.getElementById(`mob-trigger-${selectId}`);
             if (!popover || !trigger) return;
 
             // If already open for same, toggle it off
@@ -6682,24 +6738,41 @@
             renderColumnCustomDropdown(selectId);
 
             popover.classList.remove('hidden');
-            const rect = trigger.getBoundingClientRect();
-            const popWidth = Math.max(rect.width, 220);
-            
-            let posX = rect.left;
-            let posY = rect.bottom + 4;
 
-            if (posX + popWidth > window.innerWidth - 10) {
-                posX = window.innerWidth - popWidth - 10;
+            const isMobile = window.innerWidth < 768;
+            if (isMobile) {
+                popover.style.width = 'calc(100vw - 32px)';
+                popover.style.maxWidth = '440px';
+                popover.style.left = '16px';
+                popover.style.right = '16px';
+                popover.style.margin = '0 auto';
+                const rect = trigger.getBoundingClientRect();
+                if (rect.bottom + 260 < window.innerHeight) {
+                    popover.style.top = `${rect.bottom + 6}px`;
+                } else {
+                    popover.style.top = `${Math.max(20, rect.top - 260)}px`;
+                }
+            } else {
+                const rect = trigger.getBoundingClientRect();
+                const popWidth = Math.max(rect.width, 220);
+                
+                let posX = rect.left;
+                let posY = rect.bottom + 4;
+
+                if (posX + popWidth > window.innerWidth - 10) {
+                    posX = window.innerWidth - popWidth - 10;
+                }
+                if (posX < 10) posX = 10;
+
+                if (posY + 280 > window.innerHeight && rect.top > 280) {
+                    posY = rect.top - 285;
+                }
+
+                popover.style.width = `${popWidth}px`;
+                popover.style.left = `${posX}px`;
+                popover.style.top = `${posY}px`;
+                popover.style.margin = '0';
             }
-            if (posX < 10) posX = 10;
-
-            if (posY + 280 > window.innerHeight && rect.top > 280) {
-                posY = rect.top - 285;
-            }
-
-            popover.style.width = `${popWidth}px`;
-            popover.style.left = `${posX}px`;
-            popover.style.top = `${posY}px`;
         }
 
         function renderColumnCustomDropdown(selectId) {
