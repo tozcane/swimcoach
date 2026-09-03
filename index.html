@@ -827,16 +827,16 @@
                             </div>
                             <div>
                                 <h5 class="text-sm font-black text-brandBlue flex items-center space-x-2">
-                                    <span>Günün Antrenmanına Katılan Sporcular & Notlar</span>
+                                    <span data-i18n="stats_attended_title">Günün Antrenmanına Katılan Sporcular & Notlar</span>
                                     <span id="stats-attended-count-badge" class="px-2.5 py-0.5 rounded-full text-[10.5px] font-black bg-emerald-100 text-emerald-800">0 Sporcu</span>
                                 </h5>
-                                <p class="text-[11px] text-gray-400 font-medium">Bu tarihteki yoklamaya göre katılan sporcular ve her birine özel antrenör değerlendirme notları.</p>
+                                <p class="text-[11px] text-gray-400 font-medium" data-i18n="stats_attended_desc">Bu tarihteki yoklamaya göre katılan sporcular ve her birine özel antrenör değerlendirme notları.</p>
                             </div>
                         </div>
                         <div class="flex items-center space-x-2">
                             <button onclick="openSquadModal()" class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl text-xs transition-colors flex items-center space-x-1.5 cursor-pointer shadow-sm">
                                 <i class="fa-solid fa-users-gear text-xs"></i>
-                                <span>Yoklamayı / Kadroyu Düzenle</span>
+                                <span data-i18n="edit_roster_btn">Yoklamayı / Kadroyu Düzenle</span>
                             </button>
                         </div>
                     </div>
@@ -1309,7 +1309,7 @@
                         <i class="fa-solid fa-download"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-extrabold text-brandBlue">Antrenmanı Dışa Aktar</h3>
+                        <h3 class="text-lg font-extrabold text-brandBlue" data-i18n="export_workout_title">Antrenmanı Dışa Aktar</h3>
                         <p id="export-modal-date-badge" class="text-[11px] text-gray-500 font-bold">Seçili Tarih: <span class="text-brandPink font-extrabold">-</span></p>
                     </div>
                 </div>
@@ -1328,10 +1328,10 @@
                         </div>
                         <div>
                             <div class="font-extrabold text-brandBlue text-sm flex items-center space-x-2">
-                                <span>Yazdır / PDF Olarak Kaydet (Yatay A4)</span>
-                                <span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-100 text-indigo-800 uppercase">Önerilen</span>
+                                <span data-i18n="print_pdf_landscape">Yazdır / PDF Olarak Kaydet (Yatay A4)</span>
+                                <span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-100 text-indigo-800 uppercase" data-i18n="recommended_badge">Önerilen</span>
                             </div>
-                            <div class="text-[11px] text-gray-500 font-medium">Ortalanmış Yatay A4, sporcu not boşlukları ve şık tablo</div>
+                            <div class="text-[11px] text-gray-500 font-medium" data-i18n="print_pdf_desc">Ortalanmış Yatay A4, sporcu not boşlukları ve şık tablo</div>
                         </div>
                     </div>
                     <i class="fa-solid fa-chevron-right text-indigo-500 text-sm opacity-0 group-hover:opacity-100 transition-opacity"></i>
@@ -1345,8 +1345,8 @@
                             <i class="fa-solid fa-file-excel"></i>
                         </div>
                         <div>
-                            <div class="font-extrabold text-brandBlue text-sm">Excel Tablosu (.xls - Yatay)</div>
-                            <div class="text-[11px] text-gray-500 font-medium">Set detayları, mesafeler, tempo, şiddet ve yoklama</div>
+                            <div class="font-extrabold text-brandBlue text-sm" data-i18n="excel_table_landscape">Excel Tablosu (.xls - Yatay)</div>
+                            <div class="text-[11px] text-gray-500 font-medium" data-i18n="excel_table_desc">Set detayları, mesafeler, tempo, şiddet ve yoklama</div>
                         </div>
                     </div>
                     <i class="fa-solid fa-chevron-right text-green-500 text-sm opacity-0 group-hover:opacity-100 transition-opacity"></i>
@@ -1354,7 +1354,7 @@
             </div>
 
             <div class="pt-2 flex justify-end">
-                <button type="button" onclick="closeExportModal()" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-all cursor-pointer">
+                <button type="button" onclick="closeExportModal()" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-all cursor-pointer" data-i18n="close">
                     Kapat
                 </button>
             </div>
@@ -1487,8 +1487,8 @@
                         <i class="fa-solid fa-users"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-extrabold text-brandBlue" data-i18n="swimmer_squad">Sporcu Kadrosu & Detaylı Profiller</h3>
-                        <p class="text-[11px] text-gray-400 font-medium">Sporcuları arayın, fotoğraflarını yönetin ve antrenman geçmişlerini inceleyin.</p>
+                        <h3 class="text-lg font-extrabold text-brandBlue" data-i18n="squad_modal_title">Sporcu Kadrosu & Detaylı Profiller</h3>
+                        <p class="text-[11px] text-gray-400 font-medium" data-i18n="squad_modal_sub">Sporcuları arayın, fotoğraflarını yönetin ve antrenman geçmişlerini inceleyin.</p>
                     </div>
                 </div>
                 <button type="button" onclick="closeSquadModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition-colors">
@@ -1501,17 +1501,17 @@
                 <!-- Search Swimmer -->
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-                    <input type="text" id="squad-search-input" oninput="filterSquadList(this.value)" placeholder="Sporcu ara (isim yazın)..."
+                    <input type="text" id="squad-search-input" oninput="filterSquadList(this.value)" placeholder="Sporcu ara (isim yazın)..." data-i18n-placeholder="search_swimmer_placeholder"
                         class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue font-bold text-xs transition-all">
                 </div>
 
                 <!-- Add New Swimmer -->
                 <div class="flex items-center space-x-2">
-                    <input type="text" id="squad-modal-new-name" placeholder="Yeni sporcu adı..."
+                    <input type="text" id="squad-modal-new-name" placeholder="Yeni sporcu adı..." data-i18n-placeholder="add_new_swimmer_placeholder"
                         class="flex-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue font-bold text-xs transition-all">
                     <button type="button" onclick="addSwimmerFromSquadModal()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md shadow-emerald-600/10 flex items-center space-x-1.5 shrink-0 transition-all">
                         <i class="fa-solid fa-plus text-xs"></i>
-                        <span>Ekle</span>
+                        <span data-i18n="add_btn">Ekle</span>
                     </button>
                 </div>
             </div>
@@ -1523,7 +1523,7 @@
 
             <div class="pt-3 border-t border-gray-100 flex justify-between items-center shrink-0">
                 <span id="squad-count-badge" class="text-xs font-bold text-gray-500">Toplam 0 Sporcu</span>
-                <button type="button" onclick="closeSquadModal()" class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-xs transition-all">
+                <button type="button" onclick="closeSquadModal()" class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-xs transition-all" data-i18n="close">
                     Kapat
                 </button>
             </div>
@@ -2436,7 +2436,6 @@
                 pre_set: "Pre-serie",
                 main_set: "Serie Principale",
                 cool_down: "Defaticamento",
-                none: "Nessuno"
             }
         };
 
@@ -2447,7 +2446,27 @@
                 easy: "Easy", moderate: "Moderate", hard: "Hard", max: "Max", set_structure: "Set Structure",
                 swim: "Swim", stroke_type: "Stroke",
                 add_new_option: "+ Add New...", enter_custom_value: "Enter custom value:",
-                export: "Export"
+                export: "Export",
+                swimmer_squad: "Swimmer Squad",
+                all_days_summary: "All Days Summary",
+                coach_notes: "Coach Notes",
+                export_workout_title: "Export Workout",
+                selected_date_label: "Selected Date:",
+                print_pdf_landscape: "Print / Save as PDF (Landscape A4)",
+                print_pdf_desc: "Centered Landscape A4, swimmer note lines, and crisp table",
+                excel_table_landscape: "Excel Spreadsheet (.xls - Landscape)",
+                excel_table_desc: "Set details, distances, tempo, intensity, and attendance",
+                recommended_badge: "Recommended",
+                stats_attended_title: "Attended Swimmers & Notes",
+                stats_attended_desc: "Attending swimmers from today's roll-call and coach evaluation notes for each athlete.",
+                edit_roster_btn: "Edit Squad / Attendance",
+                squad_modal_title: "Swimmer Squad & Profiles",
+                squad_modal_sub: "Search swimmers, manage photos, and review workout history.",
+                search_swimmer_placeholder: "Search swimmer (type name)...",
+                add_new_swimmer_placeholder: "New swimmer name...",
+                add_btn: "Add",
+                no_attended_swimmers: "No attending swimmers for this workout yet. Please mark attendance from the roll-call panel above.",
+                swimmer_count_suffix: "Swimmers"
             },
             tr: {
                 freestyle: "Serbest", backstroke: "Sırtüstü", breaststroke: "Kurbağalama", butterfly: "Kelebek", medley: "Karışık", kick: "Ayak", drill: "Drill", stroke: "Stil", pull: "Pull",
@@ -2455,49 +2474,195 @@
                 easy: "Kolay", moderate: "Orta", hard: "Zor", max: "Maks", set_structure: "Set Yapısı",
                 swim: "Yüzme", stroke_type: "Stil",
                 add_new_option: "+ Yeni Ekle...", enter_custom_value: "Özel değer girin:",
-                export: "Dışa Aktar"
+                export: "Dışa Aktar",
+                swimmer_squad: "Sporcu Kadrosu",
+                all_days_summary: "Tüm Günler Özeti",
+                coach_notes: "Antrenör Notu",
+                export_workout_title: "Antrenmanı Dışa Aktar",
+                selected_date_label: "Seçili Tarih:",
+                print_pdf_landscape: "Yazdır / PDF Olarak Kaydet (Yatay A4)",
+                print_pdf_desc: "Ortalanmış Yatay A4, sporcu not boşlukları ve şık tablo",
+                excel_table_landscape: "Excel Tablosu (.xls - Yatay)",
+                excel_table_desc: "Set detayları, mesafeler, tempo, şiddet ve yoklama",
+                recommended_badge: "Önerilen",
+                stats_attended_title: "Günün Antrenmanına Katılan Sporcular & Notlar",
+                stats_attended_desc: "Bu tarihteki yoklamaya göre katılan sporcular ve her birine özel antrenör değerlendirme notları.",
+                edit_roster_btn: "Yoklamayı / Kadroyu Düzenle",
+                squad_modal_title: "Sporcu Kadrosu & Detaylı Profiller",
+                squad_modal_sub: "Sporcuları arayın, fotoğraflarını yönetin ve antrenman geçmişlerini inceleyin.",
+                search_swimmer_placeholder: "Sporcu ara (isim yazın)...",
+                add_new_swimmer_placeholder: "Yeni sporcu adı...",
+                add_btn: "Ekle",
+                no_attended_swimmers: "Bu antrenmana katılan sporcu yok. Yukarıdaki yoklama panelinden sporcuları işaretleyebilirsiniz.",
+                swimmer_count_suffix: "Sporcu"
             },
             de: {
                 freestyle: "Freistil", backstroke: "Rückenschwimmen", breaststroke: "Brustschwimmen", butterfly: "Schmetterling", medley: "Lagen", kick: "Beinschlag", drill: "Übung", stroke: "Stil", pull: "Armzug",
                 none: "Keine", fins: "Flossen", paddles: "Handbretter", board: "Brett", pullbuoy: "Pullbuoy", snorkels: "Schnorchel",
                 easy: "Leicht", moderate: "Mäßig", hard: "Schwer", max: "Max", set_structure: "Satzstruktur",
                 swim: "Schwimmen", stroke_type: "Stil",
-                add_new_option: "+ Neu hinzufügen...", enter_custom_value: "Geben Sie einen benutzerdefinierten Wert ein:"
+                add_new_option: "+ Neu hinzufügen...", enter_custom_value: "Geben Sie einen benutzerdefinierten Wert ein:",
+                export: "Exportieren",
+                swimmer_squad: "Schwimmerkader",
+                all_days_summary: "Alle Tage Übersicht",
+                coach_notes: "Trainernotizen",
+                export_workout_title: "Training exportieren",
+                selected_date_label: "Ausgewähltes Datum:",
+                print_pdf_landscape: "Drucken / Als PDF speichern (Querformat A4)",
+                print_pdf_desc: "Zentriertes Querformat A4, Schwimmer-Notizzeilen und übersichtliche Tabelle",
+                excel_table_landscape: "Excel-Tabelle (.xls - Querformat)",
+                excel_table_desc: "Satzdetails, Distanzen, Tempo, Intensität und Anwesenheit",
+                recommended_badge: "Empfohlen",
+                stats_attended_title: "Anwesende Schwimmer & Trainingsnotizen",
+                stats_attended_desc: "Anwesende Schwimmer der heutigen Anwesenheitsliste und Trainernotizen für jeden Athleten.",
+                edit_roster_btn: "Kader / Anwesenheit bearbeiten",
+                squad_modal_title: "Schwimmerkader & Profile",
+                squad_modal_sub: "Schwimmer suchen, Fotos verwalten und Trainingsverlauf einsehen.",
+                search_swimmer_placeholder: "Schwimmer suchen (Name eingeben)...",
+                add_new_swimmer_placeholder: "Neuer Schwimmername...",
+                add_btn: "Hinzufügen",
+                no_attended_swimmers: "Noch keine anwesenden Schwimmer für dieses Training. Bitte oben Anwesenheit erfassen.",
+                swimmer_count_suffix: "Schwimmer"
             },
             zh: {
                 freestyle: "自由泳", backstroke: "仰泳", breaststroke: "蛙泳", butterfly: "蝶泳", medley: "混合泳", kick: "打腿", drill: "技术练习", stroke: "泳姿", pull: "划手",
                 none: "无", fins: "脚蹼", paddles: "划手板", board: "浮板", pullbuoy: "夹腿板", snorkels: "呼吸管",
                 easy: "轻松", moderate: "中等", hard: "困难", max: "最大", set_structure: "组结构",
                 swim: "游泳", stroke_type: "泳姿",
-                add_new_option: "+ 新增...", enter_custom_value: "输入自定义值:"
+                add_new_option: "+ 新增...", enter_custom_value: "输入自定义值:",
+                export: "导出",
+                swimmer_squad: "运动员阵容",
+                all_days_summary: "所有日程汇总",
+                coach_notes: "教练备注",
+                export_workout_title: "导出训练",
+                selected_date_label: "所选日期：",
+                print_pdf_landscape: "打印 / 保存为 PDF (横向 A4)",
+                print_pdf_desc: "居中横向 A4，运动员备注横线与精致表格",
+                excel_table_landscape: "Excel 表格 (.xls - 横向)",
+                excel_table_desc: "组细节、距离、配速、强度和出勤",
+                recommended_badge: "推荐",
+                stats_attended_title: "今日出席运动员与备注",
+                stats_attended_desc: "根据今日出勤情况出席的运动员及针对每位运动员的教练评估备注。",
+                edit_roster_btn: "编辑阵容 / 出勤",
+                squad_modal_title: "运动员阵容与档案",
+                squad_modal_sub: "搜索运动员，管理照片并查看训练历史。",
+                search_swimmer_placeholder: "搜索运动员（输入姓名）...",
+                add_new_swimmer_placeholder: "新运动员姓名...",
+                add_btn: "添加",
+                no_attended_swimmers: "该训练暂无出席运动员。请在上方点名面板中勾选出勤。",
+                swimmer_count_suffix: "位运动员"
             },
             ja: {
                 freestyle: "クロール", backstroke: "背泳ぎ", breaststroke: "平泳ぎ", butterfly: "バタフライ", medley: "メドレー", kick: "キック", drill: "ドリル", stroke: "ストローク", pull: "プル",
                 none: "なし", fins: "フィン", paddles: "パドル", board: "ビート板", pullbuoy: "プルブイ", snorkels: "シュノーケル",
                 easy: "イージー", moderate: "モデレート", hard: "ハード", max: "マックス", set_structure: "セット構成",
                 swim: "スイム", stroke_type: "ストローク",
-                add_new_option: "+ 新規追加...", enter_custom_value: "カスタム値を入力してください:"
+                add_new_option: "+ 新規追加...", enter_custom_value: "カスタム値を入力してください:",
+                export: "エクスポート",
+                swimmer_squad: "選手名簿",
+                all_days_summary: "全日程サマリー",
+                coach_notes: "コーチメモ",
+                export_workout_title: "練習をエクスポート",
+                selected_date_label: "選択された日付：",
+                print_pdf_landscape: "印刷 / PDF保存 (横向き A4)",
+                print_pdf_desc: "中央揃え横向き A4、選手メモ欄付きの見やすい表",
+                excel_table_landscape: "Excel シート (.xls - 横向き)",
+                excel_table_desc: "セット詳細、距離、テンポ、強度、出席確認",
+                recommended_badge: "おすすめ",
+                stats_attended_title: "参加選手と練習メモ",
+                stats_attended_desc: "本日の出席確認による参加選手と各選手への個別コーチ評価メモ。",
+                edit_roster_btn: "名簿・出席確認を編集",
+                squad_modal_title: "選手名簿とプロフィール",
+                squad_modal_sub: "選手を検索し、写真を管理して練習履歴を確認します。",
+                search_swimmer_placeholder: "選手を検索（名前を入力）...",
+                add_new_swimmer_placeholder: "新しい選手名...",
+                add_btn: "追加",
+                no_attended_swimmers: "この練習の参加選手はまだいません。上の出席確認パネルから選択してください。",
+                swimmer_count_suffix: "名"
             },
             ru: {
                 freestyle: "Вольный стиль", backstroke: "На спине", breaststroke: "Брасс", butterfly: "Баттерфляй", medley: "Комплекс", kick: "Ноги", drill: "Упражнения", stroke: "Стиль", pull: "Руки",
                 none: "Нет", fins: "Ласты", paddles: "Лопатки", board: "Доска", pullbuoy: "Колобашка", snorkels: "Трубка",
                 easy: "Легко", moderate: "Умеренно", hard: "Тяжело", max: "Макс", set_structure: "Структура серии",
                 swim: "Плавание", stroke_type: "Стиль",
-                add_new_option: "+ Добавить...", enter_custom_value: "Введите пользовательское значение:"
+                add_new_option: "+ Добавить...", enter_custom_value: "Введите пользовательское значение:",
+                export: "Экспорт",
+                swimmer_squad: "Состав пловцов",
+                all_days_summary: "Сводка за все дни",
+                coach_notes: "Заметки тренера",
+                export_workout_title: "Экспорт тренировки",
+                selected_date_label: "Выбранная дата:",
+                print_pdf_landscape: "Печать / Сохранить в PDF (Альбомный A4)",
+                print_pdf_desc: "По центру альбомный A4, строки для заметок и аккуратная таблица",
+                excel_table_landscape: "Таблица Excel (.xls - Альбомный)",
+                excel_table_desc: "Детали серий, дистанции, темп, интенсивность и посещаемость",
+                recommended_badge: "Рекомендуется",
+                stats_attended_title: "Присутствующие пловцы и заметки",
+                stats_attended_desc: "Присутствующие пловцы по сегодняшней перекличке и тренерские заметки для каждого спортсмена.",
+                edit_roster_btn: "Редактировать состав / посещаемость",
+                squad_modal_title: "Состав пловцов и профили",
+                squad_modal_sub: "Поиск пловцов, управление фотографиями и просмотр истории тренировок.",
+                search_swimmer_placeholder: "Поиск пловца (введите имя)...",
+                add_new_swimmer_placeholder: "Имя нового пловца...",
+                add_btn: "Добавить",
+                no_attended_swimmers: "На эту тренировку пока нет присутствующих пловцов. Пожалуйста, отметьте посещаемость выше.",
+                swimmer_count_suffix: "пловцов"
             },
             es: {
                 freestyle: "Estilo Libre", backstroke: "Espalda", breaststroke: "Braza", butterfly: "Mariposa", medley: "Estilos", kick: "Patada", drill: "Técnica", stroke: "Estilo", pull: "Brazada",
                 none: "Ninguno", fins: "Aletas", paddles: "Palas", board: "Tabla", pullbuoy: "Pullbuoy", snorkels: "Snorkel",
                 easy: "Fácil", moderate: "Moderado", hard: "Difícil", max: "Máximo", set_structure: "Estructura",
                 swim: "Nado", stroke_type: "Estilo",
-                add_new_option: "+ Añadir...", enter_custom_value: "Ingrese valor personalizado:"
+                add_new_option: "+ Añadir...", enter_custom_value: "Ingrese valor personalizado:",
+                export: "Exportar",
+                swimmer_squad: "Plantilla de Nadadores",
+                all_days_summary: "Resumen de Todos los Días",
+                coach_notes: "Notas del Entrenador",
+                export_workout_title: "Exportar Entrenamiento",
+                selected_date_label: "Fecha Seleccionada:",
+                print_pdf_landscape: "Imprimir / Guardar en PDF (A4 Horizontal)",
+                print_pdf_desc: "A4 horizontal centrado, líneas de notas para nadadores y tabla clara",
+                excel_table_landscape: "Tabla Excel (.xls - Horizontal)",
+                excel_table_desc: "Detalles de series, distancias, tempo, intensidad y asistencia",
+                recommended_badge: "Recomendado",
+                stats_attended_title: "Nadadores Asistentes y Notas",
+                stats_attended_desc: "Nadadores asistentes según la lista de hoy y notas de evaluación del entrenador para cada atleta.",
+                edit_roster_btn: "Editar Plantilla / Asistencia",
+                squad_modal_title: "Plantilla de Nadadores y Perfiles",
+                squad_modal_sub: "Busque nadadores, gestione fotos y revise el historial de entrenamiento.",
+                search_swimmer_placeholder: "Buscar nadador (escriba el nombre)...",
+                add_new_swimmer_placeholder: "Nombre del nuevo nadador...",
+                add_btn: "Añadir",
+                no_attended_swimmers: "No hay nadadores asistentes registrados para este entrenamiento. Márquelos en el panel superior.",
+                swimmer_count_suffix: "Nadadores"
             },
             it: {
                 freestyle: "Stile Libero", backstroke: "Dorso", breaststroke: "Rana", butterfly: "Delfino", medley: "Misti", kick: "Gambe", drill: "Tecnica", stroke: "Stile", pull: "Braccia",
                 none: "Nessuno", fins: "Pinne", paddles: "Palette", board: "Tavoletta", pullbuoy: "Pullbuoy", snorkels: "Boccaglio",
                 easy: "Facile", moderate: "Moderato", hard: "Difficile", max: "Massimo", set_structure: "Struttura",
                 swim: "Nuoto", stroke_type: "Stile",
-                add_new_option: "+ Aggiungi...", enter_custom_value: "Inserisci valore personalizzato:"
+                add_new_option: "+ Aggiungi...", enter_custom_value: "Inserisci valore personalizzato:",
+                export: "Esporta",
+                swimmer_squad: "Rosa Nuotatori",
+                all_days_summary: "Riepilogo Tutti i Giorni",
+                coach_notes: "Note dell'Allenatore",
+                export_workout_title: "Esporta Allenamento",
+                selected_date_label: "Data Selezionata:",
+                print_pdf_landscape: "Stampa / Salva in PDF (A4 Orizzontale)",
+                print_pdf_desc: "A4 orizzontale centrato, righe per note nuotatori e tabella nitida",
+                excel_table_landscape: "Foglio Excel (.xls - Orizzontale)",
+                excel_table_desc: "Dettagli serie, distanze, passo, intensità e presenze",
+                recommended_badge: "Consigliato",
+                stats_attended_title: "Nuotatori Presenti e Note",
+                stats_attended_desc: "Nuotatori presenti all'appello di oggi e note di valutazione dell'allenatore per ciascun atleta.",
+                edit_roster_btn: "Modifica Rosa / Presenze",
+                squad_modal_title: "Rosa Nuotatori e Profili",
+                squad_modal_sub: "Cerca nuotatori, gestisci le foto e visualizza la cronologia degli allenamenti.",
+                search_swimmer_placeholder: "Cerca nuotatore (scrivi nome)...",
+                add_new_swimmer_placeholder: "Nome del nuovo nuotatore...",
+                add_btn: "Aggiungi",
+                no_attended_swimmers: "Nessun nuotatore presente registrato per questo allenamento. Seleziona le presenze in alto.",
+                swimmer_count_suffix: "Nuotatori"
             }
         };
 
@@ -2519,11 +2684,6 @@
             if (selector) selector.value = lang;
             
             applyTranslations();
-            
-            // Reload components to redraw text where dynamic variables are embedded
-            loadSwimSets();
-            loadNotes();
-            loadSummaryTable();
         }
 
         function applyTranslations() {
@@ -2544,19 +2704,55 @@
                     el.setAttribute('placeholder', dict[key]);
                 }
             });
+
+            // 3. Tooltips / Titles
+            document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                const key = el.getAttribute('data-i18n-title');
+                if (dict[key]) {
+                    el.setAttribute('title', dict[key]);
+                }
+            });
             
-            // 3. Special dynamic items like welcome greeting
+            // 4. Special dynamic items like welcome greeting
             const userGreetingEl = document.getElementById('header-username');
             if (userGreetingEl && currentUser) {
                 const displayName = displayNames[currentUser] || currentUser;
                 userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${displayName.toLowerCase()}`;
             }
 
-            // 4. Update keypad display label dynamically if open
+            // 5. Update keypad display label dynamically if open
             const keypadTitleEl = document.getElementById('keypad-title');
             if (keypadTitleEl && activeKeypadInputId) {
                 keypadTitleEl.textContent = activeKeypadInputId === 's-target-time' ? dict['keypad_target'] : dict['keypad_interval'];
             }
+
+            // 6. Toggle Statistics button text
+            const toggleStatsBtn = document.getElementById('toggle-stats-btn');
+            const statsPanel = document.getElementById('statistics-panel');
+            if (toggleStatsBtn && statsPanel) {
+                const isHidden = statsPanel.classList.contains('hidden');
+                const span = toggleStatsBtn.querySelector('span');
+                if (span) {
+                    span.textContent = isHidden ? (dict['show_stats'] || 'Show Statistics') : (dict['hide_stats'] || 'Hide Statistics');
+                }
+            }
+
+            // 7. Update Export Modal Date Badge & Text
+            const exportDateBadge = document.getElementById('export-modal-date-badge');
+            if (exportDateBadge) {
+                let cleanDateStr = selectedDate;
+                const parts = selectedDate.split('-');
+                if (parts.length === 3) cleanDateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
+                exportDateBadge.innerHTML = `${dict['selected_date_label'] || 'Seçili Tarih:'} <span class="text-brandPink font-black">${cleanDateStr}</span>`;
+            }
+
+            // 8. Re-render all dynamic components, tables, lists, and statistics
+            if (typeof renderAttendanceList === 'function') renderAttendanceList();
+            if (typeof renderStatsAttendedSwimmers === 'function') renderStatsAttendedSwimmers();
+            if (typeof renderSquadModalList === 'function') renderSquadModalList();
+            if (typeof loadSwimSets === 'function') loadSwimSets();
+            if (typeof loadNotes === 'function') loadNotes();
+            if (typeof loadSummaryTable === 'function') loadSummaryTable();
         }
 
         // Dynamic Registered Users Storage - Completely clean, each user registers themselves
@@ -3643,6 +3839,7 @@
             const countBadge = document.getElementById('stats-attended-count-badge');
             if (!container) return;
 
+            const dict = translations[currentLang] || translations['en'];
             const attendance = getCoachDailyAttendance();
             const attendedList = attendance[selectedDate] || [];
             const notesMap = getCoachSwimmerDailyNotes();
@@ -3650,7 +3847,7 @@
             const meta = getCoachSwimmersMeta();
 
             if (countBadge) {
-                countBadge.textContent = `${attendedList.length} Sporcu`;
+                countBadge.textContent = `${attendedList.length} ${dict.swimmer_count_suffix || 'Sporcu'}`;
             }
 
             if (attendedList.length === 0) {
@@ -3664,12 +3861,11 @@
                             <i class="fa-solid fa-clipboard-user"></i>
                         </div>
                         <div>
-                            <div class="text-xs font-extrabold text-gray-700">Seçili tarihte (${cleanDateStr}) henüz yoklama işaretlenmedi.</div>
-                            <div class="text-[11px] text-gray-400 mt-0.5">Antrenmana katılan sporcuları seçip her birine özel not ve değerlendirme girmek için aşağıdaki butonu kullanabilirsiniz.</div>
+                            <div class="text-xs font-extrabold text-gray-700">${dict.no_attended_swimmers || 'Bu antrenmana katılan sporcu yok.'}</div>
                         </div>
                         <button type="button" onclick="openSquadModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md shadow-emerald-600/20 transition-all cursor-pointer inline-flex items-center space-x-1.5">
                             <i class="fa-solid fa-check-double text-xs"></i>
-                            <span>Yoklama Al / Katılanları Seç</span>
+                            <span>${dict.edit_roster_btn || 'Yoklamayı / Kadroyu Düzenle'}</span>
                         </button>
                     </div>
                 `;
@@ -3677,6 +3873,8 @@
             }
 
             // Katılan her sporcuyu ve yanındaki not kutusunu render et
+            const attendedLabel = currentLang === 'tr' ? 'Katıldı' : (currentLang === 'de' ? 'Anwesend' : (currentLang === 'zh' ? '已出席' : (currentLang === 'ja' ? '出席' : (currentLang === 'ru' ? 'Был' : (currentLang === 'es' ? 'Asistió' : (currentLang === 'it' ? 'Presente' : 'Attended'))))));
+
             container.innerHTML = attendedList.map((name, idx) => {
                 const swimmerMeta = meta[name] || {};
                 const noteVal = dayNotes[name] || '';
@@ -3684,6 +3882,15 @@
                 const categoryBadge = swimmerMeta.category ? `<span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[9.5px] font-extrabold">${escapeHtml(swimmerMeta.category)}</span>` : '';
                 const styleBadge = swimmerMeta.style ? `<span class="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-[9.5px] font-extrabold">${escapeHtml(swimmerMeta.style)}</span>` : '';
                 const birthYearBadge = swimmerMeta.birthYear ? `<span class="px-2 py-0.5 rounded-md bg-gray-100 text-gray-700 text-[9.5px] font-extrabold">${escapeHtml(swimmerMeta.birthYear)}</span>` : '';
+
+                let placeholderText = `${name} için antrenman notu, derece veya teknik değerlendirme...`;
+                if (currentLang === 'en') placeholderText = `Workout note, split time or evaluation for ${name}...`;
+                else if (currentLang === 'de') placeholderText = `Trainingsnotiz, Zwischenzeit oder Bewertung für ${name}...`;
+                else if (currentLang === 'zh') placeholderText = `${name} 的训练备注、分段计时或技术评估...`;
+                else if (currentLang === 'ja') placeholderText = `${name} の練習メモ、ラップタイム、技術評価...`;
+                else if (currentLang === 'ru') placeholderText = `Заметка к тренировке, время или оценка для ${name}...`;
+                else if (currentLang === 'es') placeholderText = `Nota de entrenamiento, tiempo o evaluación para ${name}...`;
+                else if (currentLang === 'it') placeholderText = `Nota di allenamento, tempo o valutazione per ${name}...`;
 
                 return `
                     <div class="p-3 bg-gradient-to-r from-gray-50/90 to-white border border-gray-150 rounded-2xl hover:border-emerald-300 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm">
@@ -3694,7 +3901,7 @@
                                 <div class="flex items-center space-x-2">
                                     <span class="text-xs font-black text-brandBlue">${escapeHtml(name)}</span>
                                     <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-emerald-100 text-emerald-800">
-                                        <i class="fa-solid fa-circle-check text-[8px] mr-1"></i>Katıldı
+                                        <i class="fa-solid fa-circle-check text-[8px] mr-1"></i>${attendedLabel}
                                     </span>
                                 </div>
                                 <div class="flex flex-wrap items-center gap-1 mt-1">
@@ -3714,14 +3921,13 @@
                                 <input type="text"
                                     value="${escapeHtml(noteVal)}"
                                     oninput="handleStatsSwimmerNoteChange('${escapeHtml(name)}', this.value, ${idx})"
-                                    placeholder="${escapeHtml(name)} için antrenman notu, derece veya teknik değerlendirme..."
+                                    placeholder="${escapeHtml(placeholderText)}"
                                     class="w-full pl-8 pr-9 py-2 bg-white border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 rounded-xl text-xs font-bold text-brandBlue transition-all placeholder:text-gray-400 placeholder:font-normal shadow-inner">
-                                <span id="stats-note-saved-${idx}" class="hidden absolute right-3 text-emerald-600 text-xs animate-fade-in font-bold" title="Otomatik Kaydedildi">
+                                <span id="stats-note-saved-${idx}" class="hidden absolute right-3 text-emerald-600 text-xs animate-fade-in font-bold" title="Saved">
                                     <i class="fa-solid fa-check"></i>
                                 </span>
                             </div>
                         </div>
-                    </div>
                 `;
             }).join('');
         }
@@ -4858,7 +5064,6 @@
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     const maxDim = 320;
-                    let width = img.width;
                     let height = img.height;
                     if (width > height) {
                         if (width > maxDim) {
@@ -5036,6 +5241,7 @@
             if (!container) return;
             container.innerHTML = '';
             
+            const dict = translations[currentLang] || translations['en'];
             const squad = getSquad();
             const attendance = getCoachDailyAttendance();
             const attendedList = attendance[selectedDate] || [];
@@ -5047,13 +5253,15 @@
             if (filteredSquad.length === 0) {
                 container.innerHTML = `
                     <div class="col-span-full py-4 text-center text-xs text-gray-400 font-medium">
-                        ${squad.length === 0 ? 'Kadroda sporcu yok. Yukarıdan ekleyin.' : 'Aranan sporcu bulunamadı.'}
+                        ${squad.length === 0 ? (currentLang === 'tr' ? 'Kadroda sporcu yok. Yukarıdan ekleyin.' : 'No swimmers in squad. Add from above.') : (currentLang === 'tr' ? 'Aranan sporcu bulunamadı.' : 'No swimmer found.')}
                     </div>
                 `;
                 return;
             }
             
             const dailyNotesMap = getCoachSwimmerDailyNotes()[selectedDate] || {};
+            const attendedCheckboxText = currentLang === 'tr' ? 'Geldi' : (currentLang === 'de' ? 'Hier' : (currentLang === 'zh' ? '到场' : (currentLang === 'ja' ? '出席' : (currentLang === 'ru' ? 'Был' : (currentLang === 'es' ? 'Presente' : (currentLang === 'it' ? 'Presente' : 'Present'))))));
+            const notePlaceholderText = currentLang === 'tr' ? 'Not / Derece / Çizgi...' : (currentLang === 'de' ? 'Notiz / Zeit / Split...' : (currentLang === 'zh' ? '备注 / 成绩 / 计时...' : (currentLang === 'ja' ? 'メモ / タイム / ラップ...' : (currentLang === 'ru' ? 'Заметка / Время / Сплит...' : (currentLang === 'es' ? 'Nota / Tiempo / Split...' : (currentLang === 'it' ? 'Nota / Tempo / Split...' : 'Note / Split / Time...'))))));
 
             filteredSquad.forEach(name => {
                 const isChecked = attendedList.includes(name) ? 'checked' : '';
@@ -5069,13 +5277,13 @@
                             <span class="truncate text-xs font-bold text-gray-800 hover:text-brandBlue transition-colors">${name}</span>
                         </div>
                         <div class="flex items-center space-x-1.5 shrink-0">
-                            <label class="flex items-center space-x-1 cursor-pointer select-none" title="Yoklama (Katıldı)">
+                            <label class="flex items-center space-x-1 cursor-pointer select-none" title="Yoklama">
                                 <input type="checkbox" value="${name}" ${isChecked} onchange="saveAttendance()"
                                     class="rounded border-gray-300 text-brandPink focus:ring-brandPink/30 focus:border-brandPink transition-all cursor-pointer w-4 h-4">
-                                <span class="text-[10px] font-bold text-gray-500 hidden sm:inline">Geldi</span>
+                                <span class="text-[10px] font-bold text-gray-500 hidden sm:inline">${attendedCheckboxText}</span>
                             </label>
                             <button type="button" onclick="removeSwimmerFromSquad('${name}')" 
-                                class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 ml-0.5" title="Kadrodan Kaldır">
+                                class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 ml-0.5" title="Kaldır">
                                 <i class="fa-solid fa-circle-xmark text-xs"></i>
                             </button>
                         </div>
@@ -5083,10 +5291,9 @@
                     <!-- Long Note Line for App & Printout Sync -->
                     <div class="pt-0.5 flex items-center space-x-1.5 border-t border-gray-100/80">
                         <i class="fa-solid fa-pencil text-[9px] text-gray-400 shrink-0"></i>
-                        <input type="text" value="${swimmerNote.replace(/"/g, '&quot;')}" placeholder="Not / Derece / Çizgi..." 
+                        <input type="text" value="${swimmerNote.replace(/"/g, '&quot;')}" placeholder="${notePlaceholderText}" 
                             oninput="saveSwimmerDailyNote('${name}', this.value)"
-                            class="w-full bg-transparent border-b border-dashed border-gray-300 focus:border-solid focus:border-brandBlue text-[11px] font-medium text-gray-700 placeholder-gray-400/80 outline-none px-1 py-0.5 transition-all"
-                            title="Günün Bireysel Notu (Çıktıda görünecek veya elle doldurulacak)">
+                            class="w-full bg-transparent border-b border-dashed border-gray-300 focus:border-solid focus:border-brandBlue text-[11px] font-medium text-gray-700 placeholder-gray-400/80 outline-none px-1 py-0.5 transition-all">
                     </div>
                 `;
                 container.appendChild(item);
@@ -5135,8 +5342,10 @@
             if (!listEl) return;
             listEl.innerHTML = '';
 
+            const dict = translations[currentLang] || translations['en'];
             const squad = getSquad();
-            if (countBadge) countBadge.textContent = `Toplam ${squad.length} Sporcu`;
+            const suffix = dict.swimmer_count_suffix || 'Sporcu';
+            if (countBadge) countBadge.textContent = `${currentLang === 'tr' ? 'Toplam' : 'Total'} ${squad.length} ${suffix}`;
 
             const filtered = squadModalFilterQuery
                 ? squad.filter(n => n.toLowerCase().includes(squadModalFilterQuery))
@@ -5145,7 +5354,7 @@
             if (filtered.length === 0) {
                 listEl.innerHTML = `
                     <div class="py-12 text-center text-xs text-gray-400 font-medium">
-                        ${squad.length === 0 ? 'Henüz sporcu eklenmedi. Yukarıdaki kutudan yeni sporcu ekleyin.' : 'Aradığınız isimde bir sporcu bulunamadı.'}
+                        ${squad.length === 0 ? (currentLang === 'tr' ? 'Henüz sporcu eklenmedi. Yukarıdaki kutudan yeni sporcu ekleyin.' : 'No swimmers added yet. Add a new swimmer using the input above.') : (currentLang === 'tr' ? 'Aradığınız isimde bir sporcu bulunamadı.' : 'No swimmer found matching your search.')}
                     </div>
                 `;
                 return;
@@ -5154,6 +5363,8 @@
             const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
             const coachSets = allSets.filter(isCoachSet);
             const attendance = getCoachDailyAttendance();
+            const profileBtnText = currentLang === 'tr' ? 'Profil' : (currentLang === 'de' ? 'Profil' : (currentLang === 'zh' ? '档案' : (currentLang === 'ja' ? '詳細' : (currentLang === 'ru' ? 'Профиль' : (currentLang === 'es' ? 'Perfil' : (currentLang === 'it' ? 'Profilo' : 'Profile'))))));
+            const workoutSuffix = currentLang === 'tr' ? 'Antrenman' : (currentLang === 'de' ? 'Trainings' : (currentLang === 'zh' ? '次训练' : (currentLang === 'ja' ? '練習' : (currentLang === 'ru' ? 'тренировок' : (currentLang === 'es' ? 'Entrenamientos' : (currentLang === 'it' ? 'Allenamenti' : 'Workouts'))))));
 
             filtered.forEach(name => {
                 const avatar = getSwimmerAvatarHtml(name, 'md');
@@ -5182,15 +5393,15 @@
                     </div>
                     <div class="flex items-center space-x-3 shrink-0">
                         <div class="text-right hidden sm:block">
-                            <span class="text-xs font-black text-brandBlue block">${totalMeters.toLocaleString('tr-TR')} m</span>
-                            <span class="text-[10px] text-gray-400 font-bold">${attendedDates.length} Antrenman</span>
+                            <span class="text-xs font-black text-brandBlue block">${totalMeters.toLocaleString()} m</span>
+                            <span class="text-[10px] text-gray-400 font-bold">${attendedDates.length} ${workoutSuffix}</span>
                         </div>
                         <button type="button" onclick="openSwimmerProfile('${name}')" 
                             class="px-3 py-1.5 bg-brandBlue text-white font-bold rounded-xl text-xs hover:bg-opacity-90 transition-all flex items-center space-x-1 shadow-sm cursor-pointer">
                             <i class="fa-solid fa-id-card text-[11px]"></i>
-                            <span>Profil</span>
+                            <span>${profileBtnText}</span>
                         </button>
-                        <button type="button" onclick="removeSwimmerFromSquad('${name}')"
+                        <button type="button" onclick="removeSwimmerFromSquad('${name}')" 
                             class="w-8 h-8 rounded-xl bg-gray-100 hover:bg-red-50 text-gray-400 hover:text-red-500 flex items-center justify-center transition-colors text-xs cursor-pointer" title="Kaldır">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
