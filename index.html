@@ -6440,6 +6440,8 @@
         };
 
         let activeDropdownSelectId = null;
+        let inlineAddingSelectId = null;
+        let inlineEditingInfo = null; // { selectId, oldValue }
 
         function getDropdownOptionLabel(selectId, optValue) {
             if (!optValue) return '-';
@@ -6472,6 +6474,7 @@
                 event.preventDefault();
                 event.stopPropagation();
             }
+            closeOptionContextMenu();
 
             const popover = document.getElementById('column-custom-dropdown-popover');
             const trigger = document.getElementById(`trigger-${selectId}`);
@@ -6484,11 +6487,13 @@
             }
 
             activeDropdownSelectId = selectId;
+            inlineAddingSelectId = null;
+            inlineEditingInfo = null;
             renderColumnCustomDropdown(selectId);
 
             popover.classList.remove('hidden');
             const rect = trigger.getBoundingClientRect();
-            const popWidth = Math.max(rect.width, 210);
+            const popWidth = Math.max(rect.width, 220);
             
             let posX = rect.left;
             let posY = rect.bottom + 4;
@@ -6498,8 +6503,8 @@
             }
             if (posX < 10) posX = 10;
 
-            if (posY + 260 > window.innerHeight && rect.top > 260) {
-                posY = rect.top - 265;
+            if (posY + 280 > window.innerHeight && rect.top > 280) {
+                posY = rect.top - 285;
             }
 
             popover.style.width = `${popWidth}px`;
@@ -6545,42 +6550,83 @@
                 `;
             });
 
-            // Custom Coach Added Options (with prominent ✏️ and 🗑️ icons)
+            // Custom Coach Added Options
             if (customList.length > 0) {
                 html += `<div class="pt-1.5 mt-1 border-t border-gray-100 text-[10px] font-extrabold uppercase tracking-wider text-emerald-600 px-2 py-0.5 flex items-center"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>${dict.manage_options || 'Özel Eklenenler'}</div>`;
                 
                 customList.forEach(val => {
-                    const isSelected = currentVal === val;
-                    html += `
-                        <div oncontextmenu="handleCustomOptionRightClick(event, '${selectId}', '${escapeHtml(val)}')" onclick="selectCustomDropdownValue('${selectId}', '${escapeHtml(val)}')" class="group px-2.5 py-1.5 rounded-xl hover:bg-emerald-100/80 flex items-center justify-between cursor-pointer transition-colors bg-emerald-50/50 my-0.5 border border-emerald-200/80 ${isSelected ? 'border-emerald-500 bg-emerald-100 font-black text-emerald-950' : 'text-emerald-900'}">
-                            <span class="truncate font-extrabold text-xs flex items-center mr-1">
-                                <i class="fa-solid fa-star text-[8px] text-emerald-500 mr-1.5"></i>
-                                ${escapeHtml(val)}
-                            </span>
-                            <div class="flex items-center space-x-1 shrink-0" onclick="event.stopPropagation()">
-                                <button type="button" onclick="editCustomDropdownValue('${selectId}', '${escapeHtml(val)}', event)" class="w-5 h-5 rounded-md bg-white hover:bg-blue-50 text-blue-600 hover:text-blue-700 flex items-center justify-center text-[9.5px] border border-gray-200 shadow-2xs cursor-pointer transition-colors" title="${dict.edit_option || 'Düzenle'}">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button type="button" onclick="deleteCustomDropdownValue('${selectId}', '${escapeHtml(val)}', event)" class="w-5 h-5 rounded-md bg-white hover:bg-red-50 text-red-500 hover:text-red-600 flex items-center justify-center text-[9.5px] border border-gray-200 shadow-2xs cursor-pointer transition-colors" title="${dict.delete_option || 'Sil'}">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
+                    const isEditing = inlineEditingInfo && inlineEditingInfo.selectId === selectId && inlineEditingInfo.oldValue === val;
+
+                    if (isEditing) {
+                        html += `
+                            <div class="p-1.5 bg-blue-50/90 rounded-xl border border-blue-200 my-1 space-y-1 shadow-xs" onclick="event.stopPropagation()">
+                                <input type="text" id="inline-edit-input-field" value="${escapeHtml(val)}" class="w-full px-2 py-1 bg-white border border-blue-300 rounded-lg text-xs font-bold text-brandBlue focus:outline-none focus:ring-2 focus:ring-brandBlue" onkeydown="if(event.key==='Enter') confirmInlineEdit('${selectId}', '${escapeHtml(val)}'); if(event.key==='Escape') cancelInlineEdit();">
+                                <div class="flex items-center justify-end space-x-1">
+                                    <button type="button" onclick="cancelInlineEdit()" class="px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:text-gray-700 cursor-pointer">İptal</button>
+                                    <button type="button" onclick="confirmInlineEdit('${selectId}', '${escapeHtml(val)}')" class="px-2.5 py-0.5 bg-brandBlue hover:bg-opacity-95 text-white rounded-lg text-[10px] font-black shadow-xs cursor-pointer">Kaydet</button>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        const isSelected = currentVal === val;
+                        html += `
+                            <div oncontextmenu="handleCustomOptionRightClick(event, '${selectId}', '${escapeHtml(val)}')" onclick="selectCustomDropdownValue('${selectId}', '${escapeHtml(val)}')" class="group px-2.5 py-1.5 rounded-xl hover:bg-emerald-100/80 flex items-center justify-between cursor-pointer transition-colors bg-emerald-50/50 my-0.5 border border-emerald-200/80 ${isSelected ? 'border-emerald-500 bg-emerald-100 font-black text-emerald-950' : 'text-emerald-900'}" title="Sağ tıklayarak veya butonlarla düzenle / sil">
+                                <span class="truncate font-extrabold text-xs flex items-center mr-1">
+                                    <i class="fa-solid fa-star text-[8px] text-emerald-500 mr-1.5"></i>
+                                    ${escapeHtml(val)}
+                                </span>
+                                <div class="flex items-center space-x-1 shrink-0" onclick="event.stopPropagation()">
+                                    <button type="button" onclick="startInlineEdit('${selectId}', '${escapeHtml(val)}', event)" class="w-5 h-5 rounded-md bg-white hover:bg-blue-50 text-blue-600 hover:text-blue-700 flex items-center justify-center text-[9.5px] border border-gray-200 shadow-2xs cursor-pointer transition-colors" title="${dict.edit_option || 'Düzenle'}">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button type="button" onclick="deleteCustomDropdownValue('${selectId}', '${escapeHtml(val)}', event)" class="w-5 h-5 rounded-md bg-white hover:bg-red-50 text-red-500 hover:text-red-600 flex items-center justify-center text-[9.5px] border border-gray-200 shadow-2xs cursor-pointer transition-colors" title="${dict.delete_option || 'Sil'}">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }
                 });
             }
 
-            // Bottom "+ Add New" button
-            html += `
-                <div class="pt-1.5 mt-1 border-t border-gray-100">
-                    <button type="button" onclick="promptAddNewDropdownValue('${selectId}', event)" class="w-full py-1.5 px-2 bg-brandPink/10 hover:bg-brandPink text-brandPink hover:text-white font-extrabold rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-2xs">
-                        <i class="fa-solid fa-plus text-[10px]"></i>
-                        <span>${dict.add_new_option || '+ Yeni Ekle...'}</span>
-                    </button>
-                </div>
-            </div>`;
+            // Bottom "+ Add New" Section / Inline Input Form
+            if (inlineAddingSelectId === selectId) {
+                html += `
+                    <div class="p-2 bg-pink-50/90 rounded-xl border border-pink-200 mt-1.5 space-y-1.5 shadow-xs" onclick="event.stopPropagation()">
+                        <input type="text" id="inline-add-input-field" placeholder="${dict.enter_custom_value || 'Yeni seçenek yazın...'}" class="w-full px-2.5 py-1.5 bg-white border border-pink-300 rounded-lg text-xs font-bold text-brandBlue focus:outline-none focus:ring-2 focus:ring-brandPink" onkeydown="if(event.key==='Enter') confirmInlineAdd('${selectId}'); if(event.key==='Escape') cancelInlineAdd();">
+                        <div class="flex items-center justify-end space-x-1.5">
+                            <button type="button" onclick="cancelInlineAdd()" class="px-2 py-1 text-[10.5px] font-bold text-gray-500 hover:text-gray-700 cursor-pointer">İptal</button>
+                            <button type="button" onclick="confirmInlineAdd('${selectId}')" class="px-3 py-1 bg-brandPink hover:bg-opacity-95 text-white rounded-lg text-[10.5px] font-black shadow-xs cursor-pointer">Ekle</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="pt-1.5 mt-1 border-t border-gray-100">
+                        <button type="button" onclick="startInlineAdd('${selectId}', event)" class="w-full py-1.5 px-2 bg-brandPink/10 hover:bg-brandPink text-brandPink hover:text-white font-extrabold rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-2xs">
+                            <i class="fa-solid fa-plus text-[10px]"></i>
+                            <span>${dict.add_new_option || '+ Yeni Ekle...'}</span>
+                        </button>
+                    </div>
+                `;
+            }
 
+            html += `</div>`;
             popover.innerHTML = html;
+
+            // Auto focus fields if rendered
+            setTimeout(() => {
+                if (inlineAddingSelectId === selectId) {
+                    const addInp = document.getElementById('inline-add-input-field');
+                    if (addInp) addInp.focus();
+                } else if (inlineEditingInfo && inlineEditingInfo.selectId === selectId) {
+                    const editInp = document.getElementById('inline-edit-input-field');
+                    if (editInp) {
+                        editInp.focus();
+                        editInp.select();
+                    }
+                }
+            }, 50);
         }
 
         function selectCustomDropdownValue(selectId, val) {
@@ -6600,50 +6646,81 @@
             const popover = document.getElementById('column-custom-dropdown-popover');
             if (popover) popover.classList.add('hidden');
             activeDropdownSelectId = null;
+            inlineAddingSelectId = null;
+            inlineEditingInfo = null;
+            closeOptionContextMenu();
         }
 
-        function promptAddNewDropdownValue(selectId, event) {
+        function startInlineAdd(selectId, event) {
             if (event) {
                 event.preventDefault();
                 event.stopPropagation();
             }
-            const dict = translations[currentLang] || translations['en'];
-            const promptMsg = dict.enter_custom_value || "Yeni özel değer girin:";
-            const newValue = prompt(promptMsg);
-            if (!newValue || !newValue.trim()) return;
+            closeOptionContextMenu();
+            inlineAddingSelectId = selectId;
+            inlineEditingInfo = null;
+            renderColumnCustomDropdown(selectId);
+        }
 
-            const val = newValue.trim();
+        function cancelInlineAdd() {
+            inlineAddingSelectId = null;
+            if (activeDropdownSelectId) {
+                renderColumnCustomDropdown(activeDropdownSelectId);
+            }
+        }
+
+        function confirmInlineAdd(selectId) {
+            const inp = document.getElementById('inline-add-input-field');
+            if (!inp || !inp.value.trim()) return;
+
+            const val = inp.value.trim();
             saveCustomSelectOptions(selectId, val);
+            inlineAddingSelectId = null;
             selectCustomDropdownValue(selectId, val);
         }
 
-        function editCustomDropdownValue(selectId, oldValue, event) {
+        function startInlineEdit(selectId, oldValue, event) {
             if (event) {
                 event.preventDefault();
                 event.stopPropagation();
             }
-            const dict = translations[currentLang] || translations['en'];
-            const promptMsg = `${dict.edit_option || 'Düzenle'}: "${oldValue}"`;
-            const newVal = prompt(promptMsg, oldValue);
-            if (!newVal || !newVal.trim() || newVal.trim() === oldValue) return;
+            closeOptionContextMenu();
+            inlineEditingInfo = { selectId, oldValue };
+            inlineAddingSelectId = null;
+            renderColumnCustomDropdown(selectId);
+        }
 
-            const updatedVal = newVal.trim();
-            const userKey = getCoachCustomOptionsKey();
-            const customOpts = JSON.parse(localStorage.getItem(userKey)) || {};
-            if (customOpts[selectId]) {
-                const idx = customOpts[selectId].indexOf(oldValue);
-                if (idx !== -1) {
-                    customOpts[selectId][idx] = updatedVal;
-                    localStorage.setItem(userKey, JSON.stringify(customOpts));
+        function cancelInlineEdit() {
+            inlineEditingInfo = null;
+            if (activeDropdownSelectId) {
+                renderColumnCustomDropdown(activeDropdownSelectId);
+            }
+        }
+
+        function confirmInlineEdit(selectId, oldValue) {
+            const inp = document.getElementById('inline-edit-input-field');
+            if (!inp || !inp.value.trim()) return;
+
+            const updatedVal = inp.value.trim();
+            if (updatedVal !== oldValue) {
+                const userKey = getCoachCustomOptionsKey();
+                const customOpts = JSON.parse(localStorage.getItem(userKey)) || {};
+                if (customOpts[selectId]) {
+                    const idx = customOpts[selectId].indexOf(oldValue);
+                    if (idx !== -1) {
+                        customOpts[selectId][idx] = updatedVal;
+                        localStorage.setItem(userKey, JSON.stringify(customOpts));
+                    }
+                }
+
+                const input = document.getElementById(selectId);
+                if (input && input.value === oldValue) {
+                    input.value = updatedVal;
+                    document.getElementById(`label-${selectId}`).textContent = updatedVal;
                 }
             }
 
-            const input = document.getElementById(selectId);
-            if (input && input.value === oldValue) {
-                input.value = updatedVal;
-                document.getElementById(`label-${selectId}`).textContent = updatedVal;
-            }
-
+            inlineEditingInfo = null;
             renderColumnCustomDropdown(selectId);
         }
 
@@ -6652,6 +6729,7 @@
                 event.preventDefault();
                 event.stopPropagation();
             }
+            closeOptionContextMenu();
             const dict = translations[currentLang] || translations['en'];
             const confirmMsg = dict.confirm_delete_option || `"${value}" seçeneğini silmek istediğinize emin misiniz?`;
             if (!confirm(confirmMsg)) return;
@@ -6677,16 +6755,42 @@
         function handleCustomOptionRightClick(event, selectId, value) {
             event.preventDefault();
             event.stopPropagation();
-            const dict = translations[currentLang] || translations['en'];
-            const choice = confirm(`"${value}"\n\n- ${dict.edit_option || 'Düzenlemek için TAMAM'}\n- ${dict.delete_option || 'Silmek veya iptal için İPTAL'}`);
-            if (choice) {
-                editCustomDropdownValue(selectId, value, event);
-            } else {
-                const delChoice = confirm(`"${value}" ${dict.confirm_delete_option || 'seçeneğini silmek istiyor musunuz?'}`);
-                if (delChoice) {
-                    deleteCustomDropdownValue(selectId, value, event);
-                }
+            
+            const menu = document.getElementById('dropdown-custom-option-context-menu');
+            if (!menu) return;
+
+            const editBtn = document.getElementById('ctx-btn-edit');
+            const delBtn = document.getElementById('ctx-btn-delete');
+
+            if (editBtn) {
+                editBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    closeOptionContextMenu();
+                    startInlineEdit(selectId, value);
+                };
             }
+            if (delBtn) {
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    closeOptionContextMenu();
+                    deleteCustomDropdownValue(selectId, value);
+                };
+            }
+
+            menu.classList.remove('hidden');
+            let posX = event.clientX;
+            let posY = event.clientY;
+
+            if (posX + 160 > window.innerWidth - 10) posX = window.innerWidth - 170;
+            if (posY + 90 > window.innerHeight - 10) posY = window.innerHeight - 100;
+
+            menu.style.left = `${posX}px`;
+            menu.style.top = `${posY}px`;
+        }
+
+        function closeOptionContextMenu() {
+            const menu = document.getElementById('dropdown-custom-option-context-menu');
+            if (menu) menu.classList.add('hidden');
         }
 
         // App Initialization: Start on Landing Welcome Page
@@ -6703,15 +6807,19 @@
 
             showView('landing');
 
-            // Global close listeners for custom dropdown popover
+            // Global close listeners for custom dropdown popover & context menu
             document.addEventListener('click', (e) => {
+                closeOptionContextMenu();
                 const popover = document.getElementById('column-custom-dropdown-popover');
                 if (popover && !popover.contains(e.target) && !e.target.closest('[id^="trigger-s-"]')) {
                     closeColumnCustomDropdown();
                 }
             });
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') closeColumnCustomDropdown();
+                if (e.key === 'Escape') {
+                    closeOptionContextMenu();
+                    closeColumnCustomDropdown();
+                }
             });
         });
     </script>
@@ -6730,10 +6838,10 @@
             to { opacity: 1; transform: scale(1); }
         }
         .animate-scale-up {
-            animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         
-        /* Custom scrollbar styling for the notes board */
+        /* Custom scrollbar styling */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
@@ -6751,8 +6859,20 @@
     </style>
 
     <!-- Global Floating Custom Dropdown Popover for Set Columns -->
-    <div id="column-custom-dropdown-popover" class="hidden fixed z-[9999] bg-white/98 backdrop-blur-md border border-gray-200/95 rounded-2xl shadow-2xl p-1.5 min-w-[200px] max-w-[280px] max-h-[310px] overflow-y-auto custom-scrollbar text-xs font-semibold text-gray-700 animate-scale-up select-none">
+    <div id="column-custom-dropdown-popover" class="hidden fixed z-[9999] bg-white/98 backdrop-blur-md border border-gray-200/95 rounded-2xl shadow-2xl p-1.5 min-w-[210px] max-w-[280px] max-h-[320px] overflow-y-auto custom-scrollbar text-xs font-semibold text-gray-700 animate-scale-up select-none">
         <!-- Populated dynamically via renderColumnCustomDropdown -->
+    </div>
+
+    <!-- Floating Right-Click Context Menu for Custom Dropdown Items -->
+    <div id="dropdown-custom-option-context-menu" class="hidden fixed z-[10000] bg-white/98 backdrop-blur-md border border-gray-200 rounded-xl shadow-2xl p-1 min-w-[140px] text-xs font-bold text-gray-700 animate-scale-up select-none">
+        <button type="button" id="ctx-btn-edit" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-blue-50 text-blue-600 flex items-center space-x-2 cursor-pointer transition-colors">
+            <i class="fa-solid fa-pen-to-square text-[11px]"></i>
+            <span data-i18n="edit_option">Düzenle</span>
+        </button>
+        <button type="button" id="ctx-btn-delete" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-red-50 text-red-500 flex items-center space-x-2 cursor-pointer transition-colors mt-0.5">
+            <i class="fa-solid fa-trash-can text-[11px]"></i>
+            <span data-i18n="delete_option">Sil</span>
+        </button>
     </div>
 </body>
 </html>
