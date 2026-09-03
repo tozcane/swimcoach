@@ -972,17 +972,25 @@
                                         <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 ml-1"></i>
                                     </button>
                                 </td>
-                                <!-- Column 7: Target Time -->
+                                <!-- Column 7: Target Time (Klavyeden Doğrudan Yazılabilir) -->
                                 <td class="p-2 border-r border-gray-200">
-                                    <input type="text" id="s-target-time" placeholder="00:00" readonly onclick="openTimeKeypad('s-target-time')"
-                                        class="w-full px-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue text-center font-black text-sm cursor-pointer hover:bg-gray-100/50 transition-colors">
+                                    <div class="relative flex items-center">
+                                        <input type="text" id="s-target-time" placeholder="00:00" oninput="handleDirectTimeInput(this)" onblur="formatDirectTimeBlur(this)"
+                                            class="w-full px-2 py-2.5 bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue text-center font-mono font-black text-sm transition-all shadow-2xs">
+                                        <button type="button" onclick="openTimeKeypad('s-target-time')" class="absolute right-1 text-gray-400 hover:text-brandBlue p-1.5 text-xs cursor-pointer transition-colors" title="Tuş Takımı ile Gir">
+                                            <i class="fa-solid fa-keyboard"></i>
+                                        </button>
+                                    </div>
                                 </td>
-                                <!-- Column 7.5: @ Interval -->
+                                <!-- Column 7.5: @ Interval (Klavyeden Doğrudan Yazılabilir) -->
                                 <td class="p-2 border-r border-gray-200">
-                                    <div class="flex items-center space-x-1">
-                                        <span class="text-gray-400 font-extrabold text-sm">@</span>
-                                        <input type="text" id="s-interval" placeholder="00:00" readonly onclick="openTimeKeypad('s-interval')"
-                                            class="w-full px-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue text-center font-black text-sm cursor-pointer hover:bg-gray-100/50 transition-colors">
+                                    <div class="relative flex items-center">
+                                        <span class="absolute left-2 text-gray-400 font-extrabold text-xs pointer-events-none">@</span>
+                                        <input type="text" id="s-interval" placeholder="00:00" oninput="handleDirectTimeInput(this)" onblur="formatDirectTimeBlur(this)"
+                                            class="w-full pl-6 pr-6 py-2.5 bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue text-center font-mono font-black text-sm transition-all shadow-2xs">
+                                        <button type="button" onclick="openTimeKeypad('s-interval')" class="absolute right-1 text-gray-400 hover:text-brandBlue p-1.5 text-xs cursor-pointer transition-colors" title="Tuş Takımı ile Gir">
+                                            <i class="fa-solid fa-keyboard"></i>
+                                        </button>
                                     </div>
                                 </td>
                                 <!-- Column 8: Intensity -->
@@ -1117,34 +1125,37 @@
                         </button>
                     </div>
 
-                    <!-- 8. Hedef Süre (Target Time) -->
+                    <!-- 8. Hedef Süre (Target Time - Klavyeden Yazılabilir) -->
                     <div class="space-y-1.5 bg-white p-3.5 rounded-2xl border border-gray-200/90 shadow-2xs">
                         <label class="text-xs font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1.5">
                             <i class="fa-regular fa-clock text-amber-500 text-sm"></i>
-                            <span data-i18n="target_time">8. Hedef Süre</span>
+                            <span data-i18n="target_time">8. Hedef Süre (Klavyeden Yazın veya Tuşlayın)</span>
                         </label>
-                        <button type="button" onclick="openTimeKeypad('s-target-time')" class="w-full py-3 px-4 bg-gray-50 hover:bg-amber-50/50 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-base flex items-center justify-between shadow-2xs cursor-pointer transition-all">
-                            <div class="flex items-center space-x-2">
-                                <span class="text-xs text-gray-400 font-bold font-sans">Süre:</span>
-                                <span id="mob-label-s-target-time" class="text-base font-black text-brandBlue">00:00</span>
-                            </div>
-                            <i class="fa-solid fa-keyboard text-xs text-gray-400"></i>
-                        </button>
+                        <div class="relative flex items-center">
+                            <input type="text" id="mob-s-target-time" placeholder="00:00" oninput="handleMobileDirectTimeInput('s-target-time', this.value)" onblur="formatMobileDirectTimeBlur('s-target-time', this)"
+                                class="w-full py-3 pl-4 pr-12 bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 focus:border-brandBlue focus:ring-2 focus:ring-brandBlue/20 rounded-xl text-brandBlue font-mono font-black text-base transition-all shadow-2xs">
+                            <button type="button" onclick="openTimeKeypad('s-target-time')" class="absolute right-2 px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-bold flex items-center space-x-1 shadow-2xs cursor-pointer" title="Tuş Takımını Aç">
+                                <i class="fa-solid fa-keyboard"></i>
+                                <span class="text-[10px]">Tuşla</span>
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- 9. @ Tempo (Interval) -->
+                    <!-- 9. @ Tempo (Interval - Klavyeden Yazılabilir) -->
                     <div class="space-y-1.5 bg-white p-3.5 rounded-2xl border border-gray-200/90 shadow-2xs">
                         <label class="text-xs font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1.5">
                             <i class="fa-solid fa-stopwatch-20 text-orange-500 text-sm"></i>
                             <span data-i18n="interval">9. @ Tempo / Dinlenme Aralığı</span>
                         </label>
-                        <button type="button" onclick="openTimeKeypad('s-interval')" class="w-full py-3 px-4 bg-gray-50 hover:bg-orange-50/50 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-base flex items-center justify-between shadow-2xs cursor-pointer transition-all">
-                            <div class="flex items-center space-x-2">
-                                <span class="text-xs text-gray-400 font-bold font-sans">Tempo:</span>
-                                <span id="mob-label-s-interval" class="text-base font-black text-brandBlue">@ 00:00</span>
-                            </div>
-                            <i class="fa-solid fa-keyboard text-xs text-gray-400"></i>
-                        </button>
+                        <div class="relative flex items-center">
+                            <span class="absolute left-3.5 text-gray-400 font-black text-base pointer-events-none">@</span>
+                            <input type="text" id="mob-s-interval" placeholder="00:00" oninput="handleMobileDirectTimeInput('s-interval', this.value)" onblur="formatMobileDirectTimeBlur('s-interval', this)"
+                                class="w-full py-3 pl-8 pr-12 bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 focus:border-brandBlue focus:ring-2 focus:ring-brandBlue/20 rounded-xl text-brandBlue font-mono font-black text-base transition-all shadow-2xs">
+                            <button type="button" onclick="openTimeKeypad('s-interval')" class="absolute right-2 px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-bold flex items-center space-x-1 shadow-2xs cursor-pointer" title="Tuş Takımını Aç">
+                                <i class="fa-solid fa-keyboard"></i>
+                                <span class="text-[10px]">Tuşla</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- 10. Şiddet (Intensity / Zone) -->
@@ -6481,6 +6492,38 @@
             loadNotes();
         }
 
+
+        // --- DIRECT KEYBOARD TIME INPUT HANDLERS ---
+        function handleDirectTimeInput(inputEl) {
+            const id = inputEl.id;
+            const val = inputEl.value;
+            if (id === 's-target-time') {
+                const mob = document.getElementById('mob-s-target-time');
+                if (mob && mob !== inputEl) mob.value = val;
+            } else if (id === 's-interval') {
+                const mob = document.getElementById('mob-s-interval');
+                if (mob && mob !== inputEl) mob.value = val;
+            }
+        }
+
+        function formatDirectTimeBlur(inputEl) {
+            const formatted = formatTimeMMSS(inputEl.value);
+            inputEl.value = formatted;
+            handleDirectTimeInput(inputEl);
+        }
+
+        function handleMobileDirectTimeInput(targetId, val) {
+            const desktopEl = document.getElementById(targetId);
+            if (desktopEl) desktopEl.value = val;
+        }
+
+        function formatMobileDirectTimeBlur(targetId, mobInputEl) {
+            const formatted = formatTimeMMSS(mobInputEl.value);
+            mobInputEl.value = formatted;
+            const desktopEl = document.getElementById(targetId);
+            if (desktopEl) desktopEl.value = formatted;
+        }
+
         // --- paceman time keypad controller logic ---
         let activeKeypadInputId = '';
         let keypadDigits = ''; // raw digits typed, e.g. "013045"
@@ -6733,14 +6776,14 @@
                 if (mobLabelEl) mobLabelEl.textContent = displayLabel;
             });
 
-            // Mobile Time Displays
+            // Mobile & Desktop Time Displays
             const tTime = formatTimeMMSS(document.getElementById("s-target-time")?.value) || "";
-            const mobTTime = document.getElementById("mob-label-s-target-time");
-            if (mobTTime) mobTTime.textContent = tTime || "00:00";
+            const mobTTime = document.getElementById("mob-s-target-time");
+            if (mobTTime) mobTTime.value = tTime;
 
             const interval = formatTimeMMSS(document.getElementById("s-interval")?.value) || "";
-            const mobInterval = document.getElementById("mob-label-s-interval");
-            if (mobInterval) mobInterval.textContent = interval ? `@ ${interval}` : "@ 00:00";
+            const mobInterval = document.getElementById("mob-s-interval");
+            if (mobInterval) mobInterval.value = interval;
 
             // Mobile Section Button Highlights
             const activeSec = document.getElementById("s-section")?.value || "Warm Up";
@@ -7319,6 +7362,32 @@
                 }
             });
             document.addEventListener('keydown', (e) => {
+                // Keypad modal physical keyboard listener
+                const keypadModal = document.getElementById('time-keypad-modal');
+                if (keypadModal && !keypadModal.classList.contains('hidden')) {
+                    if (e.key >= '0' && e.key <= '9') {
+                        e.preventDefault();
+                        pressKeypadDigit(e.key);
+                        return;
+                    } else if (e.key === 'Backspace') {
+                        e.preventDefault();
+                        backspaceKeypad();
+                        return;
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        submitKeypadTime();
+                        return;
+                    } else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        closeTimeKeypad();
+                        return;
+                    } else if (e.key.toLowerCase() === 'c') {
+                        e.preventDefault();
+                        clearKeypad();
+                        return;
+                    }
+                }
+
                 if (e.key === 'Escape') {
                     closeOptionContextMenu();
                     closeColumnCustomDropdown();
