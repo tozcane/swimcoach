@@ -4648,6 +4648,8 @@
 
         // Modal Control
         function openTrainingModal() {
+            closeTimeKeypad();
+            if (typeof closeColumnCustomDropdown === 'function') closeColumnCustomDropdown();
             document.getElementById('training-modal').classList.remove('hidden');
             document.getElementById('s-date').value = selectedDate;
             
@@ -4679,6 +4681,7 @@
         }
 
         function closeTrainingModal() {
+            closeTimeKeypad();
             document.getElementById('training-modal').classList.add('hidden');
             if (typeof closeColumnCustomDropdown === 'function') closeColumnCustomDropdown();
             renderAttendanceList();
@@ -6425,6 +6428,8 @@
         let keypadDigits = ''; // raw digits typed, e.g. "013045"
 
         function openTimeKeypad(inputId) {
+            closeColumnCustomDropdown();
+            closeOptionContextMenu();
             activeKeypadInputId = inputId;
             const inputVal = document.getElementById(inputId).value || '';
             
@@ -6700,6 +6705,7 @@
                 event.preventDefault();
                 event.stopPropagation();
             }
+            closeTimeKeypad();
             closeOptionContextMenu();
 
             const popover = document.getElementById('column-custom-dropdown-popover');
