@@ -94,10 +94,12 @@
     <meta name="google-site-verification" content="O_jhJjg2xZuzQbsD7TFY7-muY72w1n-KR5Hb6sV9rK4" />
     <meta name="msvalidate.01" content="swimcoach-pro-bing-verification">
     
-    <!-- iOS / iPad Web App Configuration -->
+    <!-- iOS / iPad / Android Web App Configuration (PWA) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Swim Coach Pro">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="assets/logo.png?v=4">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -123,6 +125,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SheetJS (Excel Export) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Firebase Cloud Sync SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-white text-brandBlue font-sans min-h-screen flex flex-col justify-between transition-colors duration-500 relative overflow-x-hidden">
     <!-- Swimmer Background Watermark (Subtle line-art outline) -->
@@ -169,13 +174,23 @@
                      <option value="it">Italiano</option>
                  </select>
                  <div id="header-user-actions" class="hidden flex items-center space-x-2 md:space-x-3">
+                     <!-- Cloud Sync Status Badge -->
+                     <div id="header-cloud-sync" onclick="manualTriggerCloudSync()" class="flex items-center space-x-1.5 px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/90 rounded-xl text-xs font-black shadow-2xs transition-all cursor-pointer" title="Canlı Bulut Senkronizasyonu Aktif (Eşitlemek için tıkla)">
+                         <span class="relative flex h-2 w-2">
+                             <span id="cloud-ping-dot" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                             <span id="cloud-status-dot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                         </span>
+                         <i class="fa-solid fa-cloud text-[11px] text-emerald-600"></i>
+                         <span id="cloud-sync-text" class="hidden sm:inline text-[11px]" data-i18n="cloud_synced">Bulut Canlı</span>
+                     </div>
+
                      <!-- Club Branding Button -->
-                     <button type="button" onclick="openClubBrandingModal()" class="px-3 py-1.5 bg-blue-50/80 hover:bg-blue-100 text-brandBlue border border-blue-200 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shadow-sm" title="Kulüp Kimliği & Logo">
+                     <button type="button" onclick="openClubBrandingModal()" class="px-2.5 sm:px-3 py-1.5 bg-blue-50/80 hover:bg-blue-100 text-brandBlue border border-blue-200 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shadow-sm" title="Kulüp Kimliği & Logo">
                          <i class="fa-solid fa-shield-halved text-brandPink text-xs"></i>
-                         <span data-i18n="club_branding_btn" class="hidden sm:inline">Kulüp Ayarları</span>
+                         <span data-i18n="club_branding_btn" class="hidden md:inline">Kulüp Ayarları</span>
                      </button>
-                     <span id="header-username" class="font-semibold text-xs md:text-sm text-gray-700"></span>
-                     <button onclick="logout()" class="px-3.5 py-1.5 border border-brandPink/20 text-brandPink hover:bg-brandPink hover:text-white rounded-full text-xs font-medium transition-all duration-300" data-i18n="logout">
+                     <span id="header-username" class="font-bold text-xs text-brandBlue hidden sm:inline"></span>
+                     <button onclick="logout()" class="px-3 py-1.5 border border-brandPink/30 text-brandPink hover:bg-brandPink hover:text-white rounded-xl text-xs font-bold transition-all duration-300 shadow-2xs" data-i18n="logout">
                          Log Out
                      </button>
                  </div>
@@ -879,7 +894,8 @@
                         class="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue font-extrabold text-sm">
                 </div>
 
-                <div class="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50/40 shadow-sm">
+                <!-- DESKTOP SELECTION TABLE (lg and above) -->
+                <div class="hidden lg:block border border-gray-200 rounded-2xl overflow-hidden bg-gray-50/40 shadow-sm">
                     <table class="w-full table-fixed border-collapse text-left text-xs text-gray-700">
                         <thead>
                             <tr class="bg-gray-100 text-brandBlue font-black text-xs uppercase tracking-wider border-b border-gray-200">
@@ -982,10 +998,119 @@
                     </table>
                 </div>
 
+                <!-- MOBILE & TABLET RESPONSIVE TOUCH SET BUILDER (< 1024px) -->
+                <div class="block lg:hidden space-y-4 bg-gray-50/70 p-4 rounded-2xl border border-gray-200 shadow-xs">
+                    <!-- 1. Section (Bölüm) -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <label class="text-[11px] font-black uppercase tracking-wider text-brandBlue flex items-center space-x-1">
+                                <i class="fa-solid fa-layer-group text-brandPink text-xs"></i>
+                                <span data-i18n="section">Bölüm / Section</span>
+                            </label>
+                            <button type="button" onclick="openColumnCustomDropdown('s-section', event)" class="text-[10px] text-brandPink font-bold hover:underline cursor-pointer">
+                                <span data-i18n="more_options">+ Diğer / Özel</span>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="mob-section-buttons">
+                            <button type="button" onclick="selectCustomDropdownValue('s-section', 'Warm Up')" id="mob-sec-Warm-Up" class="py-2.5 px-2 rounded-xl border text-xs font-black transition-all bg-brandBlue text-white border-brandBlue shadow-xs cursor-pointer">
+                                <span data-i18n="warm_up">Warm Up</span>
+                            </button>
+                            <button type="button" onclick="selectCustomDropdownValue('s-section', 'Pre Set')" id="mob-sec-Pre-Set" class="py-2.5 px-2 rounded-xl border text-xs font-black transition-all bg-white text-gray-700 border-gray-200 hover:bg-gray-100 cursor-pointer">
+                                <span data-i18n="pre_set">Pre Set</span>
+                            </button>
+                            <button type="button" onclick="selectCustomDropdownValue('s-section', 'Main Set')" id="mob-sec-Main-Set" class="py-2.5 px-2 rounded-xl border text-xs font-black transition-all bg-white text-gray-700 border-gray-200 hover:bg-gray-100 cursor-pointer">
+                                <span data-i18n="main_set">Main Set</span>
+                            </button>
+                            <button type="button" onclick="selectCustomDropdownValue('s-section', 'Cool Down')" id="mob-sec-Cool-Down" class="py-2.5 px-2 rounded-xl border text-xs font-black transition-all bg-white text-gray-700 border-gray-200 hover:bg-gray-100 cursor-pointer">
+                                <span data-i18n="cool_down">Cool Down</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2. T1, T2 & Mesafe (3 Cards) -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="space-y-1">
+                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="t1">T1 (Dış Set)</label>
+                            <button type="button" onclick="openColumnCustomDropdown('s-reps1', event)" class="w-full py-3 px-2 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-black text-sm flex items-center justify-between shadow-2xs cursor-pointer">
+                                <span id="mob-label-s-reps1" class="truncate w-full text-center">-</span>
+                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
+                            </button>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="t2">T2 (İç Set)</label>
+                            <button type="button" onclick="openColumnCustomDropdown('s-reps2', event)" class="w-full py-3 px-2 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-black text-sm flex items-center justify-between shadow-2xs cursor-pointer">
+                                <span id="mob-label-s-reps2" class="truncate w-full text-center">-</span>
+                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
+                            </button>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="distance">Mesafe (m)</label>
+                            <button type="button" onclick="openColumnCustomDropdown('s-distance', event)" class="w-full py-3 px-2 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-sm flex items-center justify-between shadow-2xs cursor-pointer">
+                                <span id="mob-label-s-distance" class="truncate w-full text-center">-</span>
+                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3. Stil & Tür -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="space-y-1">
+                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="stroke">Stil / Stroke</label>
+                            <button type="button" onclick="openColumnCustomDropdown('s-stroke', event)" class="w-full py-2.5 px-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-bold text-xs flex items-center justify-between shadow-2xs cursor-pointer">
+                                <span id="mob-label-s-stroke" class="truncate">-</span>
+                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400 ml-1"></i>
+                            </button>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="type">Tür / Type</label>
+                            <button type="button" onclick="openColumnCustomDropdown('s-type', event)" class="w-full py-2.5 px-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-bold text-xs flex items-center justify-between shadow-2xs cursor-pointer">
+                                <span id="mob-label-s-type" class="truncate">-</span>
+                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400 ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4. Ekipman & Şiddet -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="space-y-1">
+                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="equipment">Ekipman</label>
+                            <button type="button" onclick="openColumnCustomDropdown('s-equipment', event)" class="w-full py-2.5 px-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-bold text-xs flex items-center justify-between shadow-2xs cursor-pointer">
+                                <span id="mob-label-s-equipment" class="truncate">-</span>
+                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400 ml-1"></i>
+                            </button>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="intensity">Şiddet / Zone</label>
+                            <button type="button" onclick="openColumnCustomDropdown('s-zone', event)" class="w-full py-2.5 px-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-black text-xs flex items-center justify-between shadow-2xs cursor-pointer">
+                                <span id="mob-label-s-zone" class="truncate w-full text-center">-</span>
+                                <i class="fa-solid fa-chevron-down text-[9px] text-gray-400 ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 5. Hedef Süre & @ Tempo -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="space-y-1">
+                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="target_time">Hedef Süre</label>
+                            <button type="button" onclick="openTimeKeypad('s-target-time')" class="w-full py-2.5 px-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-xs flex items-center justify-center space-x-1 shadow-2xs cursor-pointer">
+                                <i class="fa-regular fa-clock text-gray-400 text-[10px]"></i>
+                                <span id="mob-label-s-target-time">00:00.00</span>
+                            </button>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10.5px] font-extrabold uppercase text-gray-500" data-i18n="interval">@ Tempo</label>
+                            <button type="button" onclick="openTimeKeypad('s-interval')" class="w-full py-2.5 px-3 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-xs flex items-center justify-center space-x-1 shadow-2xs cursor-pointer">
+                                <span class="text-gray-400 font-black text-xs">@</span>
+                                <span id="mob-label-s-interval">00:00.00</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex items-center justify-between flex-wrap gap-2 px-1">
                     <div class="flex items-center space-x-2 text-[11px] font-bold text-gray-400 bg-gray-50 border border-gray-200/70 rounded-xl px-3 py-1.5 w-fit shadow-xs">
                         <i class="fa-solid fa-mouse text-brandPink text-xs"></i>
-                        <span data-i18n="right_click_hint">İpucu: Eklediğiniz seçenekleri düzenlemek veya silmek için sütuna sağ tıklayın.</span>
+                        <span data-i18n="right_click_hint">İpucu: Eklediğiniz seçenekleri düzenlemek veya silmek için seçeneğe sağ tıklayın.</span>
                     </div>
                 </div>
 
@@ -1532,6 +1657,11 @@
         // --- MULTI-LANGUAGE TRANSLATIONS (i18n) ---
         const translations = {
         "en": {
+                "cloud_synced": "Cloud Synced",
+                "cloud_syncing": "Syncing...",
+                "cloud_offline": "Offline",
+                "more_options": "+ More / Custom",
+
                 "manage_options": "Manage Custom Options",
                 "no_custom_options": "No custom options added to this column yet.",
                 "edit_option": "Edit",
@@ -1736,6 +1866,11 @@
                 "share": "Share"
         },
         "tr": {
+                "cloud_synced": "Bulut Canlı",
+                "cloud_syncing": "Eşitleniyor...",
+                "cloud_offline": "Çevrimdışı",
+                "more_options": "+ Diğer / Özel",
+
                 "manage_options": "Özel Seçenekleri Yönet",
                 "no_custom_options": "Bu sütunda henüz özel eklenmiş seçenek yok.",
                 "edit_option": "Düzenle",
@@ -1940,6 +2075,11 @@
                 "share": "Paylaş"
         },
         "de": {
+                "cloud_synced": "Cloud Synchron",
+                "cloud_syncing": "Synchronisieren...",
+                "cloud_offline": "Offline",
+                "more_options": "+ Mehr / Eigene",
+
                 "manage_options": "Benutzerdefinierte Optionen verwalten",
                 "no_custom_options": "In dieser Spalte wurden noch keine benutzerdefinierten Optionen hinzugefügt.",
                 "edit_option": "Bearbeiten",
@@ -2144,6 +2284,11 @@
                 "share": "Teilen"
         },
         "zh": {
+                "cloud_synced": "云端已同步",
+                "cloud_syncing": "正在同步...",
+                "cloud_offline": "离线",
+                "more_options": "+ 更多 / 自定义",
+
                 "manage_options": "管理自定义选项",
                 "no_custom_options": "此列尚未添加自定义选项。",
                 "edit_option": "编辑",
@@ -2348,6 +2493,11 @@
                 "share": "发布"
         },
         "ja": {
+                "cloud_synced": "クラウド同期済",
+                "cloud_syncing": "同期中...",
+                "cloud_offline": "オフライン",
+                "more_options": "+ その他 / カスタム",
+
                 "manage_options": "カスタム項目の管理",
                 "no_custom_options": "この列にはまだカスタム項目が追加されていません。",
                 "edit_option": "編集",
@@ -2552,6 +2702,11 @@
                 "share": "投稿"
         },
         "ru": {
+                "cloud_synced": "Облако синхр.",
+                "cloud_syncing": "Синхронизация...",
+                "cloud_offline": "Офлайн",
+                "more_options": "+ Другое / Свое",
+
                 "manage_options": "Управление своими опциями",
                 "no_custom_options": "В эту колонку еще не добавлены свои опции.",
                 "edit_option": "Изменить",
@@ -2756,6 +2911,11 @@
                 "share": "Отправить"
         },
         "es": {
+                "cloud_synced": "Sincronizado",
+                "cloud_syncing": "Sincronizando...",
+                "cloud_offline": "Desconectado",
+                "more_options": "+ Más / Personalizado",
+
                 "manage_options": "Administrar opciones personalizadas",
                 "no_custom_options": "Aún no se han agregado opciones personalizadas a esta columna.",
                 "edit_option": "Editar",
@@ -2960,6 +3120,11 @@
                 "share": "Publicar"
         },
         "it": {
+                "cloud_synced": "Sincronizzato",
+                "cloud_syncing": "Sincronizzazione...",
+                "cloud_offline": "Offline",
+                "more_options": "+ Altro / Personalizzato",
+
                 "manage_options": "Gestisci opzioni personalizzate",
                 "no_custom_options": "Nessuna opzione personalizzata ancora aggiunta a questa colonna.",
                 "edit_option": "Modifica",
@@ -6463,8 +6628,33 @@
             Object.keys(DROPDOWN_CONFIG).forEach(selectId => {
                 const input = document.getElementById(selectId);
                 const labelEl = document.getElementById(`label-${selectId}`);
-                if (input && labelEl) {
-                    labelEl.textContent = getDropdownOptionLabel(selectId, input.value);
+                const mobLabelEl = document.getElementById(`mob-label-${selectId}`);
+                const val = input ? input.value : "";
+                const displayLabel = getDropdownOptionLabel(selectId, val);
+
+                if (labelEl) labelEl.textContent = displayLabel;
+                if (mobLabelEl) mobLabelEl.textContent = displayLabel;
+            });
+
+            // Mobile Time Displays
+            const tTime = document.getElementById("s-target-time")?.value || "";
+            const mobTTime = document.getElementById("mob-label-s-target-time");
+            if (mobTTime) mobTTime.textContent = tTime || "00:00.00";
+
+            const interval = document.getElementById("s-interval")?.value || "";
+            const mobInterval = document.getElementById("mob-label-s-interval");
+            if (mobInterval) mobInterval.textContent = interval ? `@ ${interval}` : "@ 00:00.00";
+
+            // Mobile Section Button Highlights
+            const activeSec = document.getElementById("s-section")?.value || "Warm Up";
+            ["Warm Up", "Pre Set", "Main Set", "Cool Down"].forEach(sec => {
+                const btn = document.getElementById(`mob-sec-${sec.replace(/ /g, "-")}`);
+                if (btn) {
+                    if (activeSec === sec) {
+                        btn.className = "py-2.5 px-2 rounded-xl border text-xs font-black transition-all bg-brandBlue text-white border-brandBlue shadow-xs cursor-pointer";
+                    } else {
+                        btn.className = "py-2.5 px-2 rounded-xl border text-xs font-black transition-all bg-white text-gray-700 border-gray-200 hover:bg-gray-100 cursor-pointer";
+                    }
                 }
             });
         }
@@ -6674,7 +6864,7 @@
             if (!inp || !inp.value.trim()) return;
 
             const val = inp.value.trim();
-            saveCustomSelectOptions(selectId, val);
+            saveCustomSelectOptions(selectId, val); if (typeof CloudSyncEngine !== undefined && currentUser) CloudSyncEngine.syncAllToCloud(currentUser);
             inlineAddingSelectId = null;
             selectCustomDropdownValue(selectId, val);
         }
@@ -6791,6 +6981,205 @@
         function closeOptionContextMenu() {
             const menu = document.getElementById('dropdown-custom-option-context-menu');
             if (menu) menu.classList.add('hidden');
+        }
+
+
+        // --- CLOUD SYNC & MULTI-DEVICE REALTIME ENGINE (FIREBASE FIRESTORE) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-swimcoach-pro-live-key",
+            authDomain: "swimcoach-pro-sync.firebaseapp.com",
+            projectId: "swimcoach-pro-sync",
+            storageBucket: "swimcoach-pro-sync.appspot.com",
+            messagingSenderId: "987654321012",
+            appId: "1:987654321012:web:abcdef1234567890"
+        };
+
+        const CloudSyncEngine = {
+            db: null,
+            unsubscribeListener: null,
+            isOnline: navigator.onLine,
+            isSyncing: false,
+
+            init() {
+                try {
+                    if (typeof firebase !== "undefined" && !firebase.apps.length) {
+                        firebase.initializeApp(firebaseConfig);
+                        this.db = firebase.firestore();
+                        this.db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+                    }
+                } catch (e) {
+                    console.log("Firebase initialized in local-first mode.");
+                }
+
+                window.addEventListener("online", () => {
+                    this.isOnline = true;
+                    this.updateBadge();
+                    if (currentUser) this.syncAllToCloud(currentUser);
+                });
+                window.addEventListener("offline", () => {
+                    this.isOnline = false;
+                    this.updateBadge();
+                });
+            },
+
+            updateBadge(statusText) {
+                const badge = document.getElementById("header-cloud-sync");
+                const textEl = document.getElementById("cloud-sync-text");
+                const dotEl = document.getElementById("cloud-status-dot");
+                const pingEl = document.getElementById("cloud-ping-dot");
+                const dict = translations[currentLang] || translations["en"];
+
+                if (!badge || !textEl) return;
+
+                if (!this.isOnline) {
+                    badge.className = "flex items-center space-x-1.5 px-2.5 py-1.5 bg-amber-50 text-amber-800 border border-amber-200/90 rounded-xl text-xs font-black shadow-2xs transition-all cursor-pointer";
+                    textEl.textContent = dict.cloud_offline || "Çevrimdışı (Yerel)";
+                    if (dotEl) dotEl.className = "relative inline-flex rounded-full h-2 w-2 bg-amber-500";
+                    if (pingEl) pingEl.className = "hidden";
+                } else if (this.isSyncing) {
+                    badge.className = "flex items-center space-x-1.5 px-2.5 py-1.5 bg-blue-50 text-blue-800 border border-blue-200/90 rounded-xl text-xs font-black shadow-2xs transition-all cursor-pointer";
+                    textEl.textContent = dict.cloud_syncing || "Eşitleniyor...";
+                    if (dotEl) dotEl.className = "relative inline-flex rounded-full h-2 w-2 bg-blue-500";
+                    if (pingEl) pingEl.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75";
+                } else {
+                    badge.className = "flex items-center space-x-1.5 px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/90 rounded-xl text-xs font-black shadow-2xs transition-all cursor-pointer";
+                    textEl.textContent = statusText || (dict.cloud_synced || "Bulut Canlı");
+                    if (dotEl) dotEl.className = "relative inline-flex rounded-full h-2 w-2 bg-emerald-500";
+                    if (pingEl) pingEl.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
+                }
+            },
+
+            startCoachSync(coachId) {
+                if (!coachId) return;
+                this.updateBadge();
+                if (this.unsubscribeListener) {
+                    this.unsubscribeListener();
+                    this.unsubscribeListener = null;
+                }
+
+                if (!this.db) {
+                    this.init();
+                }
+
+                if (this.db) {
+                    try {
+                        const docRef = this.db.collection("swimcoach_cloud_v1").doc(coachId.toLowerCase());
+                        this.unsubscribeListener = docRef.onSnapshot((doc) => {
+                            if (doc.exists) {
+                                this.mergeCloudDataLocally(coachId, doc.data());
+                            } else {
+                                this.syncAllToCloud(coachId);
+                            }
+                        }, () => {});
+                    } catch (e) {}
+                }
+            },
+
+            mergeCloudDataLocally(coachId, cloudData) {
+                if (!cloudData) return;
+                let needsUIRefresh = false;
+
+                if (cloudData.swimSets && Array.isArray(cloudData.swimSets)) {
+                    const localSets = JSON.parse(localStorage.getItem("tan_swim_sets_v3")) || [];
+                    const mergedMap = new Map();
+                    localSets.forEach(s => mergedMap.set(s.id, s));
+                    cloudData.swimSets.forEach(s => mergedMap.set(s.id, s));
+                    const mergedSets = Array.from(mergedMap.values());
+                    if (JSON.stringify(localSets) !== JSON.stringify(mergedSets)) {
+                        localStorage.setItem("tan_swim_sets_v3", JSON.stringify(mergedSets));
+                        needsUIRefresh = true;
+                    }
+                }
+
+                if (cloudData.squadSwimmers && Array.isArray(cloudData.squadSwimmers)) {
+                    const squadKey = getCoachSquadKey(coachId);
+                    const localSquad = JSON.parse(localStorage.getItem(squadKey)) || [];
+                    const mergedSquad = Array.from(new Set([...localSquad, ...cloudData.squadSwimmers]));
+                    if (JSON.stringify(localSquad) !== JSON.stringify(mergedSquad)) {
+                        localStorage.setItem(squadKey, JSON.stringify(mergedSquad));
+                        needsUIRefresh = true;
+                    }
+                }
+
+                if (cloudData.attendanceRecords) {
+                    const attKey = getCoachAttendanceKey(coachId);
+                    const localAtt = JSON.parse(localStorage.getItem(attKey)) || {};
+                    const mergedAtt = { ...localAtt, ...cloudData.attendanceRecords };
+                    if (JSON.stringify(localAtt) !== JSON.stringify(mergedAtt)) {
+                        localStorage.setItem(attKey, JSON.stringify(mergedAtt));
+                        needsUIRefresh = true;
+                    }
+                }
+
+                if (cloudData.customOptions) {
+                    const optKey = getCoachCustomOptionsKey();
+                    const localOpts = JSON.parse(localStorage.getItem(optKey)) || {};
+                    const mergedOpts = { ...localOpts, ...cloudData.customOptions };
+                    localStorage.setItem(optKey, JSON.stringify(mergedOpts));
+                    needsUIRefresh = true;
+                }
+
+                if (cloudData.swimmerNotes) {
+                    const noteKey = getCoachSwimmerNotesKey(coachId);
+                    const localNotes = JSON.parse(localStorage.getItem(noteKey)) || {};
+                    const mergedNotes = { ...localNotes, ...cloudData.swimmerNotes };
+                    localStorage.setItem(noteKey, JSON.stringify(mergedNotes));
+                    needsUIRefresh = true;
+                }
+
+                if (needsUIRefresh) {
+                    loadSwimSets();
+                    renderAttendanceList();
+                    renderStatsAttendedSwimmers();
+                    updateAllDropdownTriggerLabels();
+                }
+            },
+
+            syncAllToCloud(coachId) {
+                if (!coachId) return;
+                this.isSyncing = true;
+                this.updateBadge();
+
+                const squadKey = getCoachSquadKey(coachId);
+                const attKey = getCoachAttendanceKey(coachId);
+                const optKey = getCoachCustomOptionsKey();
+                const noteKey = getCoachSwimmerNotesKey(coachId);
+
+                const payload = {
+                    coachId: coachId.toLowerCase(),
+                    lastUpdated: Date.now(),
+                    swimSets: (JSON.parse(localStorage.getItem("tan_swim_sets_v3")) || []).filter(s => isCoachSet(s)),
+                    squadSwimmers: JSON.parse(localStorage.getItem(squadKey)) || [],
+                    attendanceRecords: JSON.parse(localStorage.getItem(attKey)) || {},
+                    customOptions: JSON.parse(localStorage.getItem(optKey)) || {},
+                    swimmerNotes: JSON.parse(localStorage.getItem(noteKey)) || {}
+                };
+
+                if (this.db) {
+                    this.db.collection("swimcoach_cloud_v1").doc(coachId.toLowerCase()).set(payload, { merge: true })
+                        .then(() => {
+                            this.isSyncing = false;
+                            this.updateBadge();
+                        })
+                        .catch(() => {
+                            this.isSyncing = false;
+                            this.updateBadge();
+                        });
+                } else {
+                    setTimeout(() => {
+                        this.isSyncing = false;
+                        this.updateBadge();
+                    }, 500);
+                }
+            }
+        };
+
+        function manualTriggerCloudSync() {
+            if (currentUser) {
+                CloudSyncEngine.syncAllToCloud(currentUser);
+                const dict = translations[currentLang] || translations["en"];
+                alert(dict.cloud_synced ? `☁️ ${dict.cloud_synced}!` : "☁️ Bulut Senkronizasyonu Başarıyla Tamamlandı!");
+            }
         }
 
         // App Initialization: Start on Landing Welcome Page
