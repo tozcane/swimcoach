@@ -974,14 +974,14 @@
                                 </td>
                                 <!-- Column 7: Target Time -->
                                 <td class="p-2 border-r border-gray-200">
-                                    <input type="text" id="s-target-time" placeholder="00:00.00" readonly onclick="openTimeKeypad('s-target-time')"
+                                    <input type="text" id="s-target-time" placeholder="00:00" readonly onclick="openTimeKeypad('s-target-time')"
                                         class="w-full px-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue text-center font-black text-sm cursor-pointer hover:bg-gray-100/50 transition-colors">
                                 </td>
                                 <!-- Column 7.5: @ Interval -->
                                 <td class="p-2 border-r border-gray-200">
                                     <div class="flex items-center space-x-1">
                                         <span class="text-gray-400 font-extrabold text-sm">@</span>
-                                        <input type="text" id="s-interval" placeholder="00:00.00" readonly onclick="openTimeKeypad('s-interval')"
+                                        <input type="text" id="s-interval" placeholder="00:00" readonly onclick="openTimeKeypad('s-interval')"
                                             class="w-full px-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue text-center font-black text-sm cursor-pointer hover:bg-gray-100/50 transition-colors">
                                     </div>
                                 </td>
@@ -1126,7 +1126,7 @@
                         <button type="button" onclick="openTimeKeypad('s-target-time')" class="w-full py-3 px-4 bg-gray-50 hover:bg-amber-50/50 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-base flex items-center justify-between shadow-2xs cursor-pointer transition-all">
                             <div class="flex items-center space-x-2">
                                 <span class="text-xs text-gray-400 font-bold font-sans">Süre:</span>
-                                <span id="mob-label-s-target-time" class="text-base font-black text-brandBlue">00:00.00</span>
+                                <span id="mob-label-s-target-time" class="text-base font-black text-brandBlue">00:00</span>
                             </div>
                             <i class="fa-solid fa-keyboard text-xs text-gray-400"></i>
                         </button>
@@ -1141,7 +1141,7 @@
                         <button type="button" onclick="openTimeKeypad('s-interval')" class="w-full py-3 px-4 bg-gray-50 hover:bg-orange-50/50 border border-gray-200 rounded-xl text-brandBlue font-mono font-black text-base flex items-center justify-between shadow-2xs cursor-pointer transition-all">
                             <div class="flex items-center space-x-2">
                                 <span class="text-xs text-gray-400 font-bold font-sans">Tempo:</span>
-                                <span id="mob-label-s-interval" class="text-base font-black text-brandBlue">@ 00:00.00</span>
+                                <span id="mob-label-s-interval" class="text-base font-black text-brandBlue">@ 00:00</span>
                             </div>
                             <i class="fa-solid fa-keyboard text-xs text-gray-400"></i>
                         </button>
@@ -1275,8 +1275,8 @@
             
             <!-- Time Display -->
             <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-center">
-                <div id="keypad-display" class="text-3xl font-black text-brandBlue font-mono">00:00.00</div>
-                <div class="text-[10px] text-gray-400 font-bold uppercase mt-1" data-i18n="keypad_labels">Min : Sec . Centisec</div>
+                <div id="keypad-display" class="text-3xl font-black text-brandBlue font-mono">00:00</div>
+                <div class="text-[10px] text-gray-400 font-bold uppercase mt-1" data-i18n="keypad_labels">Min : Sec</div>
             </div>
             
             <!-- Grid of Numbers -->
@@ -1910,7 +1910,7 @@
                 "keypad_title": "Enter Pacing Time",
                 "keypad_target": "Enter Target Time",
                 "keypad_interval": "Enter Interval Time",
-                "keypad_labels": "Min : Sec . Centisec",
+                "keypad_labels": "Min : Sec",
                 "confirm": "Confirm",
                 "add_new_option": "+ Add New...",
                 "enter_custom_value": "Enter custom value:",
@@ -2119,7 +2119,7 @@
                 "keypad_title": "Tempo Süresi Giriniz",
                 "keypad_target": "Hedef Süre Giriniz",
                 "keypad_interval": "Çıkış / Dinlenme Süresi",
-                "keypad_labels": "Dakika : Saniye . Salise",
+                "keypad_labels": "Dakika : Saniye",
                 "confirm": "Onayla",
                 "add_new_option": "+ Yeni Ekle...",
                 "enter_custom_value": "Özel değer girin:",
@@ -2328,7 +2328,7 @@
                 "keypad_title": "Pacing-Zeit eingeben",
                 "keypad_target": "Zielzeit eingeben",
                 "keypad_interval": "Intervallzeit eingeben",
-                "keypad_labels": "Min : Sek . Hundertstel",
+                "keypad_labels": "Min : Sek",
                 "confirm": "Bestätigen",
                 "add_new_option": "+ Neu hinzufügen...",
                 "enter_custom_value": "Geben Sie einen benutzerdefinierten Wert ein:",
@@ -2537,7 +2537,7 @@
                 "keypad_title": "输入配速时间",
                 "keypad_target": "输入目标时间",
                 "keypad_interval": "输入出发间隔",
-                "keypad_labels": "分 : 秒 . 百分秒",
+                "keypad_labels": "分 : 秒",
                 "confirm": "确认",
                 "add_new_option": "+ 新增自定义...",
                 "enter_custom_value": "输入自定义值：",
@@ -2746,7 +2746,7 @@
                 "keypad_title": "ペースタイムを入力",
                 "keypad_target": "目標タイムを入力",
                 "keypad_interval": "サークルタイムを入力",
-                "keypad_labels": "分 : 秒 . コンマ",
+                "keypad_labels": "分 : 秒",
                 "confirm": "確定",
                 "add_new_option": "+ 新規追加...",
                 "enter_custom_value": "カスタム値を入力：",
@@ -2955,7 +2955,7 @@
                 "keypad_title": "Введите время темпа",
                 "keypad_target": "Введите целевое время",
                 "keypad_interval": "Введите интервал",
-                "keypad_labels": "Мин : Сек . Сотки",
+                "keypad_labels": "Мин : Сек",
                 "confirm": "Подтвердить",
                 "add_new_option": "+ Добавить...",
                 "enter_custom_value": "Введите значение:",
@@ -3164,7 +3164,7 @@
                 "keypad_title": "Introducir Tiempo de Ritmo",
                 "keypad_target": "Introducir Tiempo Objetivo",
                 "keypad_interval": "Introducir Tiempo de Intervalo",
-                "keypad_labels": "Min : Seg . Centésimas",
+                "keypad_labels": "Min : Seg",
                 "confirm": "Confirmar",
                 "add_new_option": "+ Añadir Nuevo...",
                 "enter_custom_value": "Introducir valor personalizado:",
@@ -3373,7 +3373,7 @@
                 "keypad_title": "Inserisci Tempo di Passo",
                 "keypad_target": "Inserisci Tempo Obiettivo",
                 "keypad_interval": "Inserisci Intervallo",
-                "keypad_labels": "Min : Sec . Centesimi",
+                "keypad_labels": "Min : Sec",
                 "confirm": "Conferma",
                 "add_new_option": "+ Aggiungi...",
                 "enter_custom_value": "Inserisci valore personalizzato:",
@@ -6453,12 +6453,11 @@
                 }
             }
             
-            // Parse existing value if any, to load it
-            // Extract only numeric digits from existing value (e.g. "01:30.45" -> "013045")
-            keypadDigits = inputVal.replace(/[^0-9]/g, '');
-            // Limit to 6 digits max
-            if (keypadDigits.length > 6) {
-                keypadDigits = keypadDigits.substring(keypadDigits.length - 6);
+            // Extract only minute and second digits (e.g. "01:30" or old "01:30.45" -> "0130")
+            const cleanVal = inputVal.split('.')[0];
+            keypadDigits = cleanVal.replace(/[^0-9]/g, '');
+            if (keypadDigits.length > 4) {
+                keypadDigits = keypadDigits.substring(keypadDigits.length - 4);
             }
             
             updateKeypadDisplay();
@@ -6472,20 +6471,17 @@
         }
 
         function updateKeypadDisplay() {
-            // Format current digits into MM:SS.CC (Dakika : Saniye . Salise)
-            // Pads digits to the left with zeros up to 6 characters
-            const padded = keypadDigits.padStart(6, '0');
+            // Format current digits into MM:SS (Dakika : Saniye)
+            const padded = keypadDigits.padStart(4, '0');
             const mm = padded.substring(0, 2);
             const ss = padded.substring(2, 4);
-            const cc = padded.substring(4, 6);
             
-            const displayStr = `${mm}:${ss}.${cc}`;
+            const displayStr = `${mm}:${ss}`;
             document.getElementById('keypad-display').textContent = displayStr;
         }
 
         function pressKeypadDigit(digit) {
-            if (keypadDigits.length < 6) {
-                // If it is just starting and we type '0', ignore it unless we already have digits
+            if (keypadDigits.length < 4) {
                 if (keypadDigits === '' && digit === '0') return;
                 keypadDigits += digit;
                 updateKeypadDisplay();
@@ -6506,21 +6502,19 @@
 
         function submitKeypadTime() {
             if (activeKeypadInputId) {
-                const padded = keypadDigits.padStart(6, '0');
+                const padded = keypadDigits.padStart(4, '0');
                 const mm = padded.substring(0, 2);
                 const ss = padded.substring(2, 4);
-                const cc = padded.substring(4, 6);
                 
-                // If it is 00:00.00, we can write empty or write the formatted time.
-                // Normally, let's write it only if it is greater than 0
-                if (padded === '000000') {
+                // If it is 00:00, write empty or formatted time
+                if (padded === '0000') {
                     document.getElementById(activeKeypadInputId).value = '';
                 } else {
-                    document.getElementById(activeKeypadInputId).value = `${mm}:${ss}.${cc}`;
+                    document.getElementById(activeKeypadInputId).value = `${mm}:${ss}`;
                 }
                 
-                // Trigger change event if needed
                 document.getElementById(activeKeypadInputId).dispatchEvent(new Event('change'));
+                updateAllDropdownTriggerLabels();
             }
             closeTimeKeypad();
         }
@@ -6695,11 +6689,11 @@
             // Mobile Time Displays
             const tTime = document.getElementById("s-target-time")?.value || "";
             const mobTTime = document.getElementById("mob-label-s-target-time");
-            if (mobTTime) mobTTime.textContent = tTime || "00:00.00";
+            if (mobTTime) mobTTime.textContent = tTime || "00:00";
 
             const interval = document.getElementById("s-interval")?.value || "";
             const mobInterval = document.getElementById("mob-label-s-interval");
-            if (mobInterval) mobInterval.textContent = interval ? `@ ${interval}` : "@ 00:00.00";
+            if (mobInterval) mobInterval.textContent = interval ? `@ ${interval}` : "@ 00:00";
 
             // Mobile Section Button Highlights
             const activeSec = document.getElementById("s-section")?.value || "Warm Up";
