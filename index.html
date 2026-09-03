@@ -473,13 +473,7 @@
 
                     <!-- Right: 5 Buttons Side-by-Side in 1 Single Compact Line -->
                     <div class="flex items-center space-x-1 sm:space-x-1.5 flex-nowrap overflow-x-auto w-full lg:w-auto pb-0.5 lg:pb-0">
-                        <!-- 1. Add Set (Yeni Set Ekle - En Sola) -->
-                        <button onclick="openTrainingModal()" class="shrink-0 px-2.5 py-1 bg-brandBlue hover:bg-opacity-95 text-white font-bold rounded-lg shadow-sm shadow-brandBlue/20 hover:shadow-brandBlue/30 transition-all duration-300 flex items-center space-x-1 text-[10.5px] cursor-pointer whitespace-nowrap">
-                            <i class="fa-solid fa-plus-circle text-[10px] text-yellow-300"></i>
-                            <span data-i18n="add_set">Add Set</span>
-                        </button>
-
-                        <!-- 2. Export Dropdown -->
+                        <!-- 1. Export Dropdown -->
                         <div class="relative inline-block text-left shrink-0">
                             <button onclick="toggleExportMenu(event)" id="export-dropdown-btn" class="px-2 py-1 border border-blue-200 text-blue-600 hover:bg-blue-50 font-bold rounded-lg transition-all duration-300 flex items-center space-x-1 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap" title="Export Selected Day's Workout">
                                 <i class="fa-solid fa-download text-[10px]"></i>
@@ -500,19 +494,25 @@
                             </div>
                         </div>
 
-                        <!-- 3. Sporcu Kadrosu -->
+                        <!-- 2. Sporcu Kadrosu -->
                         <button onclick="openSquadModal()" class="shrink-0 px-2 py-1 border border-emerald-300 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 font-bold rounded-lg transition-all duration-300 flex items-center space-x-1 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap" title="Sporcular ve Bireysel Profiller">
                             <i class="fa-solid fa-users text-emerald-600 text-[10px]"></i>
                             <span data-i18n="swimmer_squad">Sporcu Kadrosu</span>
                         </button>
 
-                        <!-- 4. All Days Summary -->
+                        <!-- 3. All Days Summary -->
                         <button onclick="openSummaryModal()" class="shrink-0 px-2 py-1 border border-brandPink/25 text-brandPink hover:bg-brandPink/5 font-bold rounded-lg transition-all duration-300 flex items-center space-x-1 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap" title="Total Training Volume for All Days">
                             <i class="fa-solid fa-list-check text-[10px]"></i>
                             <span data-i18n="all_days_summary">All Days Summary</span>
                         </button>
 
-                        <!-- 5. Toggle Statistics (İstatistikleri Göster / Gizle) -->
+                        <!-- 4. Add Set (Yeni Set Ekle - İstatistiklerin Solunda) -->
+                        <button onclick="openTrainingModal()" class="shrink-0 px-2.5 py-1 bg-brandBlue hover:bg-opacity-95 text-white font-bold rounded-lg shadow-sm shadow-brandBlue/20 hover:shadow-brandBlue/30 transition-all duration-300 flex items-center space-x-1 text-[10.5px] cursor-pointer whitespace-nowrap">
+                            <i class="fa-solid fa-plus-circle text-[10px] text-yellow-300"></i>
+                            <span data-i18n="add_set">Add Set</span>
+                        </button>
+
+                        <!-- 5. Toggle Statistics (İstatistikleri Göster / Gizle - En Sonda) -->
                         <button onclick="toggleStatsPanel()" id="toggle-stats-btn" class="shrink-0 px-2 py-1 border border-brandBlue/20 text-brandBlue hover:bg-brandBlue/5 font-bold rounded-lg transition-all duration-300 flex items-center space-x-1 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap">
                             <i class="fa-solid fa-chart-pie text-[10px]"></i>
                             <span data-i18n="show_stats">Show Statistics</span>
