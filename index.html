@@ -4413,29 +4413,27 @@
                 else if (currentLang === 'it') placeholderText = `Nota di allenamento, tempo o valutazione per ${name}...`;
 
                 return `
-                    <div class="p-3.5 bg-gradient-to-r from-gray-50/90 to-white border border-gray-200/90 hover:border-emerald-400 rounded-2xl transition-all duration-200 flex flex-col gap-2.5 shadow-sm">
-                        <!-- Swimmer Info Header -->
-                        <div class="flex items-center justify-between flex-wrap gap-2">
-                            <div class="flex items-center space-x-3">
-                                ${avatarHtml}
-                                <div>
-                                    <div class="flex items-center space-x-2">
-                                        <span class="text-xs font-black text-brandBlue">${idx + 1}. ${escapeHtml(name)}</span>
-                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9.5px] font-extrabold bg-emerald-100 text-emerald-800">
-                                            <i class="fa-solid fa-circle-check text-[8.5px] mr-1"></i>${attendedLabel}
-                                        </span>
-                                    </div>
-                                    <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
-                                        ${birthYearBadge}
-                                        ${categoryBadge}
-                                        ${styleBadge}
-                                    </div>
+                    <div class="p-2.5 sm:p-3 bg-gradient-to-r from-gray-50/90 to-white border border-gray-200/90 hover:border-emerald-400 rounded-2xl transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm">
+                        <!-- Left: Swimmer Info -->
+                        <div class="flex items-center space-x-3 shrink-0 md:min-w-[240px]">
+                            ${avatarHtml}
+                            <div class="truncate">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs font-black text-brandBlue truncate">${idx + 1}. ${escapeHtml(name)}</span>
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-emerald-100 text-emerald-800 shrink-0">
+                                        <i class="fa-solid fa-circle-check text-[8px] mr-1"></i>${attendedLabel}
+                                    </span>
+                                </div>
+                                <div class="flex flex-wrap items-center gap-1 mt-0.5">
+                                    ${birthYearBadge}
+                                    ${categoryBadge}
+                                    ${styleBadge}
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Swimmer Coach Note Input Field (Full Width Alt Alta) -->
-                        <div class="w-full relative">
+                        <!-- Right: Swimmer Coach Note Input Field (Directly Beside Name) -->
+                        <div class="flex-1 w-full relative">
                             <div class="relative flex items-center">
                                 <span class="absolute left-3 text-gray-400 text-xs pointer-events-none">
                                     <i class="fa-solid fa-pen-fancy"></i>
@@ -4444,7 +4442,7 @@
                                     value="${escapeHtml(noteVal)}"
                                     oninput="handleStatsSwimmerNoteChange('${escapeHtml(name)}', this.value, ${idx})"
                                     placeholder="${escapeHtml(placeholderText)}"
-                                    class="w-full pl-8 pr-9 py-2.5 bg-white border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 rounded-xl text-xs font-bold text-brandBlue transition-all placeholder:text-gray-400 placeholder:font-normal shadow-inner">
+                                    class="w-full pl-8 pr-9 py-2 bg-white border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 rounded-xl text-xs font-bold text-brandBlue transition-all placeholder:text-gray-400 placeholder:font-normal shadow-inner">
                                 <span id="stats-note-saved-${idx}" class="hidden absolute right-3 text-emerald-600 text-xs animate-fade-in font-bold" title="Saved">
                                     <i class="fa-solid fa-check"></i>
                                 </span>
