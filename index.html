@@ -7322,14 +7322,52 @@
 
             showView('landing');
 
-            // Global close listeners for custom dropdown popover & context menu
+            // Universal Outside-Click Dismiss Handler for All Popovers, Menus, and Modals
             document.addEventListener('click', (e) => {
-                closeOptionContextMenu();
+                // 1. Close Floating Dropdown & Context Menu if clicked on empty space / outside
                 const popover = document.getElementById('column-custom-dropdown-popover');
-                if (popover && !popover.contains(e.target) && !e.target.closest('[id^="trigger-s-"]')) {
-                    closeColumnCustomDropdown();
+                if (popover && !popover.classList.contains('hidden') && !popover.contains(e.target)) {
+                    if (!e.target.closest('[id^="trigger-s-"]') && !e.target.closest('[id^="mob-trigger-s-"]')) {
+                        closeColumnCustomDropdown();
+                    }
                 }
+
+                const ctxMenu = document.getElementById('dropdown-custom-option-context-menu');
+                if (ctxMenu && !ctxMenu.classList.contains('hidden') && !ctxMenu.contains(e.target)) {
+                    closeOptionContextMenu();
+                }
+
+                // 2. Close Modals when clicking outside their inner card (on the backdrop overlay)
+                const modalIds = [
+                    'export-choice-modal',
+                    'time-keypad-modal',
+                    'training-modal',
+                    'summary-modal',
+                    'squad-modal',
+                    'swimmer-profile-modal',
+                    'club-branding-modal',
+                    'admin-login-modal',
+                    'legal-modal',
+                    'reg-success-modal'
+                ];
+
+                modalIds.forEach(id => {
+                    const modalEl = document.getElementById(id);
+                    if (modalEl && !modalEl.classList.contains('hidden') && e.target === modalEl) {
+                        if (id === 'export-choice-modal') closeExportModal();
+                        else if (id === 'time-keypad-modal') closeTimeKeypad();
+                        else if (id === 'training-modal') closeTrainingModal();
+                        else if (id === 'summary-modal') closeSummaryModal();
+                        else if (id === 'squad-modal') closeSquadModal();
+                        else if (id === 'swimmer-profile-modal' && typeof closeSwimmerProfileModal === 'function') closeSwimmerProfileModal();
+                        else if (id === 'club-branding-modal' && typeof closeClubBrandingModal === 'function') closeClubBrandingModal();
+                        else if (id === 'admin-login-modal' && typeof closeAdminLoginModal === 'function') closeAdminLoginModal();
+                        else if (id === 'legal-modal' && typeof closeLegalModal === 'function') closeLegalModal();
+                        else modalEl.classList.add('hidden');
+                    }
+                });
             });
+
             document.addEventListener('keydown', (e) => {
                 // Keypad modal physical keyboard listener
                 const keypadModal = document.getElementById('time-keypad-modal');
@@ -7346,10 +7384,6 @@
                         e.preventDefault();
                         submitKeypadTime();
                         return;
-                    } else if (e.key === 'Escape') {
-                        e.preventDefault();
-                        closeTimeKeypad();
-                        return;
                     } else if (e.key.toLowerCase() === 'c') {
                         e.preventDefault();
                         clearKeypad();
@@ -7360,6 +7394,15 @@
                 if (e.key === 'Escape') {
                     closeOptionContextMenu();
                     closeColumnCustomDropdown();
+                    if (typeof closeExportModal === 'function') closeExportModal();
+                    if (typeof closeTimeKeypad === 'function') closeTimeKeypad();
+                    if (typeof closeTrainingModal === 'function') closeTrainingModal();
+                    if (typeof closeSummaryModal === 'function') closeSummaryModal();
+                    if (typeof closeSquadModal === 'function') closeSquadModal();
+                    if (typeof closeSwimmerProfileModal === 'function') closeSwimmerProfileModal();
+                    if (typeof closeClubBrandingModal === 'function') closeClubBrandingModal();
+                    if (typeof closeAdminLoginModal === 'function') closeAdminLoginModal();
+                    if (typeof closeLegalModal === 'function') closeLegalModal();
                 }
             });
         });
