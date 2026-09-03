@@ -899,132 +899,62 @@
                             <tr>
                                 <!-- Column 1: Section -->
                                 <td class="p-2 border-r border-gray-200">
-                                    <select id="s-section" required class="w-full px-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-extrabold text-sm">
-                                        <option value="" selected>-</option>
-                                        <option value="Warm Up" data-i18n="warm_up">Warm Up</option>
-                                        <option value="Pre Set" data-i18n="pre_set">Pre Set</option>
-                                        <option value="Main Set" data-i18n="main_set">Main Set</option>
-                                        <option value="Cool Down" data-i18n="cool_down">Cool Down</option>
-                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
-                                    </select>
+                                    <input type="hidden" id="s-section" value="Warm Up">
+                                    <button type="button" id="trigger-s-section" onclick="openColumnCustomDropdown('s-section', event)" class="w-full px-2 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-extrabold text-sm flex items-center justify-between cursor-pointer transition-all shadow-2xs">
+                                        <span id="label-s-section" class="truncate">Warm Up</span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 ml-1"></i>
+                                    </button>
                                 </td>
 
                                 <!-- Column 2: T1 (Dış Set) -->
                                 <td class="p-2 border-r border-gray-200">
-                                    <select id="s-reps1" class="w-full px-1.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue text-center font-black text-sm">
-                                        <option value="" selected>-</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
-                                    </select>
+                                    <input type="hidden" id="s-reps1" value="">
+                                    <button type="button" id="trigger-s-reps1" onclick="openColumnCustomDropdown('s-reps1', event)" class="w-full px-1.5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-black text-sm flex items-center justify-between cursor-pointer transition-all shadow-2xs">
+                                        <span id="label-s-reps1" class="truncate w-full text-center">-</span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 ml-1"></i>
+                                    </button>
                                 </td>
 
                                 <!-- Column 3: T2 (İç Set) -->
                                 <td class="p-2 border-r border-gray-200">
-                                    <select id="s-reps2" class="w-full px-1.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue text-center font-black text-sm">
-                                        <option value="" selected>-</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12">12</option>
-                                        <option value="13">13</option>
-                                        <option value="14">14</option>
-                                        <option value="15">15</option>
-                                        <option value="16">16</option>
-                                        <option value="17">17</option>
-                                        <option value="18">18</option>
-                                        <option value="19">19</option>
-                                        <option value="20">20</option>
-                                        <option value="21">21</option>
-                                        <option value="22">22</option>
-                                        <option value="23">23</option>
-                                        <option value="24">24</option>
-                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
-                                    </select>
+                                    <input type="hidden" id="s-reps2" value="">
+                                    <button type="button" id="trigger-s-reps2" onclick="openColumnCustomDropdown('s-reps2', event)" class="w-full px-1.5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-black text-sm flex items-center justify-between cursor-pointer transition-all shadow-2xs">
+                                        <span id="label-s-reps2" class="truncate w-full text-center">-</span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 ml-1"></i>
+                                    </button>
                                 </td>
 
                                 <!-- Column 4: Mesafe -->
                                 <td class="p-2 border-r border-gray-200">
-                                    <select id="s-distance" class="w-full px-1.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-mono text-center font-black text-sm">
-                                        <option value="" selected>-</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="75">75</option>
-                                        <option value="100">100</option>
-                                        <option value="125">125</option>
-                                        <option value="150">150</option>
-                                        <option value="175">175</option>
-                                        <option value="200">200</option>
-                                        <option value="250">250</option>
-                                        <option value="300">300</option>
-                                        <option value="350">350</option>
-                                        <option value="400">400</option>
-                                        <option value="500">500</option>
-                                        <option value="600">600</option>
-                                        <option value="700">700</option>
-                                        <option value="800">800</option>
-                                        <option value="900">900</option>
-                                        <option value="1000">1000</option>
-                                        <option value="1200">1200</option>
-                                        <option value="1500">1500</option>
-                                        <option value="2000">2000</option>
-                                        <option value="2500">2500</option>
-                                        <option value="3000">3000</option>
-                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
-                                    </select>
+                                    <input type="hidden" id="s-distance" value="">
+                                    <button type="button" id="trigger-s-distance" onclick="openColumnCustomDropdown('s-distance', event)" class="w-full px-1.5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-mono font-black text-sm flex items-center justify-between cursor-pointer transition-all shadow-2xs">
+                                        <span id="label-s-distance" class="truncate w-full text-center">-</span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 ml-1"></i>
+                                    </button>
                                 </td>
                                 <!-- Column 5: Stroke (Stil) -->
                                 <td class="p-2 border-r border-gray-200">
-                                    <select id="s-stroke" class="w-full px-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-bold text-sm">
-                                        <option value="" selected>-</option>
-                                        <option value="Freestyle" data-i18n="freestyle">Freestyle</option>
-                                        <option value="Backstroke" data-i18n="backstroke">Backstroke</option>
-                                        <option value="Breaststroke" data-i18n="breaststroke">Breaststroke</option>
-                                        <option value="Butterfly" data-i18n="butterfly">Butterfly</option>
-                                        <option value="Medley" data-i18n="medley">Medley</option>
-                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
-                                    </select>
+                                    <input type="hidden" id="s-stroke" value="">
+                                    <button type="button" id="trigger-s-stroke" onclick="openColumnCustomDropdown('s-stroke', event)" class="w-full px-2 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-bold text-sm flex items-center justify-between cursor-pointer transition-all shadow-2xs">
+                                        <span id="label-s-stroke" class="truncate">-</span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 ml-1"></i>
+                                    </button>
                                 </td>
                                 <!-- Column 5.5: Type (Çalışma Türü) -->
                                 <td class="p-2 border-r border-gray-200">
-                                    <select id="s-type" class="w-full px-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-bold text-sm">
-                                        <option value="" selected>-</option>
-                                        <option value="Swim" data-i18n="swim">Swim</option>
-                                        <option value="Kick" data-i18n="kick">Kick</option>
-                                        <option value="Drill" data-i18n="drill">Drill</option>
-                                        <option value="Stroke" data-i18n="stroke_type">Stroke</option>
-                                        <option value="Pull" data-i18n="pull">Pull</option>
-                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
-                                    </select>
+                                    <input type="hidden" id="s-type" value="">
+                                    <button type="button" id="trigger-s-type" onclick="openColumnCustomDropdown('s-type', event)" class="w-full px-2 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-bold text-sm flex items-center justify-between cursor-pointer transition-all shadow-2xs">
+                                        <span id="label-s-type" class="truncate">-</span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 ml-1"></i>
+                                    </button>
                                 </td>
                                 <!-- Column 6: Equipment -->
                                 <td class="p-2 border-r border-gray-200">
-                                    <select id="s-equipment" class="w-full px-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-bold text-sm">
-                                        <option value="" selected>-</option>
-                                        <option value="None" data-i18n="none">None</option>
-                                        <option value="Fins" data-i18n="fins">Fins</option>
-                                        <option value="Paddles" data-i18n="paddles">Paddles</option>
-                                        <option value="Board" data-i18n="board">Board</option>
-                                        <option value="Pullbuoy" data-i18n="pullbuoy">Pullbuoy</option>
-                                        <option value="Snorkels" data-i18n="snorkels">Snorkels</option>
-                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
-                                    </select>
+                                    <input type="hidden" id="s-equipment" value="">
+                                    <button type="button" id="trigger-s-equipment" onclick="openColumnCustomDropdown('s-equipment', event)" class="w-full px-2 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-bold text-sm flex items-center justify-between cursor-pointer transition-all shadow-2xs">
+                                        <span id="label-s-equipment" class="truncate">-</span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 ml-1"></i>
+                                    </button>
                                 </td>
                                 <!-- Column 7: Target Time -->
                                 <td class="p-2 border-r border-gray-200">
@@ -1041,24 +971,11 @@
                                 </td>
                                 <!-- Column 8: Intensity -->
                                 <td class="p-2">
-                                    <select id="s-zone" class="w-full px-1.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue text-center font-black text-sm">
-                                        <option value="" selected>-</option>
-                                        <option value="A1">A1</option>
-                                        <option value="A2">A2</option>
-                                        <option value="A3">A3</option>
-                                        <option value="End1">End1</option>
-                                        <option value="End2">End2</option>
-                                        <option value="End3">End3</option>
-                                        <option value="Spr1">Spr1</option>
-                                        <option value="Spr2">Spr2</option>
-                                        <option value="Spr3">Spr3</option>
-                                        <option value="R.P">R.P</option>
-                                        <option value="Easy" data-i18n="easy">Easy</option>
-                                        <option value="Moderate" data-i18n="moderate">Moderate</option>
-                                        <option value="Hard" data-i18n="hard">Hard</option>
-                                        <option value="Max" data-i18n="max">Max</option>
-                                        <option value="ADD_NEW" class="text-brandPink font-bold" data-i18n="add_new_option">+ Add New...</option>
-                                    </select>
+                                    <input type="hidden" id="s-zone" value="">
+                                    <button type="button" id="trigger-s-zone" onclick="openColumnCustomDropdown('s-zone', event)" class="w-full px-1.5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/30 text-brandBlue font-black text-sm flex items-center justify-between cursor-pointer transition-all shadow-2xs">
+                                        <span id="label-s-zone" class="truncate w-full text-center">-</span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 ml-1"></i>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -3322,6 +3239,7 @@
             }
 
             // 8. Re-render all dynamic components, tables, lists, and statistics
+            if (typeof updateAllDropdownTriggerLabels === 'function') updateAllDropdownTriggerLabels();
             if (typeof renderAttendanceList === 'function') renderAttendanceList();
             if (typeof renderStatsAttendedSwimmers === 'function') renderStatsAttendedSwimmers();
             if (typeof renderSquadModalList === 'function') renderSquadModalList();
@@ -4538,7 +4456,7 @@
             document.getElementById('s-interval').value = '';
             document.getElementById('s-zone').value = '';
             
-            loadCustomSelectOptions();
+            if (typeof updateAllDropdownTriggerLabels === 'function') updateAllDropdownTriggerLabels();
             renderAttendanceList();
         }
 
@@ -4555,6 +4473,7 @@
 
         function closeTrainingModal() {
             document.getElementById('training-modal').classList.add('hidden');
+            if (typeof closeColumnCustomDropdown === 'function') closeColumnCustomDropdown();
             renderAttendanceList();
         }
 
@@ -6437,113 +6356,272 @@
             }
         }
 
-        // --- CUSTOM SELECT OPTIONS CONTEXT MENU & MANAGEMENT ---
-        let activeContextMenuSelectId = null;
-
-        function getColumnTitleAndIcon(selectId) {
-            const dict = translations[currentLang] || translations['en'];
-            switch (selectId) {
-                case 's-section':
-                    return { title: dict.section || 'Section', icon: 'fa-layer-group' };
-                case 's-reps1':
-                    return { title: 'T1 (' + (dict.set_structure || 'Sets') + ')', icon: 'fa-repeat' };
-                case 's-reps2':
-                    return { title: 'T2 (' + (dict.set_structure || 'Reps') + ')', icon: 'fa-arrows-spin' };
-                case 's-distance':
-                    return { title: dict.distance || 'Distance', icon: 'fa-ruler-horizontal' };
-                case 's-stroke':
-                    return { title: dict.stroke || 'Stroke', icon: 'fa-water' };
-                case 's-type':
-                    return { title: dict.type || 'Type', icon: 'fa-person-swimming' };
-                case 's-equipment':
-                    return { title: dict.equipment || 'Equipment', icon: 'fa-toolbox' };
-                case 's-zone':
-                    return { title: dict.intensity || 'Intensity / Zone', icon: 'fa-gauge-high' };
-                default:
-                    return { title: dict.manage_options || 'Options', icon: 'fa-sliders' };
+        // --- CUSTOM COLUMN DROPDOWN ENGINE WITH INLINE & RIGHT-CLICK EDIT / DELETE ---
+        const DROPDOWN_CONFIG = {
+            's-section': {
+                nameKey: 'section',
+                defaultVal: 'Warm Up',
+                options: [
+                    { value: 'Warm Up', labelKey: 'warm_up' },
+                    { value: 'Pre Set', labelKey: 'pre_set' },
+                    { value: 'Main Set', labelKey: 'main_set' },
+                    { value: 'Cool Down', labelKey: 'cool_down' }
+                ]
+            },
+            's-reps1': {
+                nameKey: 't1',
+                defaultVal: '',
+                options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].map(v => ({ value: v, label: v }))
+            },
+            's-reps2': {
+                nameKey: 't2',
+                defaultVal: '',
+                options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'].map(v => ({ value: v, label: v }))
+            },
+            's-distance': {
+                nameKey: 'distance',
+                defaultVal: '',
+                options: ['25', '50', '75', '100', '125', '150', '175', '200', '250', '300', '350', '400', '500', '600', '700', '800', '900', '1000', '1200', '1500', '2000', '2500', '3000'].map(v => ({ value: v, label: v }))
+            },
+            's-stroke': {
+                nameKey: 'stroke',
+                defaultVal: '',
+                options: [
+                    { value: 'Freestyle', labelKey: 'freestyle' },
+                    { value: 'Backstroke', labelKey: 'backstroke' },
+                    { value: 'Breaststroke', labelKey: 'breaststroke' },
+                    { value: 'Butterfly', labelKey: 'butterfly' },
+                    { value: 'Medley', labelKey: 'medley' }
+                ]
+            },
+            's-type': {
+                nameKey: 'type',
+                defaultVal: '',
+                options: [
+                    { value: 'Swim', labelKey: 'swim' },
+                    { value: 'Kick', labelKey: 'kick' },
+                    { value: 'Drill', labelKey: 'drill' },
+                    { value: 'Stroke', labelKey: 'stroke_type' },
+                    { value: 'Pull', labelKey: 'pull' }
+                ]
+            },
+            's-equipment': {
+                nameKey: 'equipment',
+                defaultVal: '',
+                options: [
+                    { value: 'None', labelKey: 'none' },
+                    { value: 'Fins', labelKey: 'fins' },
+                    { value: 'Paddles', labelKey: 'paddles' },
+                    { value: 'Board', labelKey: 'board' },
+                    { value: 'Pullbuoy', labelKey: 'pullbuoy' },
+                    { value: 'Snorkels', labelKey: 'snorkels' }
+                ]
+            },
+            's-zone': {
+                nameKey: 'intensity',
+                defaultVal: '',
+                options: [
+                    { value: 'A1', label: 'A1' },
+                    { value: 'A2', label: 'A2' },
+                    { value: 'A3', label: 'A3' },
+                    { value: 'End1', label: 'End1' },
+                    { value: 'End2', label: 'End2' },
+                    { value: 'End3', label: 'End3' },
+                    { value: 'Spr1', label: 'Spr1' },
+                    { value: 'Spr2', label: 'Spr2' },
+                    { value: 'Spr3', label: 'Spr3' },
+                    { value: 'R.P', label: 'R.P' },
+                    { value: 'Easy', labelKey: 'easy' },
+                    { value: 'Moderate', labelKey: 'moderate' },
+                    { value: 'Hard', labelKey: 'hard' },
+                    { value: 'Max', labelKey: 'max' }
+                ]
             }
+        };
+
+        let activeDropdownSelectId = null;
+
+        function getDropdownOptionLabel(selectId, optValue) {
+            if (!optValue) return '-';
+            const dict = translations[currentLang] || translations['en'];
+            const cfg = DROPDOWN_CONFIG[selectId];
+            if (cfg && cfg.options) {
+                const found = cfg.options.find(o => o.value === optValue);
+                if (found) {
+                    if (found.labelKey && dict[found.labelKey]) return dict[found.labelKey];
+                    if (found.label) return found.label;
+                }
+            }
+            const lower = optValue.toLowerCase().replace(/ /g, '_');
+            if (dict[lower]) return dict[lower];
+            return optValue;
         }
 
-        function openSelectContextMenu(e, selectId) {
-            if (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            activeContextMenuSelectId = selectId;
-            const menu = document.getElementById('select-context-menu');
-            const titleEl = document.getElementById('context-menu-title');
-            const iconEl = document.getElementById('context-menu-icon');
-            if (!menu) return;
-
-            const colInfo = getColumnTitleAndIcon(selectId);
-            if (titleEl) titleEl.textContent = colInfo.title;
-            if (iconEl) iconEl.className = `fa-solid ${colInfo.icon}`;
-
-            renderContextMenuItems(selectId);
-
-            menu.classList.remove('hidden');
-            const menuWidth = 270;
-            const menuHeight = 230;
-            
-            let posX = e ? (e.clientX || e.pageX) : (window.innerWidth / 2 - menuWidth / 2);
-            let posY = e ? (e.clientY || e.pageY) : (window.innerHeight / 2 - menuHeight / 2);
-
-            if (posX + menuWidth > window.innerWidth - 15) {
-                posX = window.innerWidth - menuWidth - 15;
-            }
-            if (posY + menuHeight > window.innerHeight - 15) {
-                posY = window.innerHeight - menuHeight - 15;
-            }
-            if (posX < 10) posX = 10;
-            if (posY < 10) posY = 10;
-
-            menu.style.left = `${posX}px`;
-            menu.style.top = `${posY}px`;
+        function updateAllDropdownTriggerLabels() {
+            Object.keys(DROPDOWN_CONFIG).forEach(selectId => {
+                const input = document.getElementById(selectId);
+                const labelEl = document.getElementById(`label-${selectId}`);
+                if (input && labelEl) {
+                    labelEl.textContent = getDropdownOptionLabel(selectId, input.value);
+                }
+            });
         }
 
-        function renderContextMenuItems(selectId) {
-            const listEl = document.getElementById('context-menu-custom-list');
-            if (!listEl) return;
+        function openColumnCustomDropdown(selectId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
 
-            const dict = translations[currentLang] || translations['en'];
-            const userKey = getCoachCustomOptionsKey();
-            const customOpts = JSON.parse(localStorage.getItem(userKey)) || {};
-            const items = customOpts[selectId] || [];
+            const popover = document.getElementById('column-custom-dropdown-popover');
+            const trigger = document.getElementById(`trigger-${selectId}`);
+            if (!popover || !trigger) return;
 
-            if (items.length === 0) {
-                listEl.innerHTML = `
-                    <div class="py-3 px-2 text-center text-gray-400 bg-gray-50/80 rounded-xl border border-dashed border-gray-200 space-y-1">
-                        <i class="fa-regular fa-folder-open text-base text-gray-300"></i>
-                        <div class="text-[11px] font-medium leading-tight">${dict.no_custom_options || 'Bu sütunda henüz özel seçenek yok.'}</div>
-                    </div>
-                `;
+            // If already open for same, toggle it off
+            if (activeDropdownSelectId === selectId && !popover.classList.contains('hidden')) {
+                closeColumnCustomDropdown();
                 return;
             }
 
-            listEl.innerHTML = items.map(val => `
-                <div class="flex items-center justify-between p-2 bg-gray-50/90 hover:bg-emerald-50/60 border border-gray-200/80 hover:border-emerald-300 rounded-xl transition-all">
-                    <span class="font-extrabold text-brandBlue text-xs truncate max-w-[130px]" title="${escapeHtml(val)}">${escapeHtml(val)}</span>
-                    <div class="flex items-center space-x-1 shrink-0">
-                        <button type="button" onclick="editCustomSelectOption('${selectId}', '${escapeHtml(val)}')" class="px-2 py-1 bg-white hover:bg-blue-50 text-blue-600 hover:text-blue-700 border border-gray-200 rounded-lg text-[10.5px] font-bold transition-colors cursor-pointer shadow-xs flex items-center space-x-1" title="${dict.edit_option || 'Düzenle'}">
-                            <i class="fa-solid fa-pen-to-square text-[10px]"></i>
-                            <span>${dict.edit_option || 'Düzenle'}</span>
-                        </button>
-                        <button type="button" onclick="deleteCustomSelectOption('${selectId}', '${escapeHtml(val)}')" class="px-2 py-1 bg-white hover:bg-red-50 text-red-500 hover:text-red-600 border border-gray-200 rounded-lg text-[10.5px] font-bold transition-colors cursor-pointer shadow-xs flex items-center space-x-1" title="${dict.delete_option || 'Sil'}">
-                            <i class="fa-solid fa-trash-can text-[10px]"></i>
-                            <span>${dict.delete_option || 'Sil'}</span>
-                        </button>
+            activeDropdownSelectId = selectId;
+            renderColumnCustomDropdown(selectId);
+
+            popover.classList.remove('hidden');
+            const rect = trigger.getBoundingClientRect();
+            const popWidth = Math.max(rect.width, 210);
+            
+            let posX = rect.left;
+            let posY = rect.bottom + 4;
+
+            if (posX + popWidth > window.innerWidth - 10) {
+                posX = window.innerWidth - popWidth - 10;
+            }
+            if (posX < 10) posX = 10;
+
+            if (posY + 260 > window.innerHeight && rect.top > 260) {
+                posY = rect.top - 265;
+            }
+
+            popover.style.width = `${popWidth}px`;
+            popover.style.left = `${posX}px`;
+            popover.style.top = `${posY}px`;
+        }
+
+        function renderColumnCustomDropdown(selectId) {
+            const popover = document.getElementById('column-custom-dropdown-popover');
+            if (!popover) return;
+
+            const dict = translations[currentLang] || translations['en'];
+            const cfg = DROPDOWN_CONFIG[selectId];
+            if (!cfg) return;
+
+            const currentVal = (document.getElementById(selectId)?.value || '').toString();
+            const userKey = getCoachCustomOptionsKey();
+            const customOpts = JSON.parse(localStorage.getItem(userKey)) || {};
+            const customList = customOpts[selectId] || [];
+
+            let html = '<div class="space-y-0.5">';
+
+            // Empty '-' option for optional fields
+            if (selectId !== 's-section') {
+                const isSelected = currentVal === '';
+                html += `
+                    <div onclick="selectCustomDropdownValue('${selectId}', '')" class="px-2.5 py-1.5 rounded-xl hover:bg-gray-100 flex items-center justify-between cursor-pointer transition-colors ${isSelected ? 'bg-blue-50/80 font-black text-brandBlue' : 'text-gray-500'}">
+                        <span>- (${dict.none || 'Yok / Seçilmedi'})</span>
+                        ${isSelected ? '<i class="fa-solid fa-check text-xs text-brandBlue"></i>' : ''}
                     </div>
+                `;
+            }
+
+            // Standard Options
+            cfg.options.forEach(opt => {
+                const isSelected = currentVal === opt.value;
+                const label = (opt.labelKey && dict[opt.labelKey]) ? dict[opt.labelKey] : (opt.label || opt.value);
+                html += `
+                    <div onclick="selectCustomDropdownValue('${selectId}', '${escapeHtml(opt.value)}')" class="px-2.5 py-1.5 rounded-xl hover:bg-blue-50/80 hover:text-brandBlue flex items-center justify-between cursor-pointer transition-colors ${isSelected ? 'bg-blue-50 font-black text-brandBlue border-l-3 border-brandBlue' : ''}">
+                        <span class="truncate">${escapeHtml(label)}</span>
+                        ${isSelected ? '<i class="fa-solid fa-check text-xs text-brandBlue"></i>' : ''}
+                    </div>
+                `;
+            });
+
+            // Custom Coach Added Options (with prominent ✏️ and 🗑️ icons)
+            if (customList.length > 0) {
+                html += `<div class="pt-1.5 mt-1 border-t border-gray-100 text-[10px] font-extrabold uppercase tracking-wider text-emerald-600 px-2 py-0.5 flex items-center"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>${dict.manage_options || 'Özel Eklenenler'}</div>`;
+                
+                customList.forEach(val => {
+                    const isSelected = currentVal === val;
+                    html += `
+                        <div oncontextmenu="handleCustomOptionRightClick(event, '${selectId}', '${escapeHtml(val)}')" onclick="selectCustomDropdownValue('${selectId}', '${escapeHtml(val)}')" class="group px-2.5 py-1.5 rounded-xl hover:bg-emerald-100/80 flex items-center justify-between cursor-pointer transition-colors bg-emerald-50/50 my-0.5 border border-emerald-200/80 ${isSelected ? 'border-emerald-500 bg-emerald-100 font-black text-emerald-950' : 'text-emerald-900'}">
+                            <span class="truncate font-extrabold text-xs flex items-center mr-1">
+                                <i class="fa-solid fa-star text-[8px] text-emerald-500 mr-1.5"></i>
+                                ${escapeHtml(val)}
+                            </span>
+                            <div class="flex items-center space-x-1 shrink-0" onclick="event.stopPropagation()">
+                                <button type="button" onclick="editCustomDropdownValue('${selectId}', '${escapeHtml(val)}', event)" class="w-5 h-5 rounded-md bg-white hover:bg-blue-50 text-blue-600 hover:text-blue-700 flex items-center justify-center text-[9.5px] border border-gray-200 shadow-2xs cursor-pointer transition-colors" title="${dict.edit_option || 'Düzenle'}">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button type="button" onclick="deleteCustomDropdownValue('${selectId}', '${escapeHtml(val)}', event)" class="w-5 h-5 rounded-md bg-white hover:bg-red-50 text-red-500 hover:text-red-600 flex items-center justify-center text-[9.5px] border border-gray-200 shadow-2xs cursor-pointer transition-colors" title="${dict.delete_option || 'Sil'}">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Bottom "+ Add New" button
+            html += `
+                <div class="pt-1.5 mt-1 border-t border-gray-100">
+                    <button type="button" onclick="promptAddNewDropdownValue('${selectId}', event)" class="w-full py-1.5 px-2 bg-brandPink/10 hover:bg-brandPink text-brandPink hover:text-white font-extrabold rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-2xs">
+                        <i class="fa-solid fa-plus text-[10px]"></i>
+                        <span>${dict.add_new_option || '+ Yeni Ekle...'}</span>
+                    </button>
                 </div>
-            `).join('');
+            </div>`;
+
+            popover.innerHTML = html;
         }
 
-        function closeSelectContextMenu() {
-            const menu = document.getElementById('select-context-menu');
-            if (menu) menu.classList.add('hidden');
-            activeContextMenuSelectId = null;
+        function selectCustomDropdownValue(selectId, val) {
+            const input = document.getElementById(selectId);
+            const labelEl = document.getElementById(`label-${selectId}`);
+            if (input) {
+                input.value = val;
+                input.dispatchEvent(new Event('change'));
+            }
+            if (labelEl) {
+                labelEl.textContent = getDropdownOptionLabel(selectId, val);
+            }
+            closeColumnCustomDropdown();
         }
 
-        function editCustomSelectOption(selectId, oldValue) {
+        function closeColumnCustomDropdown() {
+            const popover = document.getElementById('column-custom-dropdown-popover');
+            if (popover) popover.classList.add('hidden');
+            activeDropdownSelectId = null;
+        }
+
+        function promptAddNewDropdownValue(selectId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const dict = translations[currentLang] || translations['en'];
+            const promptMsg = dict.enter_custom_value || "Yeni özel değer girin:";
+            const newValue = prompt(promptMsg);
+            if (!newValue || !newValue.trim()) return;
+
+            const val = newValue.trim();
+            saveCustomSelectOptions(selectId, val);
+            selectCustomDropdownValue(selectId, val);
+        }
+
+        function editCustomDropdownValue(selectId, oldValue, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             const dict = translations[currentLang] || translations['en'];
             const promptMsg = `${dict.edit_option || 'Düzenle'}: "${oldValue}"`;
             const newVal = prompt(promptMsg, oldValue);
@@ -6560,22 +6638,20 @@
                 }
             }
 
-            // Update <select> DOM options
-            const select = document.getElementById(selectId);
-            if (select) {
-                for (let i = 0; i < select.options.length; i++) {
-                    if (select.options[i].value === oldValue) {
-                        select.options[i].value = updatedVal;
-                        select.options[i].textContent = updatedVal;
-                        break;
-                    }
-                }
+            const input = document.getElementById(selectId);
+            if (input && input.value === oldValue) {
+                input.value = updatedVal;
+                document.getElementById(`label-${selectId}`).textContent = updatedVal;
             }
 
-            renderContextMenuItems(selectId);
+            renderColumnCustomDropdown(selectId);
         }
 
-        function deleteCustomSelectOption(selectId, value) {
+        function deleteCustomDropdownValue(selectId, value, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             const dict = translations[currentLang] || translations['en'];
             const confirmMsg = dict.confirm_delete_option || `"${value}" seçeneğini silmek istediğinize emin misiniz?`;
             if (!confirm(confirmMsg)) return;
@@ -6587,49 +6663,29 @@
                 localStorage.setItem(userKey, JSON.stringify(customOpts));
             }
 
-            // Remove from <select> DOM
-            const select = document.getElementById(selectId);
-            if (select) {
-                for (let i = select.options.length - 1; i >= 0; i--) {
-                    if (select.options[i].value === value) {
-                        const wasSelected = select.selectedIndex === i;
-                        select.remove(i);
-                        if (wasSelected) select.value = '';
-                        break;
-                    }
-                }
+            const input = document.getElementById(selectId);
+            if (input && input.value === value) {
+                const cfg = DROPDOWN_CONFIG[selectId];
+                const fallback = (cfg && cfg.defaultVal) ? cfg.defaultVal : '';
+                input.value = fallback;
+                document.getElementById(`label-${selectId}`).textContent = getDropdownOptionLabel(selectId, fallback);
             }
 
-            renderContextMenuItems(selectId);
+            renderColumnCustomDropdown(selectId);
         }
 
-        function addNewCustomOptionFromContextMenu() {
-            if (!activeContextMenuSelectId) return;
-            const select = document.getElementById(activeContextMenuSelectId);
-            if (!select) return;
-
+        function handleCustomOptionRightClick(event, selectId, value) {
+            event.preventDefault();
+            event.stopPropagation();
             const dict = translations[currentLang] || translations['en'];
-            const promptMsg = dict.enter_custom_value || "Yeni özel değer girin:";
-            const newValue = prompt(promptMsg);
-            if (newValue && newValue.trim()) {
-                const val = newValue.trim();
-                let exists = false;
-                for (let i = 0; i < select.options.length; i++) {
-                    if (select.options[i].value === val) {
-                        exists = true;
-                        select.selectedIndex = i;
-                        break;
-                    }
+            const choice = confirm(`"${value}"\n\n- ${dict.edit_option || 'Düzenlemek için TAMAM'}\n- ${dict.delete_option || 'Silmek veya iptal için İPTAL'}`);
+            if (choice) {
+                editCustomDropdownValue(selectId, value, event);
+            } else {
+                const delChoice = confirm(`"${value}" ${dict.confirm_delete_option || 'seçeneğini silmek istiyor musunuz?'}`);
+                if (delChoice) {
+                    deleteCustomDropdownValue(selectId, value, event);
                 }
-                if (!exists) {
-                    const opt = document.createElement('option');
-                    opt.value = val;
-                    opt.textContent = val;
-                    select.insertBefore(opt, select.options[select.options.length - 1]);
-                    select.value = val;
-                    saveCustomSelectOptions(select.id, val);
-                }
-                renderContextMenuItems(activeContextMenuSelectId);
             }
         }
 
@@ -6647,59 +6703,15 @@
 
             showView('landing');
 
-            // Bind change listeners & right-click context menu listeners for dropdown options
-            document.querySelectorAll('#training-modal select').forEach(select => {
-                select.addEventListener('change', function() {
-                    if (this.value === 'ADD_NEW') {
-                        const dict = translations[currentLang] || translations['en'];
-                        const promptMsg = dict.enter_custom_value || "Enter custom value:";
-                        const newValue = prompt(promptMsg);
-                        
-                        if (newValue && newValue.trim()) {
-                            const val = newValue.trim();
-                            let exists = false;
-                            for (let i = 0; i < this.options.length; i++) {
-                                if (this.options[i].value === val) {
-                                    exists = true;
-                                    this.selectedIndex = i;
-                                    break;
-                                }
-                            }
-                            
-                            if (!exists) {
-                                const opt = document.createElement('option');
-                                opt.value = val;
-                                opt.textContent = val;
-                                this.insertBefore(opt, this.options[this.options.length - 1]);
-                                this.value = val;
-                                saveCustomSelectOptions(this.id, val);
-                            }
-                        } else {
-                            this.value = '';
-                        }
-                    }
-                });
-
-                // Right click on select
-                select.addEventListener('contextmenu', function(e) {
-                    openSelectContextMenu(e, this.id);
-                });
-                if (select.parentElement) {
-                    select.parentElement.addEventListener('contextmenu', function(e) {
-                        openSelectContextMenu(e, select.id);
-                    });
-                }
-            });
-
-            // Global close listeners for context menu
+            // Global close listeners for custom dropdown popover
             document.addEventListener('click', (e) => {
-                const menu = document.getElementById('select-context-menu');
-                if (menu && !menu.contains(e.target)) {
-                    closeSelectContextMenu();
+                const popover = document.getElementById('column-custom-dropdown-popover');
+                if (popover && !popover.contains(e.target) && !e.target.closest('[id^="trigger-s-"]')) {
+                    closeColumnCustomDropdown();
                 }
             });
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') closeSelectContextMenu();
+                if (e.key === 'Escape') closeColumnCustomDropdown();
             });
         });
     </script>
@@ -6738,32 +6750,9 @@
         }
     </style>
 
-    <!-- Right-Click Context Menu for Dropdown Custom Options -->
-    <div id="select-context-menu" class="hidden fixed z-[9999] bg-white/95 backdrop-blur-md border border-gray-200/90 rounded-2xl shadow-2xl p-3 min-w-[270px] max-w-[320px] text-xs font-medium text-gray-700 animate-scale-up select-none">
-        <div class="flex items-center justify-between border-b border-gray-100 pb-2 mb-2">
-            <div class="flex items-center space-x-2">
-                <div class="w-6 h-6 rounded-lg bg-brandPink/10 text-brandPink flex items-center justify-center text-xs font-black">
-                    <i id="context-menu-icon" class="fa-solid fa-sliders"></i>
-                </div>
-                <span id="context-menu-title" class="font-extrabold text-brandBlue text-xs">Seçenekler</span>
-            </div>
-            <button onclick="closeSelectContextMenu()" class="text-gray-400 hover:text-brandPink text-xs transition-colors p-1 cursor-pointer">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-
-        <div class="text-[10.5px] font-bold text-gray-400 uppercase tracking-wider mb-1.5" data-i18n="manage_options">Özel Seçenekler</div>
-        
-        <div id="context-menu-custom-list" class="space-y-1.5 max-h-[180px] overflow-y-auto custom-scrollbar pr-1 mb-2.5">
-            <!-- Dynamically populated with custom items and Edit / Delete buttons -->
-        </div>
-
-        <div class="pt-2 border-t border-gray-100 flex flex-col gap-1.5">
-            <button id="context-menu-add-btn" onclick="addNewCustomOptionFromContextMenu()" class="w-full py-1.5 px-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl text-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer">
-                <i class="fa-solid fa-plus text-[10px]"></i>
-                <span data-i18n="add_new_option">+ Yeni Seçenek Ekle</span>
-            </button>
-        </div>
+    <!-- Global Floating Custom Dropdown Popover for Set Columns -->
+    <div id="column-custom-dropdown-popover" class="hidden fixed z-[9999] bg-white/98 backdrop-blur-md border border-gray-200/95 rounded-2xl shadow-2xl p-1.5 min-w-[200px] max-w-[280px] max-h-[310px] overflow-y-auto custom-scrollbar text-xs font-semibold text-gray-700 animate-scale-up select-none">
+        <!-- Populated dynamically via renderColumnCustomDropdown -->
     </div>
 </body>
 </html>
