@@ -3883,7 +3883,7 @@
             loadSwimSets();
         }
 
-        // Yatay A4 formatında ortalanmış ve sporcu not çizgileri içeren ortak HTML şablonu oluşturur
+        // Yatay A4 formatında ortalanmış ve daraltılmış sütun aralıklarına sahip ortak HTML şablonu oluşturur
         function buildLandscapeWorkoutHtml(isWordMode = false) {
             const dict = translations[currentLang] || translations['en'];
             const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
@@ -3916,18 +3916,17 @@
             const logoPath = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/assets/logo.png?v=4';
             const clubBranding = getCoachClubBranding();
             const clubLogoTag = (clubBranding && clubBranding.clubLogo)
-                ? `<img src="${clubBranding.clubLogo}" height="55" style="height: 55px; max-width: 120px; object-fit: contain; display: inline-block; vertical-align: middle; margin-right: 12px;">`
+                ? `<img src="${clubBranding.clubLogo}" height="50" style="height: 50px; max-width: 110px; object-fit: contain; display: inline-block; vertical-align: middle; margin-right: 10px;">`
                 : '';
             const clubNameTag = (clubBranding && clubBranding.clubName)
-                ? `<div style="font-size: 15px; font-weight: 900; color: #000B73; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 2px;">${clubBranding.clubName}</div>`
+                ? `<div style="font-size: 14px; font-weight: 900; color: #000B73; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 2px;">${clubBranding.clubName}</div>`
                 : '';
 
-            // Sporcu Yoklama ve Not Çizgileri (2 Sütunlu Yatay Düzen)
+            // Sporcu Yoklama ve Not Çizgileri (2 Sütunlu Kompakt Yatay Düzen)
             const swimmerNotesMap = getCoachSwimmerDailyNotes()[selectedDate] || {};
             let attendanceRowsHtml = '';
             
             if (attendedList.length > 0) {
-                // Katılan sporcuları 2'şerli satırlar halinde hazırla
                 for (let i = 0; i < attendedList.length; i += 2) {
                     const name1 = attendedList[i];
                     const note1 = swimmerNotesMap[name1] || '';
@@ -3936,19 +3935,19 @@
 
                     attendanceRowsHtml += `
                         <tr>
-                            <td style="width: 50%; padding: 4px 8px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1;">
+                            <td style="width: 50%; padding: 3px 6px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1;">
                                 <div style="display: flex; align-items: baseline; width: 100%;">
-                                    <span style="font-weight: 800; color: #000B73; font-size: 11px; white-space: nowrap; margin-right: 6px;">${i + 1}. ${escapeHtml(name1)}:</span>
-                                    <span style="flex: 1; border-bottom: 1px dotted #64748b; font-size: 10.5px; color: #E5007D; font-weight: bold; padding: 0 4px; display: inline-block; min-height: 14px; width: 60%;">
+                                    <span style="font-weight: 800; color: #000B73; font-size: 10.5px; white-space: nowrap; margin-right: 4px;">${i + 1}. ${escapeHtml(name1)}:</span>
+                                    <span style="flex: 1; border-bottom: 1px dotted #64748b; font-size: 10px; color: #E5007D; font-weight: bold; padding: 0 4px; display: inline-block; min-height: 13px; width: 62%;">
                                         ${note1 ? escapeHtml(note1) : '&nbsp;'}
                                     </span>
                                 </div>
                             </td>
                             ${name2 ? `
-                            <td style="width: 50%; padding: 4px 8px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1; border-left: 1px solid #e2e8f0;">
+                            <td style="width: 50%; padding: 3px 6px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1; border-left: 1px solid #e2e8f0;">
                                 <div style="display: flex; align-items: baseline; width: 100%;">
-                                    <span style="font-weight: 800; color: #000B73; font-size: 11px; white-space: nowrap; margin-right: 6px;">${i + 2}. ${escapeHtml(name2)}:</span>
-                                    <span style="flex: 1; border-bottom: 1px dotted #64748b; font-size: 10.5px; color: #E5007D; font-weight: bold; padding: 0 4px; display: inline-block; min-height: 14px; width: 60%;">
+                                    <span style="font-weight: 800; color: #000B73; font-size: 10.5px; white-space: nowrap; margin-right: 4px;">${i + 2}. ${escapeHtml(name2)}:</span>
+                                    <span style="flex: 1; border-bottom: 1px dotted #64748b; font-size: 10px; color: #E5007D; font-weight: bold; padding: 0 4px; display: inline-block; min-height: 13px; width: 62%;">
                                         ${note2 ? escapeHtml(note2) : '&nbsp;'}
                                     </span>
                                 </div>
@@ -3958,17 +3957,16 @@
                     `;
                 }
             } else {
-                // Yoklama henüz alınmadıysa antrenmanda elle not alabilmek için 6 boş satır bırak
                 for (let k = 1; k <= 6; k += 2) {
                     attendanceRowsHtml += `
                         <tr>
-                            <td style="width: 50%; padding: 6px 8px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1;">
-                                <span style="font-weight: bold; color: #000B73; font-size: 11px;">${k}. Sporcu:</span>
-                                <span style="display: inline-block; width: 75%; border-bottom: 1px dotted #94a3b8; height: 14px; margin-left: 6px;">&nbsp;</span>
+                            <td style="width: 50%; padding: 4px 6px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1;">
+                                <span style="font-weight: bold; color: #000B73; font-size: 10.5px;">${k}. Sporcu:</span>
+                                <span style="display: inline-block; width: 75%; border-bottom: 1px dotted #94a3b8; height: 13px; margin-left: 4px;">&nbsp;</span>
                             </td>
-                            <td style="width: 50%; padding: 6px 8px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1; border-left: 1px solid #e2e8f0;">
-                                <span style="font-weight: bold; color: #000B73; font-size: 11px;">${k + 1}. Sporcu:</span>
-                                <span style="display: inline-block; width: 75%; border-bottom: 1px dotted #94a3b8; height: 14px; margin-left: 6px;">&nbsp;</span>
+                            <td style="width: 50%; padding: 4px 6px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1; border-left: 1px solid #e2e8f0;">
+                                <span style="font-weight: bold; color: #000B73; font-size: 10.5px;">${k + 1}. Sporcu:</span>
+                                <span style="display: inline-block; width: 75%; border-bottom: 1px dotted #94a3b8; height: 13px; margin-left: 4px;">&nbsp;</span>
                             </td>
                         </tr>
                     `;
@@ -3986,6 +3984,7 @@
                         <w:WordDocument>
                             <w:View>Print</w:View>
                             <w:Zoom>100</w:Zoom>
+                            <w:Orientation>Landscape</w:Orientation>
                             <w:DoNotOptimizeForBrowser/>
                         </w:WordDocument>
                     </xml>
@@ -3994,9 +3993,9 @@
                         @page Section1 {
                             size: 841.9pt 595.3pt;
                             mso-page-orientation: landscape;
-                            margin: 1.0cm 1.4cm 1.0cm 1.4cm;
-                            mso-header-margin: 20pt;
-                            mso-footer-margin: 20pt;
+                            margin: 0.8cm 1.2cm 0.8cm 1.2cm;
+                            mso-header-margin: 15pt;
+                            mso-footer-margin: 15pt;
                         }
                         div.Section1 { page: Section1; }
                     </style>
@@ -4014,7 +4013,7 @@
                     @page {
                         size: A4 landscape;
                         size: 297mm 210mm;
-                        margin: 8mm 12mm 8mm 12mm;
+                        margin: 6mm 10mm 6mm 10mm;
                     }
                     body {
                         font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
@@ -4026,19 +4025,19 @@
                         print-color-adjust: exact !important;
                     }
                     .container {
-                        width: 100%;
-                        max-width: 100%;
+                        width: 98%;
+                        max-width: 98%;
                         margin: 0 auto;
                         text-align: center;
                     }
                     .header-box {
                         text-align: center;
-                        margin-bottom: 8px;
+                        margin: 0 auto 6px auto;
                         border-bottom: 2px solid #000B73;
-                        padding-bottom: 6px;
+                        padding-bottom: 4px;
                     }
                     .header-title {
-                        font-size: 20px;
+                        font-size: 18px;
                         font-weight: 900;
                         color: #E5007D;
                         text-transform: uppercase;
@@ -4050,32 +4049,33 @@
                         text-align: center;
                         background: #f1f5f9;
                         border: 1px solid #cbd5e1;
-                        padding: 3px 14px;
+                        padding: 2px 12px;
                         border-radius: 6px;
-                        font-size: 11px;
+                        font-size: 10.5px;
                         font-weight: 800;
                         color: #334155;
-                        margin-top: 4px;
+                        margin-top: 3px;
                     }
                     .data-table {
                         width: 100%;
                         border-collapse: collapse;
-                        margin-top: 8px;
+                        margin: 6px auto;
                         text-align: center;
                     }
                     .data-table th {
                         background-color: #000B73 !important;
                         color: #ffffff !important;
-                        padding: 7px 5px;
-                        font-size: 10px;
+                        padding: 4px 4px; /* Sütun aralıkları daraltıldı */
+                        font-size: 9.5px;
                         text-transform: uppercase;
                         font-weight: 800;
                         border: 1px solid #000B73;
                         text-align: center;
+                        white-space: nowrap;
                     }
                     .data-table td {
-                        padding: 6px 5px;
-                        font-size: 11px;
+                        padding: 3.5px 4px; /* Sütun aralıkları daraltıldı */
+                        font-size: 10px;
                         color: #0f172a;
                         border: 1px solid #cbd5e1;
                         text-align: center;
@@ -4088,45 +4088,45 @@
                     .badge-drill { color: #9333ea; font-weight: 800; }
                     .summary-grid {
                         width: 100%;
-                        margin-top: 8px;
+                        margin: 5px auto;
                         border-collapse: collapse;
                         text-align: left;
                     }
                     .summary-card {
                         background: #f8fafc;
                         border: 1px solid #cbd5e1;
-                        border-top: 3px solid #E5007D;
-                        padding: 6px 10px;
+                        border-top: 2.5px solid #E5007D;
+                        padding: 4px 8px;
                         border-radius: 4px;
-                        font-size: 11px;
+                        font-size: 10px;
                     }
                     .attendance-box {
-                        margin-top: 8px;
+                        margin: 5px auto 0 auto;
                         border: 1px solid #cbd5e1;
-                        border-top: 3px solid #000B73;
+                        border-top: 2.5px solid #000B73;
                         background-color: #ffffff;
-                        padding: 8px 10px;
+                        padding: 6px 8px;
                         border-radius: 4px;
                         text-align: left;
                     }
                     .attendance-title {
                         color: #000B73;
-                        font-size: 11px;
+                        font-size: 10.5px;
                         font-weight: 900;
                         text-transform: uppercase;
-                        margin-bottom: 6px;
+                        margin-bottom: 4px;
                         display: flex;
                         justify-content: space-between;
                         border-bottom: 1px solid #e2e8f0;
-                        padding-bottom: 4px;
+                        padding-bottom: 3px;
                     }
                     .footer {
-                        margin-top: 10px;
-                        font-size: 9px;
+                        margin-top: 6px;
+                        font-size: 8.5px;
                         color: #94a3b8;
                         text-align: center;
                         border-top: 1px solid #e2e8f0;
-                        padding-top: 4px;
+                        padding-top: 3px;
                     }
                 </style>
                 </head>
@@ -4134,9 +4134,9 @@
                     <div class="Section1 container">
                         <!-- Centered Header -->
                         <div class="header-box">
-                            <div style="text-align: center; margin-bottom: 4px;">
+                            <div style="text-align: center; margin-bottom: 2px;">
                                 ${clubLogoTag}
-                                <img src="${logoPath}" height="50" style="height: 50px; display: inline-block; vertical-align: middle;">
+                                <img src="${logoPath}" height="45" style="height: 45px; display: inline-block; vertical-align: middle;">
                             </div>
                             ${clubNameTag}
                             <div class="header-title">SWIM COACH PRO</div>
@@ -4147,20 +4147,20 @@
                             </div>
                         </div>
 
-                        <!-- Centered Full-Width Table -->
+                        <!-- Centered Full-Width Table with Narrowed Columns -->
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 4%;">No</th>
-                                    <th style="width: 11%;">${dict.section || 'Bölüm'}</th>
-                                    <th style="width: 14%;">${dict.set_structure || 'Set Yapısı'}</th>
-                                    <th style="width: 11%;">${dict.stroke || 'Stil'}</th>
-                                    <th style="width: 10%;">${dict.type || 'Type'}</th>
-                                    <th style="width: 11%;">${dict.equipment || 'Ekipman'}</th>
-                                    <th style="width: 11%;">${dict.target_time || 'Hedef Süre'}</th>
-                                    <th style="width: 9%;">@ Tempo</th>
-                                    <th style="width: 9%;">${dict.intensity || 'Şiddet'}</th>
-                                    <th style="width: 10%;">Toplam</th>
+                                    <th style="width: 3.5%;">No</th>
+                                    <th style="width: 10%;">${dict.section || 'Bölüm'}</th>
+                                    <th style="width: 13.5%;">${dict.set_structure || 'Set Yapısı'}</th>
+                                    <th style="width: 10%;">${dict.stroke || 'Stil'}</th>
+                                    <th style="width: 9%;">${dict.type || 'Type'}</th>
+                                    <th style="width: 9.5%;">${dict.equipment || 'Ekipman'}</th>
+                                    <th style="width: 10%;">${dict.target_time || 'Hedef Süre'}</th>
+                                    <th style="width: 8%;">@ Tempo</th>
+                                    <th style="width: 8%;">${dict.intensity || 'Şiddet'}</th>
+                                    <th style="width: 9.5%;">Toplam</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -4218,10 +4218,10 @@
                         <!-- Summary & Notes Row -->
                         <table class="summary-grid">
                             <tr>
-                                <td style="width: 50%; padding-right: 6px; vertical-align: top;">
+                                <td style="width: 50%; padding-right: 4px; vertical-align: top;">
                                     <div class="summary-card">
-                                        <div style="font-weight: 900; color: #000B73; font-size: 10.5px; text-transform: uppercase; margin-bottom: 2px;">📊 ${dict.metrics_title || 'Antrenman Hacmi Dağılımı'}</div>
-                                        <div style="font-size: 10.5px; color: #334155; line-height: 1.4;">
+                                        <div style="font-weight: 900; color: #000B73; font-size: 10px; text-transform: uppercase; margin-bottom: 2px;">📊 ${dict.metrics_title || 'Antrenman Hacmi Dağılımı'}</div>
+                                        <div style="font-size: 10px; color: #334155; line-height: 1.3;">
                                             <b>Toplam:</b> ${totalVol} m &nbsp;|&nbsp; 
                                             <b>Yüzme:</b> <span class="badge-swim">${swimVol} m</span> &nbsp;|&nbsp; 
                                             <b>Ayak:</b> <span class="badge-kick">${kickVol} m</span> &nbsp;|&nbsp; 
@@ -4229,10 +4229,10 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td style="width: 50%; padding-left: 6px; vertical-align: top;">
+                                <td style="width: 50%; padding-left: 4px; vertical-align: top;">
                                     <div class="summary-card" style="border-top-color: #000B73;">
-                                        <div style="font-weight: 900; color: #000B73; font-size: 10.5px; text-transform: uppercase; margin-bottom: 2px;">📝 Günün Hedefi / Antrenör Notu</div>
-                                        <div style="font-size: 10.5px; color: #334155; min-height: 15px;">${notesText ? escapeHtml(notesText) : '<span style="color: #94a3b8; font-style: italic;">Özel not eklenmedi.</span>'}</div>
+                                        <div style="font-weight: 900; color: #000B73; font-size: 10px; text-transform: uppercase; margin-bottom: 2px;">📝 Günün Hedefi / Antrenör Notu</div>
+                                        <div style="font-size: 10px; color: #334155; min-height: 13px;">${notesText ? escapeHtml(notesText) : '<span style="color: #94a3b8; font-style: italic;">Özel not eklenmedi.</span>'}</div>
                                     </div>
                                 </td>
                             </tr>
@@ -4242,7 +4242,7 @@
                         <div class="attendance-box">
                             <div class="attendance-title">
                                 <span>👥 Katılan Sporcular & Bireysel Not / Derece Çizelgesi</span>
-                                <span style="font-size: 10px; color: #64748b; font-weight: 700;">${attendedList.length > 0 ? attendedList.length + ' Sporcu Katıldı' : 'Yoklama / Not Alanı'}</span>
+                                <span style="font-size: 9.5px; color: #64748b; font-weight: 700;">${attendedList.length > 0 ? attendedList.length + ' Sporcu Katıldı' : 'Yoklama / Not Alanı'}</span>
                             </div>
                             <table style="width: 100%; border-collapse: collapse;">
                                 ${attendanceRowsHtml}
@@ -4339,7 +4339,7 @@
             }
         }
 
-        // Seçili günün antrenmanını Excel (.xls) dosyası olarak dışa aktarır
+        // Seçili günün antrenmanını Excel (.xls) dosyası olarak Yatay A4 ve Ortalanmış düzende dışa aktarır
         function exportCurrentDayToExcel() {
             const dict = translations[currentLang] || translations['en'];
             const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
@@ -4372,19 +4372,33 @@
             const logoPath = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/assets/logo.png?v=4';
             const clubBranding = getCoachClubBranding();
             const clubNameRow = (clubBranding && clubBranding.clubName)
-                ? `<tr><td colspan="10" style="font-size: 14pt; font-weight: bold; color: #000B73; text-align: center;">${clubBranding.clubName.toUpperCase()}</td></tr>`
+                ? `<tr><td colspan="10" align="center" style="font-size: 12pt; font-weight: bold; color: #000B73; text-align: center; padding: 4px;">${clubBranding.clubName.toUpperCase()}</td></tr>`
                 : '';
             
             let excelHtml = `
                 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'>
                 <head>
+                    <meta charset="utf-8">
                     <!--[if gte mso 9]>
                     <xml>
                         <x:ExcelWorkbook>
                             <x:ExcelWorksheets>
                                 <x:ExcelWorksheet>
-                                    <x:Name>Workout Sheet</x:Name>
+                                    <x:Name>Antrenman Tablosu</x:Name>
                                     <x:WorksheetOptions>
+                                        <x:PageSetup>
+                                            <x:Layout x:Orientation="Landscape"/>
+                                            <x:Header x:Margin="0.2"/>
+                                            <x:Footer x:Margin="0.2"/>
+                                            <x:PageMargins x:Bottom="0.4" x:Left="0.4" x:Right="0.4" x:Top="0.4"/>
+                                        </x:PageSetup>
+                                        <x:FitToPage/>
+                                        <x:Print>
+                                            <x:FitWidth>1</x:FitWidth>
+                                            <x:FitHeight>1</x:FitHeight>
+                                            <x:ValidPrinterInfo/>
+                                            <x:PaperSizeIndex>9</x:PaperSizeIndex>
+                                        </x:Print>
                                         <x:DisplayGridlines/>
                                     </x:WorksheetOptions>
                                 </x:ExcelWorksheet>
@@ -4392,47 +4406,59 @@
                         </x:ExcelWorkbook>
                     </xml>
                     <![endif]-->
-                    <meta charset="utf-8">
                     <style>
-                        table { border-collapse: collapse; font-family: 'Arial', sans-serif; }
-                        th { background-color: #000B73; color: #ffffff; font-weight: bold; border: 1px solid #cbd5e1; padding: 8px; text-transform: uppercase; font-size: 10pt; }
-                        td { border: 1px solid #e2e8f0; padding: 8px; font-size: 10pt; color: #1e293b; }
-                        .title-cell { font-size: 16pt; font-weight: bold; color: #E5007D; text-align: center; }
-                        .subtitle-cell { font-size: 12pt; font-weight: bold; color: #000B73; text-align: center; }
-                        .meta-label { font-weight: bold; color: #000B73; font-size: 11pt; }
+                        table { border-collapse: collapse; font-family: 'Segoe UI', Arial, sans-serif; margin: 0 auto; text-align: center; }
+                        th { background-color: #000B73; color: #ffffff; font-weight: bold; border: 1px solid #000B73; padding: 4px 4px; text-transform: uppercase; font-size: 9pt; text-align: center; white-space: nowrap; }
+                        td { border: 1px solid #cbd5e1; padding: 3px 4px; font-size: 9pt; color: #0f172a; text-align: center; vertical-align: middle; }
+                        .title-cell { font-size: 15pt; font-weight: 900; color: #E5007D; text-align: center; }
+                        .subtitle-cell { font-size: 10pt; font-weight: bold; color: #000B73; text-align: center; background-color: #f1f5f9; }
+                        .meta-label { font-weight: bold; color: #000B73; font-size: 9.5pt; text-align: left; }
                         .badge-swim { color: #16a34a; font-weight: bold; }
                         .badge-kick { color: #E5007D; font-weight: bold; }
                         .badge-drill { color: #9333ea; font-weight: bold; }
                     </style>
                 </head>
                 <body>
-                    <table>
+                    <table align="center" style="width: 100%; margin: 0 auto;">
+                        <col width="35">
+                        <col width="90">
+                        <col width="115">
+                        <col width="90">
+                        <col width="80">
+                        <col width="85">
+                        <col width="85">
+                        <col width="75">
+                        <col width="75">
+                        <col width="85">
+
                         <tr>
-                            <td colspan="10" align="center" style="height: 90px; vertical-align: middle;">
-                                <img src="${logoPath}" height="80" style="height: 80px;">
+                            <td colspan="10" align="center" style="height: 60px; vertical-align: middle; border: none;">
+                                <img src="${logoPath}" height="50" style="height: 50px;">
                             </td>
                         </tr>
                         ${clubNameRow}
                         <tr>
-                             <td colspan="10" class="title-cell">SWIM COACH PRO</td>
+                            <td colspan="10" class="title-cell" style="border: none;">SWIM COACH PRO</td>
                         </tr>
                         <tr>
-                            <td colspan="10" class="subtitle-cell">${dict.login_title || 'Swim Training Program'} - ${cleanDateStr}</td>
+                            <td colspan="10" class="subtitle-cell" style="border: 1px solid #cbd5e1; padding: 4px;">
+                                📅 Tarih: ${cleanDateStr} &nbsp;&bull;&nbsp; 👑 Antrenör: Mustafa Seçkin &nbsp;&bull;&nbsp; 🏊 Toplam: ${totalVol} m
+                            </td>
                         </tr>
-                        <tr><td colspan="10"></td></tr>
+                        <tr><td colspan="10" style="border: none; height: 6px;"></td></tr>
                         
-                        <!-- Table Headers -->
+                        <!-- Table Headers (Daraltılmış Sütunlar) -->
                         <tr>
-                            <th>No</th>
-                            <th>${dict.section || 'Section'}</th>
-                            <th>${dict.set_structure || 'Set Structure'}</th>
-                            <th>${dict.stroke || 'Stroke'}</th>
-                            <th>${dict.type || 'Type'}</th>
-                            <th>${dict.equipment || 'Equipment'}</th>
-                            <th>${dict.target_time || 'Target Time'}</th>
-                            <th>@</th>
-                            <th>${dict.intensity || 'Intensity'}</th>
-                            <th>${dict.total || 'Total'}</th>
+                            <th style="width: 35px;">No</th>
+                            <th style="width: 90px;">${dict.section || 'Bölüm'}</th>
+                            <th style="width: 115px;">${dict.set_structure || 'Set Yapısı'}</th>
+                            <th style="width: 90px;">${dict.stroke || 'Stil'}</th>
+                            <th style="width: 80px;">${dict.type || 'Type'}</th>
+                            <th style="width: 85px;">${dict.equipment || 'Ekipman'}</th>
+                            <th style="width: 85px;">${dict.target_time || 'Hedef Süre'}</th>
+                            <th style="width: 75px;">@ Tempo</th>
+                            <th style="width: 75px;">${dict.intensity || 'Şiddet'}</th>
+                            <th style="width: 85px;">Toplam</th>
                         </tr>
             `;
 
@@ -4474,10 +4500,10 @@
                         <td align="center" style="font-weight: bold; color: #64748b;">${index + 1}</td>
                         <td align="center" style="font-weight: bold; color: #000B73;">${sectionLabel}</td>
                         <td align="center" style="font-weight: bold; color: #000B73;">${set.reps1 || 1}x${set.reps2 || 1}x${set.distance || 0}m</td>
-                        <td style="font-weight: bold; color: #000B73;">${strokeDisplay}</td>
-                        <td class="${typeClass}">${typeLabel}</td>
-                        <td>${equipLabel}</td>
-                        <td align="center" style="font-weight: bold; color: #64748b;">${set.targetTime || '-'}</td>
+                        <td align="center" style="font-weight: bold; color: #000B73;">${strokeDisplay}</td>
+                        <td align="center" class="${typeClass}">${typeLabel}</td>
+                        <td align="center">${equipLabel}</td>
+                        <td align="center" style="font-weight: bold; color: #475569;">${set.targetTime || '-'}</td>
                         <td align="center" style="font-weight: bold; color: #E5007D;">${set.interval ? '@ ' + set.interval : '-'}</td>
                         <td align="center" style="font-weight: bold; color: #475569;">${zoneLabel}</td>
                         <td align="right" style="font-weight: bold; color: #000B73;">${calculatedDistance} m</td>
@@ -4486,49 +4512,56 @@
             });
 
             excelHtml += `
-                        <tr><td colspan="10"></td></tr>
+                        <tr><td colspan="10" style="border: none; height: 6px;"></td></tr>
                         
-                        <!-- Swimmers & Notes -->
-                        ${attendedList.length > 0 ? `
-                        <tr>
-                            <td colspan="4" class="meta-label">${dict.attendance || 'ATTENDING SWIMMERS'}:</td>
-                            <td colspan="6" class="meta-label">NOT / NOTES (ÇİZGİ):</td>
-                        </tr>
-                        ${attendedList.map(name => {
-                            const swimmerNotesMap = getCoachSwimmerDailyNotes()[selectedDate] || {};
-                            const note = swimmerNotesMap[name] || '________________________________________';
-                            return `<tr><td colspan="4" style="color: #000B73; font-weight: bold;">• ${name}</td><td colspan="6" style="color: #334155;">${note}</td></tr>`;
-                        }).join('')}
-                        <tr><td colspan="10"></td></tr>
-                        ` : ''}
-
                         <!-- Metrics -->
                         <tr>
-                            <td colspan="10" class="meta-label">${dict.metrics_title || 'WORKOUT METRICS'}:</td>
+                            <td colspan="10" style="background-color: #000B73; color: #ffffff; font-weight: bold; font-size: 9.5pt; text-align: left; padding: 4px;">📊 ${dict.metrics_title || 'ANTRENMAN HACMİ DAĞILIMI'}:</td>
                         </tr>
                         <tr>
-                            <td colspan="10" style="color: #334155;">• ${dict.total_vol || 'Total Training Volume'}: <b>${totalVol} m</b></td>
+                            <td colspan="10" style="color: #334155; text-align: left; background-color: #f8fafc; font-size: 9pt; padding: 4px;">
+                                <b>Toplam:</b> ${totalVol} m &nbsp;|&nbsp; 
+                                <b>Yüzme:</b> <span class="badge-swim">${swimVol} m</span> &nbsp;|&nbsp; 
+                                <b>Ayak:</b> <span class="badge-kick">${kickVol} m</span> &nbsp;|&nbsp; 
+                                <b>Drill:</b> <span class="badge-drill">${drillVol} m</span>
+                            </td>
                         </tr>
-                        <tr>
-                            <td colspan="10" style="color: #334155;">• ${dict.swim_vol || 'Swim Volume'}: <span class="badge-swim">${swimVol} m</span></td>
-                        </tr>
-                        <tr>
-                            <td colspan="10" style="color: #334155;">• ${dict.kick_vol || 'Kick Volume'}: <span class="badge-kick">${kickVol} m</span></td>
-                        </tr>
-                        <tr>
-                            <td colspan="10" style="color: #334155;">• ${dict.drill_vol || 'Drill Volume'}: <span class="badge-drill">${drillVol} m</span></td>
-                        </tr>
-                        
+
                         <!-- Coach Notes -->
                         ${notesText ? `
-                        <tr><td colspan="10"></td></tr>
+                        <tr><td colspan="10" style="border: none; height: 4px;"></td></tr>
                         <tr>
-                            <td colspan="10" class="meta-label">COACH NOTES:</td>
+                            <td colspan="10" style="background-color: #000B73; color: #ffffff; font-weight: bold; font-size: 9.5pt; text-align: left; padding: 4px;">📝 GÜNÜN HEDEFİ / ANTRENÖR NOTU:</td>
                         </tr>
                         <tr>
-                            <td colspan="10" style="white-space: pre-wrap; color: #334155;">${notesText}</td>
+                            <td colspan="10" style="color: #334155; text-align: left; background-color: #f8fafc; font-size: 9pt; padding: 4px;">${escapeHtml(notesText)}</td>
                         </tr>
                         ` : ''}
+
+                        <!-- Attending Swimmers & Notes in Excel -->
+                        <tr><td colspan="10" style="border: none; height: 6px;"></td></tr>
+                        <tr>
+                            <td colspan="10" style="background-color: #000B73; color: #ffffff; font-weight: bold; font-size: 9.5pt; text-align: left; padding: 4px;">👥 ${dict.attendance || 'KATILAN SPORCULAR VE BİREYSEL NOT / DERECE ALANI'}:</td>
+                        </tr>
+                        ${attendedList.length > 0 ? attendedList.map((name, idx) => {
+                            const swimmerNotesMap = getCoachSwimmerDailyNotes()[selectedDate] || {};
+                            const note = swimmerNotesMap[name] || '____________________________________________________';
+                            return `
+                                <tr>
+                                    <td colspan="4" style="color: #000B73; font-weight: bold; text-align: left; padding: 3px 6px;">${idx + 1}. ${escapeHtml(name)}</td>
+                                    <td colspan="6" style="color: #E5007D; font-weight: bold; text-align: left; padding: 3px 6px;">${escapeHtml(note)}</td>
+                                </tr>
+                            `;
+                        }).join('') : `
+                            <tr>
+                                <td colspan="5" style="color: #64748b; text-align: left; padding: 3px 6px;">1. Sporcu: _____________________________</td>
+                                <td colspan="5" style="color: #64748b; text-align: left; padding: 3px 6px;">2. Sporcu: _____________________________</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" style="color: #64748b; text-align: left; padding: 3px 6px;">3. Sporcu: _____________________________</td>
+                                <td colspan="5" style="color: #64748b; text-align: left; padding: 3px 6px;">4. Sporcu: _____________________________</td>
+                            </tr>
+                        `}
                     </table>
                 </body>
                 </html>
@@ -4538,7 +4571,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `swim_coach_pro_workout_${cleanDateStr}.xls`;
+            a.download = `swim_coach_pro_yatay_tablo_${cleanDateStr}.xls`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
