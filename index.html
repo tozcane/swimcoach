@@ -5031,7 +5031,7 @@
                             <div class="header-title">SWIM COACH PRO</div>
                             <div class="meta-strip">
                                 📅 <b>${dict.date || 'Date'}:</b> ${cleanDateStr} &nbsp;&bull;&nbsp; 
-                                👑 <b>${coachLabel}:</b> Mustafa Seçkin &nbsp;&bull;&nbsp; 
+                                👑 <b>${coachLabel}:</b> ${(currentUser && displayNames[currentUser]) ? displayNames[currentUser] : (currentUser || 'Mustafa Seçkin')} &nbsp;&bull;&nbsp; 
                                 🏊 <b>${dict.total || 'Total'}:</b> ${totalVol} m
                             </div>
                         </div>
@@ -5139,7 +5139,7 @@
                         </div>
 
                         <div class="footer">
-                            Swim Coach Pro &bull; ${dict.print_pdf_landscape || 'Landscape A4 Format'} &bull; ${coachLabel}: Mustafa Seçkin &bull; &copy; ${new Date().getFullYear()}
+                            Swim Coach Pro &bull; ${dict.print_pdf_landscape || 'Landscape A4 Format'} &bull; ${coachLabel}: ${(currentUser && displayNames[currentUser]) ? displayNames[currentUser] : (currentUser || 'Mustafa Seçkin')} &bull; &copy; ${new Date().getFullYear()}
                         </div>
                     </div>
                 </body>
@@ -5332,7 +5332,7 @@
                         </tr>
                         <tr>
                             <td colspan="10" class="subtitle-cell" style="border: 1px solid #cbd5e1; padding: 4px;">
-                                📅 ${dict.date || 'Date'}: ${cleanDateStr} &nbsp;&bull;&nbsp; 👑 ${coachLabel}: Mustafa Seçkin &nbsp;&bull;&nbsp; 🏊 ${dict.total || 'Total'}: ${totalVol} m
+                                📅 ${dict.date || 'Date'}: ${cleanDateStr} &nbsp;&bull;&nbsp; 👑 ${coachLabel}: ${(currentUser && displayNames[currentUser]) ? displayNames[currentUser] : (currentUser || 'Mustafa Seçkin')} &nbsp;&bull;&nbsp; 🏊 ${dict.total || 'Total'}: ${totalVol} m
                             </td>
                         </tr>
                         <tr><td colspan="10" style="border: none; height: 6px;"></td></tr>
