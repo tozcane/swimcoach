@@ -4656,7 +4656,7 @@
             });
             
             if (sets.length === 0) {
-                alert(translations[currentLang]?.no_export_data || translations['en'].no_export_data);
+                alert(dict.no_export_data || 'No training data to export for this date.');
                 return null;
             }
             
@@ -4675,8 +4675,13 @@
                 ? `<img src="${clubBranding.clubLogo}" height="50" style="height: 50px; max-width: 110px; object-fit: contain; display: inline-block; vertical-align: middle; margin-right: 10px;">`
                 : '';
             const clubNameTag = (clubBranding && clubBranding.clubName)
-                ? `<div style="font-size: 14px; font-weight: 900; color: #000B73; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 2px;">${clubBranding.clubName}</div>`
+                ? `<div style="font-size: 14px; font-weight: 900; color: #000B73; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 2px;">${escapeHtml(clubBranding.clubName)}</div>`
                 : '';
+
+            // Coach label
+            const coachLabel = currentLang === 'tr' ? 'Antrenör' : (currentLang === 'de' ? 'Trainer' : (currentLang === 'zh' ? '教练' : (currentLang === 'ja' ? 'コーチ' : (currentLang === 'ru' ? 'Тренер' : (currentLang === 'es' ? 'Entrenador' : (currentLang === 'it' ? 'Allenatore' : 'Coach'))))));
+            const swimmerSingularLabel = currentLang === 'tr' ? 'Sporcu' : (currentLang === 'de' ? 'Schwimmer' : (currentLang === 'zh' ? '运动员' : (currentLang === 'ja' ? '選手' : (currentLang === 'ru' ? 'Пловец' : (currentLang === 'es' ? 'Nadador' : (currentLang === 'it' ? 'Nuotatore' : 'Swimmer'))))));
+            const attendedCountSuffix = dict.swimmer_count_suffix || 'Sporcu';
 
             // Sporcu Yoklama ve Not Çizgileri (Alt Alta - Geniş Çizgili Düzen)
             const swimmerNotesMap = getCoachSwimmerDailyNotes()[selectedDate] || {};
@@ -4703,7 +4708,7 @@
                     attendanceRowsHtml += `
                         <tr>
                             <td style="padding: 5px 8px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1;">
-                                <span style="font-weight: bold; color: #000B73; font-size: 11px;">${k}. Sporcu:</span>
+                                <span style="font-weight: bold; color: #000B73; font-size: 11px;">${k}. ${swimmerSingularLabel}:</span>
                                 <span style="display: inline-block; width: 80%; border-bottom: 1px dotted #94a3b8; height: 14px; margin-left: 6px;">&nbsp;</span>
                             </td>
                         </tr>
@@ -4739,7 +4744,7 @@
                     </style>
             ` : `
                 <!DOCTYPE html>
-                <html lang="tr">
+                <html lang="${currentLang}">
                 <head>
                     <meta charset="utf-8">
                     <title>Swim Coach Pro - ${cleanDateStr}</title>
@@ -4879,9 +4884,9 @@
                             ${clubNameTag}
                             <div class="header-title">SWIM COACH PRO</div>
                             <div class="meta-strip">
-                                📅 <b>${dict.date || 'Tarih'}:</b> ${cleanDateStr} &nbsp;&bull;&nbsp; 
-                                👑 <b>Antrenör:</b> Mustafa Seçkin &nbsp;&bull;&nbsp; 
-                                🏊 <b>Toplam Hacim:</b> ${totalVol} m
+                                📅 <b>${dict.date || 'Date'}:</b> ${cleanDateStr} &nbsp;&bull;&nbsp; 
+                                👑 <b>${coachLabel}:</b> Mustafa Seçkin &nbsp;&bull;&nbsp; 
+                                🏊 <b>${dict.total || 'Total'}:</b> ${totalVol} m
                             </div>
                         </div>
 
@@ -4890,15 +4895,15 @@
                             <thead>
                                 <tr>
                                     <th style="width: 3.5%;">No</th>
-                                    <th style="width: 10%;">${dict.section || 'Bölüm'}</th>
-                                    <th style="width: 13.5%;">${dict.set_structure || 'Set Yapısı'}</th>
-                                    <th style="width: 10%;">${dict.stroke || 'Stil'}</th>
+                                    <th style="width: 10%;">${dict.section || 'Section'}</th>
+                                    <th style="width: 13.5%;">${dict.set_structure || 'Set Structure'}</th>
+                                    <th style="width: 10%;">${dict.stroke || 'Stroke'}</th>
                                     <th style="width: 9%;">${dict.type || 'Type'}</th>
-                                    <th style="width: 9.5%;">${dict.equipment || 'Ekipman'}</th>
-                                    <th style="width: 10%;">${dict.target_time || 'Hedef Süre'}</th>
-                                    <th style="width: 8%;">@ Tempo</th>
-                                    <th style="width: 8%;">${dict.intensity || 'Şiddet'}</th>
-                                    <th style="width: 9.5%;">Toplam</th>
+                                    <th style="width: 9.5%;">${dict.equipment || 'Equipment'}</th>
+                                    <th style="width: 10%;">${dict.target_time || 'Target Time'}</th>
+                                    <th style="width: 8%;">@ ${dict.interval ? dict.interval.replace('@', '').trim() : 'Pace'}</th>
+                                    <th style="width: 8%;">${dict.intensity || 'Intensity'}</th>
+                                    <th style="width: 9.5%;">${dict.total || 'Total'}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -4958,19 +4963,19 @@
                             <tr>
                                 <td style="width: 50%; padding-right: 4px; vertical-align: top;">
                                     <div class="summary-card">
-                                        <div style="font-weight: 900; color: #000B73; font-size: 10px; text-transform: uppercase; margin-bottom: 2px;">📊 ${dict.metrics_title || 'Antrenman Hacmi Dağılımı'}</div>
+                                        <div style="font-weight: 900; color: #000B73; font-size: 10px; text-transform: uppercase; margin-bottom: 2px;">📊 ${dict.metrics_title || 'Workout Metrics'}</div>
                                         <div style="font-size: 10px; color: #334155; line-height: 1.3;">
-                                            <b>Toplam:</b> ${totalVol} m &nbsp;|&nbsp; 
-                                            <b>Yüzme:</b> <span class="badge-swim">${swimVol} m</span> &nbsp;|&nbsp; 
-                                            <b>Ayak:</b> <span class="badge-kick">${kickVol} m</span> &nbsp;|&nbsp; 
-                                            <b>Drill:</b> <span class="badge-drill">${drillVol} m</span>
+                                            <b>${dict.total || 'Total'}:</b> ${totalVol} m &nbsp;|&nbsp; 
+                                            <b>${dict.swim || 'Swim'}:</b> <span class="badge-swim">${swimVol} m</span> &nbsp;|&nbsp; 
+                                            <b>${dict.kick || 'Kick'}:</b> <span class="badge-kick">${kickVol} m</span> &nbsp;|&nbsp; 
+                                            <b>${dict.drill || 'Drill'}:</b> <span class="badge-drill">${drillVol} m</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td style="width: 50%; padding-left: 4px; vertical-align: top;">
                                     <div class="summary-card" style="border-top-color: #000B73;">
-                                        <div style="font-weight: 900; color: #000B73; font-size: 10px; text-transform: uppercase; margin-bottom: 2px;">📝 Antrenör Notu</div>
-                                        <div style="font-size: 10px; color: #334155; min-height: 13px;">${notesText ? escapeHtml(notesText) : '<span style="color: #94a3b8; font-style: italic;">Özel not eklenmedi.</span>'}</div>
+                                        <div style="font-weight: 900; color: #000B73; font-size: 10px; text-transform: uppercase; margin-bottom: 2px;">📝 ${dict.coach_notes || 'Coach Notes'}</div>
+                                        <div style="font-size: 10px; color: #334155; min-height: 13px;">${notesText ? escapeHtml(notesText) : `<span style="color: #94a3b8; font-style: italic;">${dict.no_notes || 'No notes added.'}</span>`}</div>
                                     </div>
                                 </td>
                             </tr>
@@ -4979,8 +4984,8 @@
                         <!-- Attending Swimmers with Large Note Lines (Alt Alta) -->
                         <div class="attendance-box">
                             <div class="attendance-title">
-                                <span>👥 Katılan Sporcular & Bireysel Not / Derece Çizelgesi</span>
-                                <span style="font-size: 9.5px; color: #64748b; font-weight: 700;">${attendedList.length > 0 ? attendedList.length + ' Sporcu Katıldı' : 'Yoklama / Not Alanı'}</span>
+                                <span>👥 ${dict.stats_attended_title || 'Attended Swimmers & Notes'}</span>
+                                <span style="font-size: 9.5px; color: #64748b; font-weight: 700;">${attendedList.length > 0 ? attendedList.length + ' ' + attendedCountSuffix : (dict.attendance || 'Attendance')}</span>
                             </div>
                             <table style="width: 100%; border-collapse: collapse;">
                                 ${attendanceRowsHtml}
@@ -4988,7 +4993,7 @@
                         </div>
 
                         <div class="footer">
-                            Swim Coach Pro &bull; Yatay A4 Çıktı Formatı &bull; Antrenör: Mustafa Seçkin &bull; &copy; 2026
+                            Swim Coach Pro &bull; ${dict.print_pdf_landscape || 'Landscape A4 Format'} &bull; ${coachLabel}: Mustafa Seçkin &bull; &copy; ${new Date().getFullYear()}
                         </div>
                     </div>
                 </body>
@@ -5046,11 +5051,12 @@
         function openExportModal() {
             const modal = document.getElementById('export-choice-modal');
             const dateBadge = document.getElementById('export-modal-date-badge');
+            const dict = translations[currentLang] || translations['en'];
             if (dateBadge) {
                 let cleanDateStr = selectedDate;
                 const parts = selectedDate.split('-');
                 if (parts.length === 3) cleanDateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
-                dateBadge.innerHTML = `Seçili Tarih: <span class="text-brandPink font-black">${cleanDateStr}</span>`;
+                dateBadge.innerHTML = `${dict.selected_date_label || 'Seçili Tarih:'} <span class="text-brandPink font-black">${cleanDateStr}</span>`;
             }
             if (modal) modal.classList.remove('hidden');
         }
@@ -5091,7 +5097,7 @@
             });
             
             if (sets.length === 0) {
-                alert(translations[currentLang]?.no_export_data || translations['en'].no_export_data);
+                alert(dict.no_export_data || 'No training data to export for this date.');
                 return;
             }
             
@@ -5107,9 +5113,12 @@
             const logoPath = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/assets/logo.png?v=4';
             const clubBranding = getCoachClubBranding();
             const clubNameRow = (clubBranding && clubBranding.clubName)
-                ? `<tr><td colspan="10" align="center" style="font-size: 12pt; font-weight: bold; color: #000B73; text-align: center; padding: 4px;">${clubBranding.clubName.toUpperCase()}</td></tr>`
+                ? `<tr><td colspan="10" align="center" style="font-size: 12pt; font-weight: bold; color: #000B73; text-align: center; padding: 4px;">${escapeHtml(clubBranding.clubName.toUpperCase())}</td></tr>`
                 : '';
-            
+
+            const coachLabel = currentLang === 'tr' ? 'Antrenör' : (currentLang === 'de' ? 'Trainer' : (currentLang === 'zh' ? '教练' : (currentLang === 'ja' ? 'コーチ' : (currentLang === 'ru' ? 'Тренер' : (currentLang === 'es' ? 'Entrenador' : (currentLang === 'it' ? 'Allenatore' : 'Coach'))))));
+            const swimmerSingularLabel = currentLang === 'tr' ? 'Sporcu' : (currentLang === 'de' ? 'Schwimmer' : (currentLang === 'zh' ? '运动员' : (currentLang === 'ja' ? '選手' : (currentLang === 'ru' ? 'Пловец' : (currentLang === 'es' ? 'Nadador' : (currentLang === 'it' ? 'Nuotatore' : 'Swimmer'))))));
+
             let excelHtml = `
                 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'>
                 <head>
@@ -5119,7 +5128,7 @@
                         <x:ExcelWorkbook>
                             <x:ExcelWorksheets>
                                 <x:ExcelWorksheet>
-                                    <x:Name>Antrenman Tablosu</x:Name>
+                                    <x:Name>${escapeHtml((dict.workout_set_planner || 'Workout').substring(0, 31))}</x:Name>
                                     <x:WorksheetOptions>
                                         <x:PageSetup>
                                             <x:Layout x:Orientation="Landscape"/>
@@ -5177,7 +5186,7 @@
                         </tr>
                         <tr>
                             <td colspan="10" class="subtitle-cell" style="border: 1px solid #cbd5e1; padding: 4px;">
-                                📅 Tarih: ${cleanDateStr} &nbsp;&bull;&nbsp; 👑 Antrenör: Mustafa Seçkin &nbsp;&bull;&nbsp; 🏊 Toplam: ${totalVol} m
+                                📅 ${dict.date || 'Date'}: ${cleanDateStr} &nbsp;&bull;&nbsp; 👑 ${coachLabel}: Mustafa Seçkin &nbsp;&bull;&nbsp; 🏊 ${dict.total || 'Total'}: ${totalVol} m
                             </td>
                         </tr>
                         <tr><td colspan="10" style="border: none; height: 6px;"></td></tr>
@@ -5185,15 +5194,15 @@
                         <!-- Table Headers (Daraltılmış Sütunlar) -->
                         <tr>
                             <th style="width: 35px;">No</th>
-                            <th style="width: 90px;">${dict.section || 'Bölüm'}</th>
-                            <th style="width: 115px;">${dict.set_structure || 'Set Yapısı'}</th>
-                            <th style="width: 90px;">${dict.stroke || 'Stil'}</th>
+                            <th style="width: 90px;">${dict.section || 'Section'}</th>
+                            <th style="width: 115px;">${dict.set_structure || 'Set Structure'}</th>
+                            <th style="width: 90px;">${dict.stroke || 'Stroke'}</th>
                             <th style="width: 80px;">${dict.type || 'Type'}</th>
-                            <th style="width: 85px;">${dict.equipment || 'Ekipman'}</th>
-                            <th style="width: 85px;">${dict.target_time || 'Hedef Süre'}</th>
-                            <th style="width: 75px;">@ Tempo</th>
-                            <th style="width: 75px;">${dict.intensity || 'Şiddet'}</th>
-                            <th style="width: 85px;">Toplam</th>
+                            <th style="width: 85px;">${dict.equipment || 'Equipment'}</th>
+                            <th style="width: 85px;">${dict.target_time || 'Target Time'}</th>
+                            <th style="width: 75px;">@ ${dict.interval ? dict.interval.replace('@', '').trim() : 'Pace'}</th>
+                            <th style="width: 75px;">${dict.intensity || 'Intensity'}</th>
+                            <th style="width: 85px;">${dict.total || 'Total'}</th>
                         </tr>
             `;
 
@@ -5251,14 +5260,14 @@
                         
                         <!-- Metrics -->
                         <tr>
-                            <td colspan="10" style="background-color: #000B73; color: #ffffff; font-weight: bold; font-size: 9.5pt; text-align: left; padding: 4px;">📊 ${dict.metrics_title || 'ANTRENMAN HACMİ DAĞILIMI'}:</td>
+                            <td colspan="10" style="background-color: #000B73; color: #ffffff; font-weight: bold; font-size: 9.5pt; text-align: left; padding: 4px;">📊 ${dict.metrics_title || 'Workout Metrics'}:</td>
                         </tr>
                         <tr>
                             <td colspan="10" style="color: #334155; text-align: left; background-color: #f8fafc; font-size: 9pt; padding: 4px;">
-                                <b>Toplam:</b> ${totalVol} m &nbsp;|&nbsp; 
-                                <b>Yüzme:</b> <span class="badge-swim">${swimVol} m</span> &nbsp;|&nbsp; 
-                                <b>Ayak:</b> <span class="badge-kick">${kickVol} m</span> &nbsp;|&nbsp; 
-                                <b>Drill:</b> <span class="badge-drill">${drillVol} m</span>
+                                <b>${dict.total || 'Total'}:</b> ${totalVol} m &nbsp;|&nbsp; 
+                                <b>${dict.swim || 'Swim'}:</b> <span class="badge-swim">${swimVol} m</span> &nbsp;|&nbsp; 
+                                <b>${dict.kick || 'Kick'}:</b> <span class="badge-kick">${kickVol} m</span> &nbsp;|&nbsp; 
+                                <b>${dict.drill || 'Drill'}:</b> <span class="badge-drill">${drillVol} m</span>
                             </td>
                         </tr>
 
@@ -5266,7 +5275,7 @@
                         ${notesText ? `
                         <tr><td colspan="10" style="border: none; height: 4px;"></td></tr>
                         <tr>
-                            <td colspan="10" style="background-color: #000B73; color: #ffffff; font-weight: bold; font-size: 9.5pt; text-align: left; padding: 4px;">📝 ANTRENÖR NOTU:</td>
+                            <td colspan="10" style="background-color: #000B73; color: #ffffff; font-weight: bold; font-size: 9.5pt; text-align: left; padding: 4px;">📝 ${dict.coach_notes || 'Coach Notes'}:</td>
                         </tr>
                         <tr>
                             <td colspan="10" style="color: #334155; text-align: left; background-color: #f8fafc; font-size: 9pt; padding: 4px;">${escapeHtml(notesText)}</td>
@@ -5276,7 +5285,7 @@
                         <!-- Attending Swimmers & Notes in Excel (Alt Alta) -->
                         <tr><td colspan="10" style="border: none; height: 6px;"></td></tr>
                         <tr>
-                            <td colspan="10" style="background-color: #000B73; color: #ffffff; font-weight: bold; font-size: 9.5pt; text-align: left; padding: 4px;">👥 ${dict.attendance || 'KATILAN SPORCULAR VE BİREYSEL NOT / DERECE ALANI'}:</td>
+                            <td colspan="10" style="background-color: #000B73; color: #ffffff; font-weight: bold; font-size: 9.5pt; text-align: left; padding: 4px;">👥 ${dict.stats_attended_title || 'Attended Swimmers & Notes'}:</td>
                         </tr>
                         ${attendedList.length > 0 ? attendedList.map((name, idx) => {
                             const swimmerNotesMap = getCoachSwimmerDailyNotes()[selectedDate] || {};
@@ -5289,15 +5298,15 @@
                             `;
                         }).join('') : `
                             <tr>
-                                <td colspan="3" style="color: #64748b; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">1. Sporcu:</td>
+                                <td colspan="3" style="color: #64748b; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">1. ${swimmerSingularLabel}:</td>
                                 <td colspan="7" style="color: #cbd5e1; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">______________________________________________________________________</td>
                             </tr>
                             <tr>
-                                <td colspan="3" style="color: #64748b; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">2. Sporcu:</td>
+                                <td colspan="3" style="color: #64748b; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">2. ${swimmerSingularLabel}:</td>
                                 <td colspan="7" style="color: #cbd5e1; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">______________________________________________________________________</td>
                             </tr>
                             <tr>
-                                <td colspan="3" style="color: #64748b; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">3. Sporcu:</td>
+                                <td colspan="3" style="color: #64748b; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">3. ${swimmerSingularLabel}:</td>
                                 <td colspan="7" style="color: #cbd5e1; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">______________________________________________________________________</td>
                             </tr>
                         `}
@@ -5310,7 +5319,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `swim_coach_pro_yatay_tablo_${cleanDateStr}.xls`;
+            a.download = `swim_coach_pro_${currentLang}_${cleanDateStr}.xls`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
