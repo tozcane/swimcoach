@@ -3922,51 +3922,33 @@
                 ? `<div style="font-size: 14px; font-weight: 900; color: #000B73; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 2px;">${clubBranding.clubName}</div>`
                 : '';
 
-            // Sporcu Yoklama ve Not Çizgileri (2 Sütunlu Kompakt Yatay Düzen)
+            // Sporcu Yoklama ve Not Çizgileri (Alt Alta - Geniş Çizgili Düzen)
             const swimmerNotesMap = getCoachSwimmerDailyNotes()[selectedDate] || {};
             let attendanceRowsHtml = '';
             
             if (attendedList.length > 0) {
-                for (let i = 0; i < attendedList.length; i += 2) {
-                    const name1 = attendedList[i];
-                    const note1 = swimmerNotesMap[name1] || '';
-                    const name2 = (i + 1 < attendedList.length) ? attendedList[i + 1] : null;
-                    const note2 = name2 ? (swimmerNotesMap[name2] || '') : '';
-
+                attendedList.forEach((name, idx) => {
+                    const note = swimmerNotesMap[name] || '';
                     attendanceRowsHtml += `
                         <tr>
-                            <td style="width: 50%; padding: 3px 6px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1;">
+                            <td style="padding: 4px 8px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1;">
                                 <div style="display: flex; align-items: baseline; width: 100%;">
-                                    <span style="font-weight: 800; color: #000B73; font-size: 10.5px; white-space: nowrap; margin-right: 4px;">${i + 1}. ${escapeHtml(name1)}:</span>
-                                    <span style="flex: 1; border-bottom: 1px dotted #64748b; font-size: 10px; color: #E5007D; font-weight: bold; padding: 0 4px; display: inline-block; min-height: 13px; width: 62%;">
-                                        ${note1 ? escapeHtml(note1) : '&nbsp;'}
+                                    <span style="font-weight: 800; color: #000B73; font-size: 11px; white-space: nowrap; min-width: 170px;">${idx + 1}. ${escapeHtml(name)}:</span>
+                                    <span style="flex: 1; border-bottom: 1px dotted #64748b; font-size: 10.5px; color: #E5007D; font-weight: bold; padding: 0 6px; display: inline-block; min-height: 14px; width: 75%;">
+                                        ${note ? escapeHtml(note) : '&nbsp;'}
                                     </span>
                                 </div>
                             </td>
-                            ${name2 ? `
-                            <td style="width: 50%; padding: 3px 6px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1; border-left: 1px solid #e2e8f0;">
-                                <div style="display: flex; align-items: baseline; width: 100%;">
-                                    <span style="font-weight: 800; color: #000B73; font-size: 10.5px; white-space: nowrap; margin-right: 4px;">${i + 2}. ${escapeHtml(name2)}:</span>
-                                    <span style="flex: 1; border-bottom: 1px dotted #64748b; font-size: 10px; color: #E5007D; font-weight: bold; padding: 0 4px; display: inline-block; min-height: 13px; width: 62%;">
-                                        ${note2 ? escapeHtml(note2) : '&nbsp;'}
-                                    </span>
-                                </div>
-                            </td>
-                            ` : `<td style="width: 50%; border-bottom: 1px dashed #cbd5e1; border-left: 1px solid #e2e8f0;">&nbsp;</td>`}
                         </tr>
                     `;
-                }
+                });
             } else {
-                for (let k = 1; k <= 6; k += 2) {
+                for (let k = 1; k <= 5; k++) {
                     attendanceRowsHtml += `
                         <tr>
-                            <td style="width: 50%; padding: 4px 6px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1;">
-                                <span style="font-weight: bold; color: #000B73; font-size: 10.5px;">${k}. Sporcu:</span>
-                                <span style="display: inline-block; width: 75%; border-bottom: 1px dotted #94a3b8; height: 13px; margin-left: 4px;">&nbsp;</span>
-                            </td>
-                            <td style="width: 50%; padding: 4px 6px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1; border-left: 1px solid #e2e8f0;">
-                                <span style="font-weight: bold; color: #000B73; font-size: 10.5px;">${k + 1}. Sporcu:</span>
-                                <span style="display: inline-block; width: 75%; border-bottom: 1px dotted #94a3b8; height: 13px; margin-left: 4px;">&nbsp;</span>
+                            <td style="padding: 5px 8px; vertical-align: middle; border-bottom: 1px dashed #cbd5e1;">
+                                <span style="font-weight: bold; color: #000B73; font-size: 11px;">${k}. Sporcu:</span>
+                                <span style="display: inline-block; width: 80%; border-bottom: 1px dotted #94a3b8; height: 14px; margin-left: 6px;">&nbsp;</span>
                             </td>
                         </tr>
                     `;
@@ -4231,7 +4213,7 @@
                                 </td>
                                 <td style="width: 50%; padding-left: 4px; vertical-align: top;">
                                     <div class="summary-card" style="border-top-color: #000B73;">
-                                        <div style="font-weight: 900; color: #000B73; font-size: 10px; text-transform: uppercase; margin-bottom: 2px;">📝 Günün Hedefi / Antrenör Notu</div>
+                                        <div style="font-weight: 900; color: #000B73; font-size: 10px; text-transform: uppercase; margin-bottom: 2px;">📝 Antrenör Notu</div>
                                         <div style="font-size: 10px; color: #334155; min-height: 13px;">${notesText ? escapeHtml(notesText) : '<span style="color: #94a3b8; font-style: italic;">Özel not eklenmedi.</span>'}</div>
                                     </div>
                                 </td>
@@ -4531,35 +4513,39 @@
                         ${notesText ? `
                         <tr><td colspan="10" style="border: none; height: 4px;"></td></tr>
                         <tr>
-                            <td colspan="10" style="background-color: #000B73; color: #ffffff; font-weight: bold; font-size: 9.5pt; text-align: left; padding: 4px;">📝 GÜNÜN HEDEFİ / ANTRENÖR NOTU:</td>
+                            <td colspan="10" style="background-color: #000B73; color: #ffffff; font-weight: bold; font-size: 9.5pt; text-align: left; padding: 4px;">📝 ANTRENÖR NOTU:</td>
                         </tr>
                         <tr>
                             <td colspan="10" style="color: #334155; text-align: left; background-color: #f8fafc; font-size: 9pt; padding: 4px;">${escapeHtml(notesText)}</td>
                         </tr>
                         ` : ''}
 
-                        <!-- Attending Swimmers & Notes in Excel -->
+                        <!-- Attending Swimmers & Notes in Excel (Alt Alta) -->
                         <tr><td colspan="10" style="border: none; height: 6px;"></td></tr>
                         <tr>
                             <td colspan="10" style="background-color: #000B73; color: #ffffff; font-weight: bold; font-size: 9.5pt; text-align: left; padding: 4px;">👥 ${dict.attendance || 'KATILAN SPORCULAR VE BİREYSEL NOT / DERECE ALANI'}:</td>
                         </tr>
                         ${attendedList.length > 0 ? attendedList.map((name, idx) => {
                             const swimmerNotesMap = getCoachSwimmerDailyNotes()[selectedDate] || {};
-                            const note = swimmerNotesMap[name] || '____________________________________________________';
+                            const note = swimmerNotesMap[name] || '______________________________________________________________________';
                             return `
                                 <tr>
-                                    <td colspan="4" style="color: #000B73; font-weight: bold; text-align: left; padding: 3px 6px;">${idx + 1}. ${escapeHtml(name)}</td>
-                                    <td colspan="6" style="color: #E5007D; font-weight: bold; text-align: left; padding: 3px 6px;">${escapeHtml(note)}</td>
+                                    <td colspan="3" style="color: #000B73; font-weight: bold; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">${idx + 1}. ${escapeHtml(name)}</td>
+                                    <td colspan="7" style="color: #E5007D; font-weight: bold; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">${escapeHtml(note)}</td>
                                 </tr>
                             `;
                         }).join('') : `
                             <tr>
-                                <td colspan="5" style="color: #64748b; text-align: left; padding: 3px 6px;">1. Sporcu: _____________________________</td>
-                                <td colspan="5" style="color: #64748b; text-align: left; padding: 3px 6px;">2. Sporcu: _____________________________</td>
+                                <td colspan="3" style="color: #64748b; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">1. Sporcu:</td>
+                                <td colspan="7" style="color: #cbd5e1; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">______________________________________________________________________</td>
                             </tr>
                             <tr>
-                                <td colspan="5" style="color: #64748b; text-align: left; padding: 3px 6px;">3. Sporcu: _____________________________</td>
-                                <td colspan="5" style="color: #64748b; text-align: left; padding: 3px 6px;">4. Sporcu: _____________________________</td>
+                                <td colspan="3" style="color: #64748b; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">2. Sporcu:</td>
+                                <td colspan="7" style="color: #cbd5e1; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">______________________________________________________________________</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="color: #64748b; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">3. Sporcu:</td>
+                                <td colspan="7" style="color: #cbd5e1; text-align: left; padding: 3px 6px; border: 1px solid #cbd5e1;">______________________________________________________________________</td>
                             </tr>
                         `}
                     </table>
