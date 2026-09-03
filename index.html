@@ -876,12 +876,12 @@
         </div>
     </main>
 
-    <div id="training-modal" class="hidden fixed inset-0 bg-brandBlue/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-4xl rounded-3xl p-8 shadow-2xl border border-gray-150 animate-scale-up space-y-6">
-            <div class="flex justify-between items-center border-b border-gray-100 pb-4">
+    <div id="training-modal" class="hidden fixed inset-0 bg-brandBlue/50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-white w-full max-w-[96vw] xl:max-w-7xl rounded-3xl p-5 md:p-6 shadow-2xl border border-gray-150 animate-scale-up space-y-4 max-h-[94vh] overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-table text-xl text-brandPink"></i>
-                    <h3 class="text-2xl font-extrabold text-brandBlue" data-i18n="add_set_title">Add New Training Set</h3>
+                    <h3 class="text-xl md:text-2xl font-extrabold text-brandBlue" data-i18n="add_set_title">Add New Training Set</h3>
                 </div>
                 <button onclick="closeTrainingModal()" class="text-gray-400 hover:text-brandPink transition-colors">
                     <i class="fa-solid fa-xmark text-xl"></i>
@@ -889,36 +889,36 @@
             </div>
 
             <!-- HORIZONTAL SELECTION TABLE -->
-            <form onsubmit="handleSaveSwimSet(event)" class="space-y-6">
+            <form onsubmit="handleSaveSwimSet(event)" class="space-y-4">
                 <!-- Date Selection -->
-                <div class="flex items-center space-x-3 bg-gray-50 border border-gray-150 p-4 rounded-2xl w-fit">
-                    <i class="fa-regular fa-calendar text-brandBlue text-lg"></i>
+                <div class="flex items-center space-x-3 bg-gray-50 border border-gray-150 p-2.5 rounded-2xl w-fit">
+                    <i class="fa-regular fa-calendar text-brandBlue text-base"></i>
                     <label for="s-date" class="text-xs font-black text-brandBlue uppercase tracking-wider" data-i18n="workout_date">Workout Date:</label>
                     <input type="date" id="s-date" required onchange="handleModalDateChange()"
-                        class="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue font-extrabold text-xs">
+                        class="px-3 py-1.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue text-brandBlue font-extrabold text-xs">
                 </div>
 
-                <div class="overflow-x-auto border border-gray-200 rounded-2xl">
-                    <table class="w-full border-collapse text-left text-sm text-gray-700 min-w-[900px]">
+                <div class="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50/40">
+                    <table class="w-full table-fixed border-collapse text-left text-xs text-gray-700">
                         <thead>
-                            <tr class="bg-gray-50 text-brandBlue font-bold text-xs uppercase border-b border-gray-200">
-                                <th class="p-3 border-r border-gray-200 w-32" data-i18n="section">Section</th>
-                                <th class="p-3 border-r border-gray-200 text-center w-16" data-i18n="t1">T1</th>
-                                <th class="p-3 border-r border-gray-200 text-center w-16" data-i18n="t2">T2</th>
-                                <th class="p-3 border-r border-gray-200 text-center w-24" data-i18n="distance">Distance</th>
-                                <th class="p-3 border-r border-gray-200 w-28" data-i18n="stroke">Stroke</th>
-                                <th class="p-3 border-r border-gray-200 w-28" data-i18n="type">Type</th>
-                                <th class="p-3 border-r border-gray-200 w-28" data-i18n="equipment">Equipment</th>
-                                <th class="p-3 border-r border-gray-200 text-center w-28" data-i18n="target_time">Target Time</th>
-                                <th class="p-3 border-r border-gray-200 text-center w-28" data-i18n="interval">@ Interval</th>
-                                <th class="p-3 border-r border-gray-200 text-center w-24" data-i18n="intensity">Intensity</th>
+                            <tr class="bg-gray-100 text-brandBlue font-extrabold text-[11px] uppercase border-b border-gray-200">
+                                <th class="py-2.5 px-2 border-r border-gray-200 w-[14%]" data-i18n="section">Bölüm</th>
+                                <th class="py-2.5 px-1 border-r border-gray-200 text-center w-[5.5%]" data-i18n="t1">T1</th>
+                                <th class="py-2.5 px-1 border-r border-gray-200 text-center w-[5.5%]" data-i18n="t2">T2</th>
+                                <th class="py-2.5 px-1.5 border-r border-gray-200 text-center w-[9%]" data-i18n="distance">Mesafe</th>
+                                <th class="py-2.5 px-2 border-r border-gray-200 w-[11%]" data-i18n="stroke">Stil</th>
+                                <th class="py-2.5 px-2 border-r border-gray-200 w-[11%]" data-i18n="type">Type</th>
+                                <th class="py-2.5 px-2 border-r border-gray-200 w-[11%]" data-i18n="equipment">Ekipman</th>
+                                <th class="py-2.5 px-1.5 border-r border-gray-200 text-center w-[11%]" data-i18n="target_time">Hedef Süre</th>
+                                <th class="py-2.5 px-1.5 border-r border-gray-200 text-center w-[11%]" data-i18n="interval">@ Tempo</th>
+                                <th class="py-2.5 px-1.5 text-center w-[11%]" data-i18n="intensity">Şiddet</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white">
                             <tr>
                                 <!-- Column 1: Section -->
-                                <td class="p-3 border-r border-gray-200">
-                                    <select id="s-section" required class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-bold text-xs">
+                                <td class="p-1.5 border-r border-gray-200">
+                                    <select id="s-section" required class="w-full px-1.5 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-bold text-xs">
                                         <option value="" selected>-</option>
                                         <option value="Warm Up" data-i18n="warm_up">Warm Up</option>
                                         <option value="Pre Set" data-i18n="pre_set">Pre Set</option>
@@ -929,8 +929,8 @@
                                 </td>
 
                                 <!-- Column 2: T1 (Dış Set) -->
-                                <td class="p-3 border-r border-gray-200">
-                                    <select id="s-reps1" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs">
+                                <td class="p-1.5 border-r border-gray-200">
+                                    <select id="s-reps1" class="w-full px-1 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs">
                                         <option value="" selected>-</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -947,8 +947,8 @@
                                 </td>
 
                                 <!-- Column 3: T2 (İç Set) -->
-                                <td class="p-3 border-r border-gray-200">
-                                    <select id="s-reps2" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs">
+                                <td class="p-1.5 border-r border-gray-200">
+                                    <select id="s-reps2" class="w-full px-1 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs">
                                         <option value="" selected>-</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -979,8 +979,8 @@
                                 </td>
 
                                 <!-- Column 4: Mesafe -->
-                                <td class="p-3 border-r border-gray-200">
-                                    <select id="s-distance" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-mono text-center font-bold text-xs">
+                                <td class="p-1.5 border-r border-gray-200">
+                                    <select id="s-distance" class="w-full px-1 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-mono text-center font-bold text-xs">
                                         <option value="" selected>-</option>
                                         <option value="25">25</option>
                                         <option value="50">50</option>
@@ -1009,8 +1009,8 @@
                                     </select>
                                 </td>
                                 <!-- Column 5: Stroke (Stil) -->
-                                <td class="p-3 border-r border-gray-200">
-                                    <select id="s-stroke" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-bold text-xs">
+                                <td class="p-1.5 border-r border-gray-200">
+                                    <select id="s-stroke" class="w-full px-1.5 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-bold text-xs">
                                         <option value="" selected>-</option>
                                         <option value="Freestyle" data-i18n="freestyle">Freestyle</option>
                                         <option value="Backstroke" data-i18n="backstroke">Backstroke</option>
@@ -1021,8 +1021,8 @@
                                     </select>
                                 </td>
                                 <!-- Column 5.5: Type (Çalışma Türü) -->
-                                <td class="p-3 border-r border-gray-200">
-                                    <select id="s-type" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-bold text-xs">
+                                <td class="p-1.5 border-r border-gray-200">
+                                    <select id="s-type" class="w-full px-1.5 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-bold text-xs">
                                         <option value="" selected>-</option>
                                         <option value="Swim" data-i18n="swim">Swim</option>
                                         <option value="Kick" data-i18n="kick">Kick</option>
@@ -1033,8 +1033,8 @@
                                     </select>
                                 </td>
                                 <!-- Column 6: Equipment -->
-                                <td class="p-3 border-r border-gray-200">
-                                    <select id="s-equipment" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-bold text-xs">
+                                <td class="p-1.5 border-r border-gray-200">
+                                    <select id="s-equipment" class="w-full px-1.5 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue font-bold text-xs">
                                         <option value="" selected>-</option>
                                         <option value="None" data-i18n="none">None</option>
                                         <option value="Fins" data-i18n="fins">Fins</option>
@@ -1046,21 +1046,21 @@
                                     </select>
                                 </td>
                                 <!-- Column 7: Target Time -->
-                                <td class="p-3 border-r border-gray-200">
+                                <td class="p-1.5 border-r border-gray-200">
                                     <input type="text" id="s-target-time" placeholder="00:00.00" readonly onclick="openTimeKeypad('s-target-time')"
-                                        class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs cursor-pointer hover:bg-gray-100/50 transition-colors">
+                                        class="w-full px-1.5 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs cursor-pointer hover:bg-gray-100/50 transition-colors">
                                 </td>
                                 <!-- Column 7.5: @ Interval -->
-                                <td class="p-3 border-r border-gray-200">
-                                    <div class="flex items-center space-x-1">
-                                        <span class="text-gray-400 font-extrabold text-sm">@</span>
+                                <td class="p-1.5 border-r border-gray-200">
+                                    <div class="flex items-center space-x-0.5">
+                                        <span class="text-gray-400 font-extrabold text-xs">@</span>
                                         <input type="text" id="s-interval" placeholder="00:00.00" readonly onclick="openTimeKeypad('s-interval')"
-                                            class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs cursor-pointer hover:bg-gray-100/50 transition-colors">
+                                            class="w-full px-1 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs cursor-pointer hover:bg-gray-100/50 transition-colors">
                                     </div>
                                 </td>
                                 <!-- Column 8: Intensity -->
-                                <td class="p-3 border-r border-gray-200">
-                                    <select id="s-zone" class="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs">
+                                <td class="p-1.5">
+                                    <select id="s-zone" class="w-full px-1 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brandBlue text-brandBlue text-center font-bold text-xs">
                                         <option value="" selected>-</option>
                                         <option value="A1">A1</option>
                                         <option value="A2">A2</option>
