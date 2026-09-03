@@ -4255,14 +4255,14 @@
             const panel = document.getElementById('statistics-panel');
             const btn = document.getElementById('toggle-stats-btn');
             const isHidden = panel.classList.contains('hidden');
+            const dict = translations[currentLang] || translations['en'];
             
             if (isHidden) {
                 panel.classList.remove('hidden');
                 btn.innerHTML = `
                     <i class="fa-solid fa-eye-slash"></i>
-                    <span>Hide Statistics</span>
+                    <span data-i18n="hide_stats">${dict.hide_stats || 'Hide Statistics'}</span>
                 `;
-                // Smooth scroll to stats
                 setTimeout(() => {
                     panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }, 100);
@@ -4270,7 +4270,7 @@
                 panel.classList.add('hidden');
                 btn.innerHTML = `
                     <i class="fa-solid fa-chart-pie"></i>
-                    <span>Show Statistics</span>
+                    <span data-i18n="show_stats">${dict.show_stats || 'Show Statistics'}</span>
                 `;
             }
         }
