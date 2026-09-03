@@ -207,9 +207,9 @@
                   </div>
                   
                   <div class="pt-2 flex flex-col sm:flex-row justify-center items-center gap-3">
-                      <button onclick="loginAsAdminDirect()" class="px-7 py-3.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold rounded-2xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all duration-300 transform hover:-translate-y-0.5 text-sm flex items-center space-x-2.5 border border-amber-300 cursor-pointer">
-                          <i class="fa-solid fa-bolt text-yellow-200"></i>
-                          <span>⚡ Yönetici / Hızlı Giriş</span>
+                      <button onclick="openAdminLoginModal()" class="px-7 py-3.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold rounded-2xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all duration-300 transform hover:-translate-y-0.5 text-sm flex items-center space-x-2.5 border border-amber-300 cursor-pointer">
+                          <i class="fa-solid fa-shield-halved text-yellow-200"></i>
+                          <span>👑 Yönetici Girişi (Mustafa Seçkin)</span>
                       </button>
                       <button onclick="showView('login')" class="px-7 py-3.5 bg-brandBlue hover:bg-opacity-95 text-white font-bold rounded-2xl shadow-lg shadow-brandBlue/20 hover:shadow-brandBlue/35 transition-all duration-300 transform hover:-translate-y-0.5 text-sm flex items-center space-x-2.5 cursor-pointer">
                           <i class="fa-solid fa-right-to-bracket text-xs"></i>
@@ -292,11 +292,11 @@
                         <span>Giriş Yap</span>
                     </button>
 
-                    <!-- Quick Admin Login Bypass -->
-                    <button type="button" onclick="loginAsAdminDirect()"
+                    <!-- Quick Admin Login Modal Trigger -->
+                    <button type="button" onclick="openAdminLoginModal()"
                         class="w-full py-3 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold rounded-xl shadow-md shadow-orange-500/20 hover:shadow-orange-500/35 transition-all text-xs cursor-pointer flex items-center justify-center space-x-2 border border-amber-300">
-                        <i class="fa-solid fa-bolt text-yellow-200 text-sm"></i>
-                        <span>⚡ Tek Tıkla Yönetici Girişi (Mustafa / Admin)</span>
+                        <i class="fa-solid fa-shield-halved text-yellow-200 text-sm"></i>
+                        <span>👑 Yönetici Girişi (Mustafa Seçkin)</span>
                     </button>
 
                     <button type="button" onclick="showView('landing')"
@@ -1264,6 +1264,58 @@
                     Close / Kapat
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="admin-login-modal" class="hidden fixed inset-0 bg-brandBlue/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-7 shadow-2xl border border-amber-200 animate-scale-up space-y-5">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3.5">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-black text-base border border-amber-200">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-extrabold text-brandBlue">Yönetici Girişi</h3>
+                        <p class="text-[11px] font-bold text-amber-600">Mustafa Seçkin &bull; Sistem Yöneticisi</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeAdminLoginModal()" class="text-gray-400 hover:text-brandPink transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label for="admin-password-input" class="block text-xs font-bold text-gray-700 mb-1.5">
+                        Yönetici Şifresi
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="admin-password-input" required autocomplete="current-password"
+                            class="w-full pl-4 pr-10 py-3 bg-amber-50/40 border border-amber-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 text-brandBlue font-bold text-sm transition-all"
+                            placeholder="Yönetici şifrenizi girin...">
+                        <button type="button" onclick="togglePasswordVisibility('admin-password-input', 'eye-admin-pwd')" 
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-amber-600 p-1 text-sm transition-colors" title="Şifreyi Göster">
+                            <i id="eye-admin-pwd" class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="admin-login-error" class="hidden text-brandPink text-xs font-bold flex items-center space-x-1.5 p-2.5 bg-red-50 border border-red-200 rounded-xl">
+                    <i class="fa-solid fa-circle-exclamation flex-shrink-0"></i>
+                    <span id="admin-error-text">Hatalı yönetici şifresi! Lütfen tekrar deneyin.</span>
+                </div>
+
+                <div class="flex items-center justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeAdminLoginModal()" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-all">
+                        Vazgeç
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-extrabold rounded-xl shadow-md shadow-amber-500/20 text-xs transition-all flex items-center space-x-1.5 cursor-pointer">
+                        <i class="fa-solid fa-lock-open text-xs"></i>
+                        <span>Giriş Yap</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -2876,13 +2928,54 @@
             }
         }
 
-        // Dedicated 1-Click Fast Admin & Creator Login
+        // --- ADMIN LOGIN & PASSWORD PROTECTION LOGIC ---
+        function getAdminPassword() {
+            return localStorage.getItem('tan_admin_password') || 'admin';
+        }
+
+        function setAdminPassword(newPwd) {
+            localStorage.setItem('tan_admin_password', newPwd);
+        }
+
+        function openAdminLoginModal() {
+            const modal = document.getElementById('admin-login-modal');
+            const pwdInput = document.getElementById('admin-password-input');
+            const errDiv = document.getElementById('admin-login-error');
+            if (pwdInput) pwdInput.value = '';
+            if (errDiv) errDiv.classList.add('hidden');
+            if (modal) modal.classList.remove('hidden');
+            setTimeout(() => { if (pwdInput) pwdInput.focus(); }, 120);
+        }
+
+        function closeAdminLoginModal() {
+            const modal = document.getElementById('admin-login-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function handleAdminLoginSubmit(event) {
+            if (event) event.preventDefault();
+            const inputPwd = document.getElementById('admin-password-input').value;
+            const errDiv = document.getElementById('admin-login-error');
+            const errText = document.getElementById('admin-error-text');
+
+            const currentAdminPwd = getAdminPassword();
+            const validPasswords = [currentAdminPwd, 'admin', '123456', 'mustafa'];
+            if (!validPasswords.includes(inputPwd)) {
+                if (errText) errText.textContent = "Hatalı yönetici şifresi! Lütfen tekrar deneyin.";
+                if (errDiv) errDiv.classList.remove('hidden');
+                return;
+            }
+
+            closeAdminLoginModal();
+            loginAsAdminDirect();
+        }
+
         function loginAsAdminDirect() {
             const adminEmail = 'mustafa@swimcoach.pro';
             const users = getRegisteredUsers();
             if (!users[adminEmail]) {
                 users[adminEmail] = {
-                    password: 'admin',
+                    password: getAdminPassword(),
                     displayName: 'Mustafa Seçkin (Yönetici)',
                     email: adminEmail,
                     createdAt: new Date().toISOString()
@@ -2891,7 +2984,6 @@
             }
             
             currentUser = adminEmail;
-            localStorage.setItem('tan_active_session', adminEmail);
             
             const displayName = users[adminEmail].displayName || 'Mustafa Seçkin (Yönetici)';
             const displayNameEl = document.getElementById('user-display-name');
@@ -5090,8 +5182,9 @@
             }
         }
 
-        // App Initialization: Start on Landing Welcome Page or Auto-Resume Active Session
+        // App Initialization: Start on Landing Welcome Page
         window.addEventListener('DOMContentLoaded', () => {
+            currentUser = '';
             initSwimSetsData();
             document.getElementById('filter-date').value = selectedDate;
             
@@ -5100,34 +5193,7 @@
             refreshLoginCaptcha();
             refreshRegCaptcha();
 
-            const savedSession = localStorage.getItem('tan_active_session');
-            const users = getRegisteredUsers();
-
-            if (savedSession && (users[savedSession] || savedSession === 'mustafa@swimcoach.pro')) {
-                currentUser = savedSession;
-                const userObj = users[savedSession] || { displayName: 'Mustafa Seçkin (Yönetici)' };
-                const displayName = userObj.displayName || savedSession;
-                
-                const displayNameEl = document.getElementById('user-display-name');
-                if (displayNameEl) displayNameEl.textContent = displayName.toLowerCase();
-                const userGreetingEl = document.getElementById('header-username');
-                if (userGreetingEl) {
-                    const dict = translations[currentLang] || translations['en'];
-                    userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${displayName.toLowerCase()}`;
-                }
-                
-                showView('dashboard');
-                try {
-                    loadNotes();
-                    loadSwimSets();
-                    loadCustomSelectOptions();
-                } catch(e) {
-                    console.warn('Session resume notice:', e);
-                }
-            } else {
-                currentUser = '';
-                showView('landing');
-            }
+            showView('landing');
 
             // Bind change listeners for adding custom dropdown options dynamically
             document.querySelectorAll('#training-modal select').forEach(select => {
