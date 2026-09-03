@@ -1328,7 +1328,7 @@
                         </div>
                         <div>
                             <div class="font-extrabold text-brandBlue text-sm flex items-center space-x-2">
-                                <span>Yazdır / PDF (Yatay A4)</span>
+                                <span>Yazdır / PDF Olarak Kaydet (Yatay A4)</span>
                                 <span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-100 text-indigo-800 uppercase">Önerilen</span>
                             </div>
                             <div class="text-[11px] text-gray-500 font-medium">Ortalanmış Yatay A4, sporcu not boşlukları ve şık tablo</div>
@@ -1337,22 +1337,7 @@
                     <i class="fa-solid fa-chevron-right text-indigo-500 text-sm opacity-0 group-hover:opacity-100 transition-opacity"></i>
                 </button>
 
-                <!-- Option 2: Word (.doc - Yatay A4) -->
-                <button type="button" onclick="handleExportChoice('word')"
-                    class="w-full p-4 rounded-2xl border-2 border-blue-100 bg-blue-50/40 hover:bg-blue-50 hover:border-blue-300 transition-all flex items-center justify-between text-left group cursor-pointer shadow-sm">
-                    <div class="flex items-center space-x-3.5">
-                        <div class="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-                            <i class="fa-solid fa-file-word"></i>
-                        </div>
-                        <div>
-                            <div class="font-extrabold text-brandBlue text-sm">Word Belgesi (.doc - Yatay A4)</div>
-                            <div class="text-[11px] text-gray-500 font-medium">Ortalı Yatay A4, kulüp logolu, sporcu not çizgili Word</div>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-blue-500 text-sm opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                </button>
-
-                <!-- Option 3: Excel (.xls) -->
+                <!-- Option 2: Excel (.xls) -->
                 <button type="button" onclick="handleExportChoice('excel')"
                     class="w-full p-4 rounded-2xl border-2 border-green-100 bg-green-50/40 hover:bg-green-50 hover:border-green-300 transition-all flex items-center justify-between text-left group cursor-pointer shadow-sm">
                     <div class="flex items-center space-x-3.5">
@@ -1360,7 +1345,7 @@
                             <i class="fa-solid fa-file-excel"></i>
                         </div>
                         <div>
-                            <div class="font-extrabold text-brandBlue text-sm">Excel Tablosu (.xls)</div>
+                            <div class="font-extrabold text-brandBlue text-sm">Excel Tablosu (.xls - Yatay)</div>
                             <div class="text-[11px] text-gray-500 font-medium">Set detayları, mesafeler, tempo, şiddet ve yoklama</div>
                         </div>
                     </div>
@@ -3777,6 +3762,17 @@
             renderAttendanceList();
         }
 
+        // HTML karakterlerini güvenli bir şekilde encode eder
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         function closeTrainingModal() {
             document.getElementById('training-modal').classList.add('hidden');
             renderAttendanceList();
@@ -4047,7 +4043,7 @@
                     .data-table th {
                         background-color: #000B73 !important;
                         color: #ffffff !important;
-                        padding: 4px 4px; /* Sütun aralıkları daraltıldı */
+                        padding: 4px 4px;
                         font-size: 9.5px;
                         text-transform: uppercase;
                         font-weight: 800;
@@ -4056,7 +4052,7 @@
                         white-space: nowrap;
                     }
                     .data-table td {
-                        padding: 3.5px 4px; /* Sütun aralıkları daraltıldı */
+                        padding: 3.5px 4px;
                         font-size: 10px;
                         color: #0f172a;
                         border: 1px solid #cbd5e1;
@@ -4220,7 +4216,7 @@
                             </tr>
                         </table>
 
-                        <!-- Attending Swimmers with Large Note Lines (2 Parallel Columns) -->
+                        <!-- Attending Swimmers with Large Note Lines (Alt Alta) -->
                         <div class="attendance-box">
                             <div class="attendance-title">
                                 <span>👥 Katılan Sporcular & Bireysel Not / Derece Çizelgesi</span>
@@ -4242,50 +4238,49 @@
 
         // Doğrudan Tarayıcıdan Yatay A4 Yazdırma / PDF Kaydetme
         function printCurrentDayWorkout() {
-            const htmlContent = buildLandscapeWorkoutHtml(false);
-            if (!htmlContent) return;
+            try {
+                const htmlContent = buildLandscapeWorkoutHtml(false);
+                if (!htmlContent) return;
 
-            const printFrame = document.createElement('iframe');
-            printFrame.style.position = 'fixed';
-            printFrame.style.right = '0';
-            printFrame.style.bottom = '0';
-            printFrame.style.width = '0';
-            printFrame.style.height = '0';
-            printFrame.style.border = '0';
-            document.body.appendChild(printFrame);
+                let printFrame = document.getElementById('swimcoach-print-iframe');
+                if (printFrame) {
+                    try { document.body.removeChild(printFrame); } catch(e) {}
+                }
+                printFrame = document.createElement('iframe');
+                printFrame.id = 'swimcoach-print-iframe';
+                printFrame.style.position = 'fixed';
+                printFrame.style.right = '0';
+                printFrame.style.bottom = '0';
+                printFrame.style.width = '0';
+                printFrame.style.height = '0';
+                printFrame.style.border = '0';
+                document.body.appendChild(printFrame);
 
-            const doc = printFrame.contentWindow.document;
-            doc.open();
-            doc.write(htmlContent);
-            doc.close();
+                const frameDoc = printFrame.contentWindow.document;
+                frameDoc.open();
+                frameDoc.write(htmlContent);
+                frameDoc.close();
 
-            setTimeout(() => {
-                printFrame.contentWindow.focus();
-                printFrame.contentWindow.print();
                 setTimeout(() => {
-                    document.body.removeChild(printFrame);
-                }, 1500);
-            }, 300);
-        }
-
-        // Seçili günün antrenmanını Word (.doc) dosyası olarak Yatay A4 formatında dışa aktarır
-        function exportCurrentDayToWord() {
-            const htmlContent = buildLandscapeWorkoutHtml(true);
-            if (!htmlContent) return;
-
-            let cleanDateStr = selectedDate;
-            const parts = selectedDate.split('-');
-            if (parts.length === 3) cleanDateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
-
-            const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `swim_coach_pro_yatay_A4_${cleanDateStr}.doc`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+                    try {
+                        printFrame.contentWindow.focus();
+                        printFrame.contentWindow.print();
+                    } catch (err) {
+                        console.warn('Iframe print error, falling back to window.open:', err);
+                        const printWin = window.open('', '_blank', 'width=1100,height=850');
+                        if (printWin) {
+                            printWin.document.open();
+                            printWin.document.write(htmlContent);
+                            printWin.document.close();
+                            printWin.focus();
+                            setTimeout(() => printWin.print(), 350);
+                        }
+                    }
+                }, 350);
+            } catch (err) {
+                console.error('Yazdırma hatası:', err);
+                alert('Yazdırma işlemi başlatılamadı: ' + err.message);
+            }
         }
 
         function openExportModal() {
@@ -4314,8 +4309,6 @@
             closeExportModal();
             if (format === 'print') {
                 printCurrentDayWorkout();
-            } else if (format === 'word') {
-                exportCurrentDayToWord();
             } else if (format === 'excel') {
                 exportCurrentDayToExcel();
             }
