@@ -479,26 +479,11 @@
                             <span data-i18n="add_set">Add Set</span>
                         </button>
 
-                        <!-- 2. Export Dropdown -->
-                        <div class="relative inline-block text-left shrink-0">
-                            <button onclick="toggleExportMenu(event)" id="export-dropdown-btn" class="px-2 py-1 border border-blue-200 text-blue-600 hover:bg-blue-50 font-bold rounded-lg transition-all duration-300 flex items-center space-x-1 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap" title="Export Selected Day's Workout">
-                                <i class="fa-solid fa-download text-[10px]"></i>
-                                <span data-i18n="export">Export</span>
-                                <i class="fa-solid fa-chevron-down text-[8px]"></i>
-                            </button>
-                            <div id="export-dropdown-menu" class="hidden absolute right-0 mt-1.5 w-40 rounded-xl shadow-xl bg-white border border-gray-150 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 overflow-hidden animate-fade-in">
-                                <div class="py-1">
-                                    <a href="javascript:void(0)" onclick="handleExportChoice('word')" class="flex items-center px-3 py-1.5 text-[11px] text-gray-700 hover:bg-blue-50 font-bold transition-colors">
-                                        <i class="fa-solid fa-file-word text-blue-600 mr-2 text-xs"></i>
-                                        <span>Word (.doc)</span>
-                                    </a>
-                                    <a href="javascript:void(0)" onclick="handleExportChoice('excel')" class="flex items-center px-3 py-1.5 text-[11px] text-gray-700 hover:bg-green-50 font-bold transition-colors border-t border-gray-100">
-                                        <i class="fa-solid fa-file-excel text-green-600 mr-2 text-xs"></i>
-                                        <span>Excel (.xls)</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- 2. Export Button -->
+                        <button onclick="openExportModal()" id="export-btn" class="shrink-0 px-2 py-1 border border-blue-200 text-blue-600 hover:bg-blue-50 font-bold rounded-lg transition-all duration-300 flex items-center space-x-1 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap" title="Export Selected Day's Workout">
+                            <i class="fa-solid fa-download text-[10px]"></i>
+                            <span data-i18n="export">Export</span>
+                        </button>
 
                         <!-- 3. Sporcu Kadrosu -->
                         <button onclick="openSquadModal()" class="shrink-0 px-2 py-1 border border-emerald-300 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 font-bold rounded-lg transition-all duration-300 flex items-center space-x-1 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap" title="Sporcular ve Bireysel Profiller">
@@ -1283,6 +1268,64 @@
             <div class="p-4 border-t border-gray-100 bg-gray-50/50 flex justify-end">
                 <button onclick="closeLegalModal()" class="px-6 py-2 bg-brandBlue text-white font-bold rounded-xl text-xs hover:bg-opacity-90 transition-all">
                     Close / Kapat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPORT SELECTION MODAL -->
+    <div id="export-choice-modal" class="hidden fixed inset-0 bg-brandBlue/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-gray-150 animate-scale-up space-y-5">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-10 h-10 rounded-2xl bg-blue-50 text-brandBlue flex items-center justify-center font-bold text-lg shadow-sm">
+                        <i class="fa-solid fa-download"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold text-brandBlue">Antrenmanı Dışa Aktar</h3>
+                        <p id="export-modal-date-badge" class="text-[11px] text-gray-500 font-bold">Seçili Tarih: <span class="text-brandPink font-extrabold">-</span></p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeExportModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-brandPink flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3">
+                <!-- Option 1: Word (.doc) -->
+                <button type="button" onclick="handleExportChoice('word')"
+                    class="w-full p-4 rounded-2xl border-2 border-blue-100 bg-blue-50/40 hover:bg-blue-50 hover:border-blue-300 transition-all flex items-center justify-between text-left group cursor-pointer shadow-sm">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-file-word"></i>
+                        </div>
+                        <div>
+                            <div class="font-extrabold text-brandBlue text-sm">Word Belgesi (.doc)</div>
+                            <div class="text-[11px] text-gray-500 font-medium">Kulüp logolu, renkli antrenman kağıdı ve yoklama</div>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-blue-500 text-sm opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                </button>
+
+                <!-- Option 2: Excel (.xls) -->
+                <button type="button" onclick="handleExportChoice('excel')"
+                    class="w-full p-4 rounded-2xl border-2 border-green-100 bg-green-50/40 hover:bg-green-50 hover:border-green-300 transition-all flex items-center justify-between text-left group cursor-pointer shadow-sm">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-green-600 text-white flex items-center justify-center text-xl shadow-md shadow-green-500/20 group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </div>
+                        <div>
+                            <div class="font-extrabold text-brandBlue text-sm">Excel Tablosu (.xls)</div>
+                            <div class="text-[11px] text-gray-500 font-medium">Set detayları, mesafeler, tempo, şiddet ve yoklama</div>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-green-500 text-sm opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                </button>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+                <button type="button" onclick="closeExportModal()" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-all cursor-pointer">
+                    Kapat
                 </button>
             </div>
         </div>
@@ -3890,28 +3933,36 @@
             URL.revokeObjectURL(url);
         }
 
+        function openExportModal() {
+            const modal = document.getElementById('export-choice-modal');
+            const dateBadge = document.getElementById('export-modal-date-badge');
+            if (dateBadge) {
+                let cleanDateStr = selectedDate;
+                const parts = selectedDate.split('-');
+                if (parts.length === 3) cleanDateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
+                dateBadge.innerHTML = `Seçili Tarih: <span class="text-brandPink font-black">${cleanDateStr}</span>`;
+            }
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeExportModal() {
+            const modal = document.getElementById('export-choice-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
         function toggleExportMenu(event) {
-            event.stopPropagation();
-            const menu = document.getElementById('export-dropdown-menu');
-            if (menu) menu.classList.toggle('hidden');
+            if (event) event.stopPropagation();
+            openExportModal();
         }
 
         function handleExportChoice(format) {
-            const menu = document.getElementById('export-dropdown-menu');
-            if (menu) menu.classList.add('hidden');
-
+            closeExportModal();
             if (format === 'word') {
                 exportCurrentDayToWord();
             } else if (format === 'excel') {
                 exportCurrentDayToExcel();
             }
         }
-
-        // Close dropdown when clicking elsewhere
-        window.addEventListener('click', () => {
-            const menu = document.getElementById('export-dropdown-menu');
-            if (menu) menu.classList.add('hidden');
-        });
 
         // Seçili günün antrenmanını Excel (.xls) dosyası olarak dışa aktarır
         function exportCurrentDayToExcel() {
