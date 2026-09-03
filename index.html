@@ -447,76 +447,74 @@
             <!-- EXCEL SWIM SETS PLANNER SECTION -->
             <div class="bg-white border border-gray-100 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
                 <!-- Top Action & Date Bar (Clean Horizontal Row) -->
-                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-4 border-b border-gray-100">
+                <!-- Top Action & Date Bar (1 Single Compact Horizontal Row) -->
+                <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-3 pb-3 border-b border-gray-100">
                     <!-- Left: Title & Date Selector -->
-                    <div class="flex flex-wrap items-center gap-4">
-                        <div class="flex items-center space-x-2.5">
-                            <div class="w-10 h-10 rounded-xl bg-brandBlue/10 text-brandBlue flex items-center justify-center shrink-0">
-                                <i class="fa-solid fa-water text-lg"></i>
+                    <div class="flex items-center space-x-3 shrink-0">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 rounded-xl bg-brandBlue/10 text-brandBlue flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-water text-sm"></i>
                             </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-brandBlue" data-i18n="workout_set_planner">Workout Set Planner</h3>
-                                <p class="text-gray-400 text-xs" data-i18n="workout_set_planner_desc">Track the details and breakdowns of written sets.</p>
-                            </div>
+                            <h3 class="text-base font-extrabold text-brandBlue whitespace-nowrap" data-i18n="workout_set_planner">Workout Set Planner</h3>
                         </div>
                         
                         <!-- Date Filter -->
-                        <div class="flex items-center space-x-2 bg-gray-50 border border-gray-200 rounded-2xl p-1.5 shrink-0 shadow-sm">
-                            <button onclick="changeFilterDate(-1)" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-brandBlue flex items-center justify-center transition-all" title="Previous Day">
-                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                        <div class="flex items-center space-x-1 bg-gray-50 border border-gray-200 rounded-xl p-1 shrink-0 shadow-sm">
+                            <button onclick="changeFilterDate(-1)" class="w-6 h-6 rounded-lg hover:bg-gray-200 text-brandBlue flex items-center justify-center transition-all" title="Previous Day">
+                                <i class="fa-solid fa-chevron-left text-[10px]"></i>
                             </button>
                             <input type="date" id="filter-date" onchange="handleFilterDateChange()" 
-                                class="bg-transparent text-brandBlue font-extrabold text-sm focus:outline-none cursor-pointer text-center px-1 w-32">
-                            <button onclick="changeFilterDate(1)" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-brandBlue flex items-center justify-center transition-all" title="Next Day">
-                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                                class="bg-transparent text-brandBlue font-extrabold text-xs focus:outline-none cursor-pointer text-center px-0.5 w-28">
+                            <button onclick="changeFilterDate(1)" class="w-6 h-6 rounded-lg hover:bg-gray-200 text-brandBlue flex items-center justify-center transition-all" title="Next Day">
+                                <i class="fa-solid fa-chevron-right text-[10px]"></i>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Right: Action Buttons Row -->
-                    <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
-                        <!-- Export Dropdown -->
-                        <div class="relative inline-block text-left">
-                            <button onclick="toggleExportMenu(event)" id="export-dropdown-btn" class="px-4 py-2.5 border border-blue-200 text-blue-600 hover:bg-blue-50 font-bold rounded-xl transition-all duration-300 flex items-center space-x-2 text-xs shadow-sm cursor-pointer" title="Export Selected Day's Workout">
-                                <i class="fa-solid fa-download text-sm"></i>
+                    <!-- Right: 5 Buttons Side-by-Side in 1 Single Line -->
+                    <div class="flex items-center space-x-1.5 sm:space-x-2 flex-nowrap overflow-x-auto w-full xl:w-auto pb-1 xl:pb-0">
+                        <!-- 1. Export Dropdown -->
+                        <div class="relative inline-block text-left shrink-0">
+                            <button onclick="toggleExportMenu(event)" id="export-dropdown-btn" class="px-2.5 sm:px-3 py-1.5 sm:py-2 border border-blue-200 text-blue-600 hover:bg-blue-50 font-bold rounded-xl transition-all duration-300 flex items-center space-x-1.5 text-[11px] sm:text-xs shadow-sm cursor-pointer whitespace-nowrap" title="Export Selected Day's Workout">
+                                <i class="fa-solid fa-download text-xs"></i>
                                 <span data-i18n="export">Export</span>
-                                <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
+                                <i class="fa-solid fa-chevron-down text-[9px]"></i>
                             </button>
-                            <div id="export-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 rounded-2xl shadow-xl bg-white border border-gray-150 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 overflow-hidden animate-fade-in">
+                            <div id="export-dropdown-menu" class="hidden absolute right-0 mt-2 w-44 rounded-2xl shadow-xl bg-white border border-gray-150 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 overflow-hidden animate-fade-in">
                                 <div class="py-1">
-                                    <a href="javascript:void(0)" onclick="handleExportChoice('word')" class="flex items-center px-4 py-2.5 text-xs text-gray-700 hover:bg-blue-50 font-bold transition-colors">
-                                        <i class="fa-solid fa-file-word text-blue-600 mr-2.5 text-sm"></i>
+                                    <a href="javascript:void(0)" onclick="handleExportChoice('word')" class="flex items-center px-3.5 py-2 text-xs text-gray-700 hover:bg-blue-50 font-bold transition-colors">
+                                        <i class="fa-solid fa-file-word text-blue-600 mr-2 text-sm"></i>
                                         <span>Word (.doc)</span>
                                     </a>
-                                    <a href="javascript:void(0)" onclick="handleExportChoice('excel')" class="flex items-center px-4 py-2.5 text-xs text-gray-700 hover:bg-green-50 font-bold transition-colors border-t border-gray-100">
-                                        <i class="fa-solid fa-file-excel text-green-600 mr-2.5 text-sm"></i>
+                                    <a href="javascript:void(0)" onclick="handleExportChoice('excel')" class="flex items-center px-3.5 py-2 text-xs text-gray-700 hover:bg-green-50 font-bold transition-colors border-t border-gray-100">
+                                        <i class="fa-solid fa-file-excel text-green-600 mr-2 text-sm"></i>
                                         <span>Excel (.xls)</span>
                                     </a>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Sporcu Kadrosu -->
-                        <button onclick="openSquadModal()" class="px-4 py-2.5 border border-emerald-300 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 font-bold rounded-xl transition-all duration-300 flex items-center space-x-2 text-xs shadow-sm cursor-pointer" title="Sporcular ve Bireysel Profiller">
-                            <i class="fa-solid fa-users text-emerald-600"></i>
+                        <!-- 2. Sporcu Kadrosu -->
+                        <button onclick="openSquadModal()" class="shrink-0 px-2.5 sm:px-3 py-1.5 sm:py-2 border border-emerald-300 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 font-bold rounded-xl transition-all duration-300 flex items-center space-x-1.5 text-[11px] sm:text-xs shadow-sm cursor-pointer whitespace-nowrap" title="Sporcular ve Bireysel Profiller">
+                            <i class="fa-solid fa-users text-emerald-600 text-xs"></i>
                             <span data-i18n="swimmer_squad">Sporcu Kadrosu</span>
                         </button>
 
-                        <!-- All Days Summary -->
-                        <button onclick="openSummaryModal()" class="px-4 py-2.5 border border-brandPink/25 text-brandPink hover:bg-brandPink/5 font-bold rounded-xl transition-all duration-300 flex items-center space-x-2 text-xs shadow-sm cursor-pointer" title="Total Training Volume for All Days">
-                            <i class="fa-solid fa-list-check"></i>
+                        <!-- 3. All Days Summary -->
+                        <button onclick="openSummaryModal()" class="shrink-0 px-2.5 sm:px-3 py-1.5 sm:py-2 border border-brandPink/25 text-brandPink hover:bg-brandPink/5 font-bold rounded-xl transition-all duration-300 flex items-center space-x-1.5 text-[11px] sm:text-xs shadow-sm cursor-pointer whitespace-nowrap" title="Total Training Volume for All Days">
+                            <i class="fa-solid fa-list-check text-xs"></i>
                             <span data-i18n="all_days_summary">All Days Summary</span>
                         </button>
 
-                        <!-- Add Set (Yeni Set Ekle) -->
-                        <button onclick="openTrainingModal()" class="px-5 py-2.5 bg-brandBlue hover:bg-opacity-95 text-white font-bold rounded-xl shadow-md shadow-brandBlue/20 hover:shadow-brandBlue/30 transition-all duration-300 flex items-center space-x-2 text-xs cursor-pointer">
-                            <i class="fa-solid fa-plus-circle text-sm"></i>
+                        <!-- 4. Add Set (Yeni Set Ekle) -->
+                        <button onclick="openTrainingModal()" class="shrink-0 px-3 sm:px-3.5 py-1.5 sm:py-2 bg-brandBlue hover:bg-opacity-95 text-white font-bold rounded-xl shadow-md shadow-brandBlue/20 hover:shadow-brandBlue/30 transition-all duration-300 flex items-center space-x-1.5 text-[11px] sm:text-xs cursor-pointer whitespace-nowrap">
+                            <i class="fa-solid fa-plus-circle text-xs text-yellow-300"></i>
                             <span data-i18n="add_set">Add Set</span>
                         </button>
 
-                        <!-- Toggle Statistics (İstatistikleri Göster / Gizle) -->
-                        <button onclick="toggleStatsPanel()" id="toggle-stats-btn" class="px-4 py-2.5 border border-brandBlue/20 text-brandBlue hover:bg-brandBlue/5 font-bold rounded-xl transition-all duration-300 flex items-center space-x-2 text-xs shadow-sm cursor-pointer">
-                            <i class="fa-solid fa-chart-pie"></i>
+                        <!-- 5. Toggle Statistics (İstatistikleri Göster / Gizle) -->
+                        <button onclick="toggleStatsPanel()" id="toggle-stats-btn" class="shrink-0 px-2.5 sm:px-3 py-1.5 sm:py-2 border border-brandBlue/20 text-brandBlue hover:bg-brandBlue/5 font-bold rounded-xl transition-all duration-300 flex items-center space-x-1.5 text-[11px] sm:text-xs shadow-sm cursor-pointer whitespace-nowrap">
+                            <i class="fa-solid fa-chart-pie text-xs"></i>
                             <span data-i18n="show_stats">Show Statistics</span>
                         </button>
                     </div>
