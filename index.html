@@ -1081,7 +1081,7 @@
                     </div>
 
                     <!-- Scrollable swimmer attendance panel -->
-                    <div id="attendance-container" class="max-h-[120px] overflow-y-auto custom-scrollbar grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 py-1">
+                    <div id="attendance-container" class="max-h-[220px] overflow-y-auto custom-scrollbar grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 py-1">
                         <!-- Populated dynamically -->
                     </div>
                 </div>
@@ -3077,6 +3077,30 @@
             return {};
         }
 
+        function getCoachSwimmerDailyNotesKey() {
+            return `tan_swim_swimmer_daily_notes_${currentUser || 'default'}`;
+        }
+
+        function getCoachSwimmerDailyNotes() {
+            const userKey = getCoachSwimmerDailyNotesKey();
+            const val = localStorage.getItem(userKey);
+            if (val !== null) {
+                return JSON.parse(val) || {};
+            }
+            return {};
+        }
+
+        function saveSwimmerDailyNote(swimmerName, noteText) {
+            let notesMap = getCoachSwimmerDailyNotes();
+            if (!notesMap[selectedDate]) notesMap[selectedDate] = {};
+            if (noteText && noteText.trim()) {
+                notesMap[selectedDate][swimmerName] = noteText.trim();
+            } else {
+                delete notesMap[selectedDate][swimmerName];
+            }
+            localStorage.setItem(getCoachSwimmerDailyNotesKey(), JSON.stringify(notesMap));
+        }
+
         const sectionWeights = {
             'Warm Up': 1,
             'Pre Set': 2,
@@ -3635,11 +3659,24 @@
                     </table>
                     
                     ${attendedList.length > 0 ? `
-                    <div class="summary-box" style="margin-top: 30px; border-left: 5px solid #000B73;">
-                        <div class="summary-title" style="color: #000B73;">${dict.attendance || 'ATTENDING SWIMMERS'}</div>
-                        <div class="summary-text" style="font-size: 13px; line-height: 1.6;">
-                            ${attendedList.map(name => `• ${name}`).join('<br/>')}
-                        </div>
+                    <div class="summary-box" style="margin-top: 25px; border-left: 5px solid #000B73; background-color: #f8fafc; padding: 15px;">
+                        <div class="summary-title" style="color: #000B73; font-size: 14px; font-weight: bold; margin-bottom: 10px;">${dict.attendance || 'ATTENDING SWIMMERS & WORKOUT NOTES'}</div>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            ${attendedList.map((name, idx) => {
+                                const swimmerNotesMap = getCoachSwimmerDailyNotes()[selectedDate] || {};
+                                const note = swimmerNotesMap[name] || '';
+                                return `
+                                <tr>
+                                    <td style="padding: 7px 0; font-size: 12px; font-weight: bold; color: #000B73; width: 30%; vertical-align: bottom;">
+                                        ${idx + 1}. ${name}
+                                    </td>
+                                    <td style="padding: 7px 0; font-size: 12px; color: #334155; border-bottom: 1px dashed #94a3b8; width: 70%; vertical-align: bottom;">
+                                        ${note ? `<span style="font-weight: 600; color: #E5007D;">${note}</span>` : '&nbsp;'}
+                                    </td>
+                                </tr>
+                                `;
+                            }).join('')}
+                        </table>
                     </div>
                     ` : ''}
                     
@@ -3850,12 +3887,17 @@
             excelHtml += `
                         <tr><td colspan="10"></td></tr>
                         
-                        <!-- Swimmers -->
+                        <!-- Swimmers & Notes -->
                         ${attendedList.length > 0 ? `
                         <tr>
-                            <td colspan="10" class="meta-label">${dict.attendance || 'ATTENDING SWIMMERS'}:</td>
+                            <td colspan="4" class="meta-label">${dict.attendance || 'ATTENDING SWIMMERS'}:</td>
+                            <td colspan="6" class="meta-label">NOT / NOTES (ÇİZGİ):</td>
                         </tr>
-                        ${attendedList.map(name => `<tr><td colspan="10" style="color: #334155;">• ${name}</td></tr>`).join('')}
+                        ${attendedList.map(name => {
+                            const swimmerNotesMap = getCoachSwimmerDailyNotes()[selectedDate] || {};
+                            const note = swimmerNotesMap[name] || '________________________________________';
+                            return `<tr><td colspan="4" style="color: #000B73; font-weight: bold;">• ${name}</td><td colspan="6" style="color: #334155;">${note}</td></tr>`;
+                        }).join('')}
                         <tr><td colspan="10"></td></tr>
                         ` : ''}
 
@@ -4396,24 +4438,40 @@
                 return;
             }
             
+            const dailyNotesMap = getCoachSwimmerDailyNotes()[selectedDate] || {};
+
             filteredSquad.forEach(name => {
                 const isChecked = attendedList.includes(name) ? 'checked' : '';
                 const avatarHtml = getSwimmerAvatarHtml(name, 'sm');
+                const swimmerNote = dailyNotesMap[name] || '';
                 
                 const item = document.createElement('div');
-                item.className = "flex items-center justify-between p-1.5 bg-white border border-gray-200/90 rounded-xl hover:border-brandBlue/30 hover:shadow-sm transition-all group";
+                item.className = "flex flex-col p-2 bg-white border border-gray-200/90 rounded-2xl hover:border-brandBlue/40 hover:shadow-md transition-all group space-y-1.5";
                 item.innerHTML = `
-                    <div class="flex items-center space-x-2 w-full truncate cursor-pointer pr-1" onclick="openSwimmerProfile('${name}')" title="Profili & Antrenman Geçmişini Gör">
-                        ${avatarHtml}
-                        <span class="truncate text-xs font-bold text-gray-700 hover:text-brandBlue transition-colors">${name}</span>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2 truncate cursor-pointer pr-1" onclick="openSwimmerProfile('${name}')" title="Profili & Antrenman Geçmişini Gör">
+                            ${avatarHtml}
+                            <span class="truncate text-xs font-bold text-gray-800 hover:text-brandBlue transition-colors">${name}</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <label class="flex items-center space-x-1 cursor-pointer select-none" title="Yoklama (Katıldı)">
+                                <input type="checkbox" value="${name}" ${isChecked} onchange="saveAttendance()"
+                                    class="rounded border-gray-300 text-brandPink focus:ring-brandPink/30 focus:border-brandPink transition-all cursor-pointer w-4 h-4">
+                                <span class="text-[10px] font-bold text-gray-500 hidden sm:inline">Geldi</span>
+                            </label>
+                            <button type="button" onclick="removeSwimmerFromSquad('${name}')" 
+                                class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 ml-0.5" title="Kadrodan Kaldır">
+                                <i class="fa-solid fa-circle-xmark text-xs"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex items-center space-x-1 shrink-0">
-                        <input type="checkbox" value="${name}" ${isChecked} onchange="saveAttendance()"
-                            class="rounded border-gray-300 text-brandPink focus:ring-brandPink/30 focus:border-brandPink transition-all cursor-pointer">
-                        <button type="button" onclick="removeSwimmerFromSquad('${name}')" 
-                            class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 ml-1" title="Kadroden Kaldır">
-                            <i class="fa-solid fa-circle-xmark text-xs"></i>
-                        </button>
+                    <!-- Long Note Line for App & Printout Sync -->
+                    <div class="pt-0.5 flex items-center space-x-1.5 border-t border-gray-100/80">
+                        <i class="fa-solid fa-pencil text-[9px] text-gray-400 shrink-0"></i>
+                        <input type="text" value="${swimmerNote.replace(/"/g, '&quot;')}" placeholder="Not / Derece / Çizgi..." 
+                            oninput="saveSwimmerDailyNote('${name}', this.value)"
+                            class="w-full bg-transparent border-b border-dashed border-gray-300 focus:border-solid focus:border-brandBlue text-[11px] font-medium text-gray-700 placeholder-gray-400/80 outline-none px-1 py-0.5 transition-all"
+                            title="Günün Bireysel Notu (Çıktıda görünecek veya elle doldurulacak)">
                     </div>
                 `;
                 container.appendChild(item);
