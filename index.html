@@ -206,8 +206,12 @@
                       </p>
                   </div>
                   
-                  <div class="pt-2 flex justify-center items-center">
-                      <button onclick="showView('login')" class="px-8 py-3.5 bg-brandBlue hover:bg-opacity-95 text-white font-bold rounded-2xl shadow-lg shadow-brandBlue/20 hover:shadow-brandBlue/35 transition-all duration-300 transform hover:-translate-y-0.5 text-sm flex items-center space-x-2.5">
+                  <div class="pt-2 flex flex-col sm:flex-row justify-center items-center gap-3">
+                      <button onclick="loginAsAdminDirect()" class="px-7 py-3.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold rounded-2xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all duration-300 transform hover:-translate-y-0.5 text-sm flex items-center space-x-2.5 border border-amber-300 cursor-pointer">
+                          <i class="fa-solid fa-bolt text-yellow-200"></i>
+                          <span>⚡ Yönetici / Hızlı Giriş</span>
+                      </button>
+                      <button onclick="showView('login')" class="px-7 py-3.5 bg-brandBlue hover:bg-opacity-95 text-white font-bold rounded-2xl shadow-lg shadow-brandBlue/20 hover:shadow-brandBlue/35 transition-all duration-300 transform hover:-translate-y-0.5 text-sm flex items-center space-x-2.5 cursor-pointer">
                           <i class="fa-solid fa-right-to-bracket text-xs"></i>
                           <span data-i18n="login_btn">Giriş Yap / Kayıt Ol</span>
                       </button>
@@ -287,6 +291,14 @@
                         class="w-full py-3.5 bg-brandBlue hover:bg-opacity-95 text-white font-bold rounded-xl shadow-lg shadow-brandBlue/15 hover:shadow-brandBlue/25 transition-all duration-300 text-sm cursor-pointer active:scale-98 flex items-center justify-center space-x-2" data-i18n="login_btn">
                         <span>Giriş Yap</span>
                     </button>
+
+                    <!-- Quick Admin Login Bypass -->
+                    <button type="button" onclick="loginAsAdminDirect()"
+                        class="w-full py-3 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold rounded-xl shadow-md shadow-orange-500/20 hover:shadow-orange-500/35 transition-all text-xs cursor-pointer flex items-center justify-center space-x-2 border border-amber-300">
+                        <i class="fa-solid fa-bolt text-yellow-200 text-sm"></i>
+                        <span>⚡ Tek Tıkla Yönetici Girişi (Mustafa / Admin)</span>
+                    </button>
+
                     <button type="button" onclick="showView('landing')"
                         class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300 text-xs cursor-pointer" data-i18n="go_back">
                         Go Back
@@ -2601,6 +2613,7 @@
 
             // 2. Log in directly and go straight to dashboard!
             currentUser = email;
+            localStorage.setItem('tan_active_session', email);
             const displayNameEl = document.getElementById('user-display-name');
             if (displayNameEl) displayNameEl.textContent = fullName.toLowerCase();
             const userGreetingEl = document.getElementById('header-username');
@@ -2796,6 +2809,13 @@
                 return;
             }
 
+            // Master Admin / Creator Fast Bypass Check
+            if ((userInput === 'mustafa' || userInput === 'admin' || userInput === 'mustafa@swimcoach.pro') && 
+                (passwordInput === 'admin' || passwordInput === '123456' || passwordInput === '123')) {
+                loginAsAdminDirect();
+                return;
+            }
+
             const users = getRegisteredUsers();
 
             // Match by exact key, email, or displayName
@@ -2832,6 +2852,7 @@
             errorContainer.classList.add('hidden');
             
             currentUser = matchedKey;
+            localStorage.setItem('tan_active_session', matchedKey);
             const displayName = matchedUser.displayName || matchedKey;
             document.getElementById('user-display-name').textContent = displayName.toLowerCase();
             const userGreetingEl = document.getElementById('header-username');
@@ -2855,6 +2876,45 @@
             }
         }
 
+        // Dedicated 1-Click Fast Admin & Creator Login
+        function loginAsAdminDirect() {
+            const adminEmail = 'mustafa@swimcoach.pro';
+            const users = getRegisteredUsers();
+            if (!users[adminEmail]) {
+                users[adminEmail] = {
+                    password: 'admin',
+                    displayName: 'Mustafa Seçkin (Yönetici)',
+                    email: adminEmail,
+                    createdAt: new Date().toISOString()
+                };
+                localStorage.setItem('tan_registered_users', JSON.stringify(users));
+            }
+            
+            currentUser = adminEmail;
+            localStorage.setItem('tan_active_session', adminEmail);
+            
+            const displayName = users[adminEmail].displayName || 'Mustafa Seçkin (Yönetici)';
+            const displayNameEl = document.getElementById('user-display-name');
+            if (displayNameEl) displayNameEl.textContent = displayName.toLowerCase();
+            const userGreetingEl = document.getElementById('header-username');
+            if (userGreetingEl) {
+                const dict = translations[currentLang] || translations['en'];
+                userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${displayName.toLowerCase()}`;
+            }
+            
+            showView('dashboard');
+            try {
+                initSwimSetsData();
+                const filterDateEl = document.getElementById('filter-date');
+                if (filterDateEl) filterDateEl.value = selectedDate;
+                loadNotes();
+                loadSwimSets();
+                loadCustomSelectOptions();
+            } catch(e) {
+                console.warn('Admin direct loader notice:', e);
+            }
+        }
+
         // Quick register & login fallback so user is NEVER blocked
         function quickRegisterAndLogin(userInput, password) {
             const users = getRegisteredUsers();
@@ -2870,6 +2930,7 @@
             renderSavedAccountsList();
 
             currentUser = userInput;
+            localStorage.setItem('tan_active_session', userInput);
             const dict = translations[currentLang] || translations['en'];
             document.getElementById('user-display-name').textContent = displayName.toLowerCase();
             const userGreetingEl = document.getElementById('header-username');
@@ -2887,6 +2948,7 @@
         // Logout handler
         function logout() {
             currentUser = '';
+            localStorage.removeItem('tan_active_session');
             showView('landing');
         }
 
@@ -5028,10 +5090,8 @@
             }
         }
 
-        // App Initialization: Start on Landing Welcome Page
+        // App Initialization: Start on Landing Welcome Page or Auto-Resume Active Session
         window.addEventListener('DOMContentLoaded', () => {
-            currentUser = '';
-            
             initSwimSetsData();
             document.getElementById('filter-date').value = selectedDate;
             
@@ -5039,8 +5099,35 @@
             changeLanguage(currentLang);
             refreshLoginCaptcha();
             refreshRegCaptcha();
-            
-            showView('landing');
+
+            const savedSession = localStorage.getItem('tan_active_session');
+            const users = getRegisteredUsers();
+
+            if (savedSession && (users[savedSession] || savedSession === 'mustafa@swimcoach.pro')) {
+                currentUser = savedSession;
+                const userObj = users[savedSession] || { displayName: 'Mustafa Seçkin (Yönetici)' };
+                const displayName = userObj.displayName || savedSession;
+                
+                const displayNameEl = document.getElementById('user-display-name');
+                if (displayNameEl) displayNameEl.textContent = displayName.toLowerCase();
+                const userGreetingEl = document.getElementById('header-username');
+                if (userGreetingEl) {
+                    const dict = translations[currentLang] || translations['en'];
+                    userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${displayName.toLowerCase()}`;
+                }
+                
+                showView('dashboard');
+                try {
+                    loadNotes();
+                    loadSwimSets();
+                    loadCustomSelectOptions();
+                } catch(e) {
+                    console.warn('Session resume notice:', e);
+                }
+            } else {
+                currentUser = '';
+                showView('landing');
+            }
 
             // Bind change listeners for adding custom dropdown options dynamically
             document.querySelectorAll('#training-modal select').forEach(select => {
