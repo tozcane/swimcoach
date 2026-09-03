@@ -4157,6 +4157,33 @@
             if (modal) modal.classList.add('hidden');
         }
 
+        // Helper to guarantee strict MM:SS format (no centiseconds)
+        function formatTimeMMSS(val) {
+            if (!val) return '';
+            let s = String(val).trim();
+            if (s === '-' || s === '') return '';
+            
+            s = s.replace(/^@\s*/, '').trim();
+            if (s.includes('.')) {
+                s = s.split('.')[0].trim();
+            }
+            
+            if (s.includes(':')) {
+                const parts = s.split(':');
+                const mm = (parts[0] || '00').padStart(2, '0');
+                const ss = (parts[1] || '00').padStart(2, '0');
+                if (mm === '00' && ss === '00') return '';
+                return `${mm}:${ss}`;
+            }
+            
+            const digits = s.replace(/[^0-9]/g, '');
+            if (!digits || digits === '0000' || digits === '00' || digits === '0') return '';
+            const padded = digits.padStart(4, '0');
+            const mm = padded.substring(0, 2);
+            const ss = padded.substring(2, 4);
+            return `${mm}:${ss}`;
+        }
+
         // --- SWIM SETS GRID LOGIC ---
         function initSwimSetsData() {
             if (!localStorage.getItem('tan_swim_sets_v3')) {
@@ -4184,6 +4211,24 @@
                     migrated = true;
                 }
             });
+            // Guarantee all saved sets have strictly MM:SS (no centiseconds)
+            sets.forEach(s => {
+                if (s.targetTime) {
+                    const clean = formatTimeMMSS(s.targetTime);
+                    if (clean !== s.targetTime) {
+                        s.targetTime = clean;
+                        migrated = true;
+                    }
+                }
+                if (s.interval) {
+                    const clean = formatTimeMMSS(s.interval);
+                    if (clean !== s.interval) {
+                        s.interval = clean;
+                        migrated = true;
+                    }
+                }
+            });
+
             if (migrated) {
                 localStorage.setItem('tan_swim_sets_v3', JSON.stringify(sets));
             }
@@ -4366,10 +4411,12 @@
                 rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-gray-600 text-xs">${equipmentLabel}</td>`;
 
                 // Target Time
-                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-center font-mono font-bold text-xs text-gray-500">${set.targetTime || '-'}</td>`;
+                const tTimeDisp = formatTimeMMSS(set.targetTime) || '-';
+                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-center font-mono font-bold text-xs text-gray-500">${tTimeDisp}</td>`;
 
                 // @ Interval
-                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-center font-mono font-bold text-xs text-brandPink">${set.interval ? '@ ' + set.interval : '-'}</td>`;
+                const intValDisp = set.interval ? (formatTimeMMSS(set.interval) ? '@ ' + formatTimeMMSS(set.interval) : '-') : '-';
+                rowHtml += `<td class="py-1.5 px-4 border-r border-gray-200 text-center font-mono font-bold text-xs text-brandPink">${intValDisp}</td>`;
 
                 // Zone/Intensity
                 let zoneColor = 'bg-gray-100 text-gray-700';
@@ -5108,8 +5155,8 @@
                                             <td style="font-weight: 800; color: #000B73;">${strokeDisplay}</td>
                                             <td class="${typeClass}">${typeLabel}</td>
                                             <td>${equipLabel}</td>
-                                            <td style="font-weight: 700; color: #475569;">${set.targetTime || '-'}</td>
-                                            <td style="font-weight: 800; color: #E5007D;">${set.interval ? '@ ' + set.interval : '-'}</td>
+                                            <td style="font-weight: 700; color: #475569;">${formatTimeMMSS(set.targetTime) || '-'}</td>
+                                            <td style="font-weight: 800; color: #E5007D;">${set.interval ? (formatTimeMMSS(set.interval) ? '@ ' + formatTimeMMSS(set.interval) : '-') : '-'}</td>
                                             <td style="font-weight: 800; color: #475569;">${zoneLabel}</td>
                                             <td style="font-weight: 900; color: #000B73;">${setTotal} m</td>
                                         </tr>
@@ -5407,8 +5454,8 @@
                         <td align="center" style="font-weight: bold; color: #000B73;">${strokeDisplay}</td>
                         <td align="center" class="${typeClass}">${typeLabel}</td>
                         <td align="center">${equipLabel}</td>
-                        <td align="center" style="font-weight: bold; color: #475569;">${set.targetTime || '-'}</td>
-                        <td align="center" style="font-weight: bold; color: #E5007D;">${set.interval ? '@ ' + set.interval : '-'}</td>
+                        <td align="center" style="font-weight: bold; color: #475569;">${formatTimeMMSS(set.targetTime) || '-'}</td>
+                        <td align="center" style="font-weight: bold; color: #E5007D;">${set.interval ? (formatTimeMMSS(set.interval) ? '@ ' + formatTimeMMSS(set.interval) : '-') : '-'}</td>
                         <td align="center" style="font-weight: bold; color: #475569;">${zoneLabel}</td>
                         <td align="right" style="font-weight: bold; color: #000B73;">${calculatedDistance} m</td>
                     </tr>
@@ -5652,8 +5699,8 @@
             const stroke = document.getElementById('s-stroke').value;
             const type = document.getElementById('s-type').value;
             const equipment = document.getElementById('s-equipment').value;
-            const targetTime = document.getElementById('s-target-time').value.trim();
-            const interval = document.getElementById('s-interval').value.trim();
+            const targetTime = formatTimeMMSS(document.getElementById('s-target-time').value);
+            const interval = formatTimeMMSS(document.getElementById('s-interval').value);
             const zone = document.getElementById('s-zone').value;
             const coach = currentUser || 'mustafa';
 
@@ -6687,11 +6734,11 @@
             });
 
             // Mobile Time Displays
-            const tTime = document.getElementById("s-target-time")?.value || "";
+            const tTime = formatTimeMMSS(document.getElementById("s-target-time")?.value) || "";
             const mobTTime = document.getElementById("mob-label-s-target-time");
             if (mobTTime) mobTTime.textContent = tTime || "00:00";
 
-            const interval = document.getElementById("s-interval")?.value || "";
+            const interval = formatTimeMMSS(document.getElementById("s-interval")?.value) || "";
             const mobInterval = document.getElementById("mob-label-s-interval");
             if (mobInterval) mobInterval.textContent = interval ? `@ ${interval}` : "@ 00:00";
 
