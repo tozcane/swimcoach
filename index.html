@@ -487,6 +487,12 @@
                             <span data-i18n="add_set">Add Set</span>
                         </button>
 
+                        <!-- 2. Antrenman Raporu (Word - Tek Gün veya Tarih Aralığı) -->
+                        <button onclick="openWorkoutReportModal()" id="workout-report-btn" class="shrink-0 px-2.5 py-1 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white font-bold rounded-lg shadow-sm shadow-blue-600/20 transition-all duration-300 flex items-center space-x-1 text-[10.5px] cursor-pointer whitespace-nowrap" title="Günün veya Tarih Aralığının Word Raporunu Al">
+                            <i class="fa-solid fa-file-word text-[11px] text-blue-200"></i>
+                            <span>Rapor Al (Word)</span>
+                        </button>
+
 
 
                         <!-- 3. Sporcu Kadrosu -->
@@ -1352,6 +1358,101 @@
             <div class="p-4 border-t border-gray-100 bg-gray-50/50 flex justify-end">
                 <button onclick="closeLegalModal()" class="px-6 py-2 bg-brandBlue text-white font-bold rounded-xl text-xs hover:bg-opacity-90 transition-all">
                     Close / Kapat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- WORKOUT & DATE RANGE WORD REPORT MODAL -->
+    <div id="workout-report-modal" class="hidden fixed inset-0 bg-brandBlue/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl border border-gray-150 animate-scale-up space-y-5">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-10 h-10 rounded-2xl bg-blue-50 text-brandBlue flex items-center justify-center font-bold text-lg shadow-sm">
+                        <i class="fa-solid fa-file-word text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold text-brandBlue">Antrenman & İstatistik Raporu</h3>
+                        <p class="text-[11px] text-gray-500 font-medium">Microsoft Word (.doc - Dikey A4 Formatı)</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeWorkoutReportModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-brandPink flex items-center justify-center transition-colors cursor-pointer">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Tab Switcher: Tek Günlük vs Tarih Aralığı -->
+            <div class="flex p-1 bg-gray-100 rounded-2xl">
+                <button type="button" id="tab-report-single" onclick="switchReportTab('single')" class="flex-1 py-2 rounded-xl text-xs font-bold text-brandBlue bg-white shadow-sm transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <i class="fa-regular fa-calendar-day"></i>
+                    <span>Günün Antrenmanı</span>
+                </button>
+                <button type="button" id="tab-report-range" onclick="switchReportTab('range')" class="flex-1 py-2 rounded-xl text-xs font-bold text-gray-500 hover:text-gray-800 transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <i class="fa-solid fa-calendar-week"></i>
+                    <span>Tarih Aralığı & Toplam</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: TEK GÜN ANTRENMANI -->
+            <div id="report-tab-single-content" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Rapor Tarihi Seçin</label>
+                    <input type="date" id="report-single-date" onchange="updateReportSinglePreview()"
+                        class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-brandBlue focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue transition-all">
+                </div>
+
+                <!-- Live Preview Card for Single Day -->
+                <div id="report-single-preview" class="p-3.5 bg-blue-50/60 border border-blue-100 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-extrabold text-brandBlue" id="report-single-date-badge">-</div>
+                        <div class="text-[11px] text-gray-500 font-medium" id="report-single-details">0 Set &bull; 0 Metre</div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-lg text-[10px] font-black bg-blue-600 text-white uppercase">Dikey A4</span>
+                </div>
+            </div>
+
+            <!-- TAB 2: TARİH ARALIĞI & TOPLAM İSTATİSTİKLER -->
+            <div id="report-tab-range-content" class="hidden space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Başlangıç Tarihi</label>
+                        <input type="date" id="report-range-start" onchange="updateReportRangePreview()"
+                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-brandBlue focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Bitiş Tarihi</label>
+                        <input type="date" id="report-range-end" onchange="updateReportRangePreview()"
+                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-brandBlue focus:ring-2 focus:ring-brandBlue/20 focus:border-brandBlue transition-all">
+                    </div>
+                </div>
+
+                <!-- Quick Filter Buttons -->
+                <div class="flex items-center space-x-1.5 overflow-x-auto pb-0.5">
+                    <button type="button" onclick="setReportRangeShortcut('this_week')" class="px-2.5 py-1 text-[10.5px] font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all cursor-pointer whitespace-nowrap">Bu Hafta</button>
+                    <button type="button" onclick="setReportRangeShortcut('this_month')" class="px-2.5 py-1 text-[10.5px] font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all cursor-pointer whitespace-nowrap">Bu Ay</button>
+                    <button type="button" onclick="setReportRangeShortcut('last_30')" class="px-2.5 py-1 text-[10.5px] font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all cursor-pointer whitespace-nowrap">Son 30 Gün</button>
+                    <button type="button" onclick="setReportRangeShortcut('all_time')" class="px-2.5 py-1 text-[10.5px] font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all cursor-pointer whitespace-nowrap">Tüm Zamanlar</button>
+                </div>
+
+                <!-- Live Preview Card for Date Range -->
+                <div id="report-range-preview" class="p-3.5 bg-indigo-50/60 border border-indigo-100 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-extrabold text-brandBlue" id="report-range-date-badge">-</div>
+                        <div class="text-[11px] text-gray-500 font-medium" id="report-range-details">0 Gün &bull; 0 Metre</div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-lg text-[10px] font-black bg-indigo-600 text-white uppercase">Dikey A4</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="pt-2 flex items-center justify-between border-t border-gray-100">
+                <button type="button" onclick="closeWorkoutReportModal()" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-all cursor-pointer">
+                    Vazgeç
+                </button>
+                <button type="button" onclick="downloadSelectedWorkoutReport()" class="px-5 py-2.5 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white font-extrabold rounded-xl text-xs shadow-md shadow-blue-500/25 transition-all flex items-center space-x-2 cursor-pointer">
+                    <i class="fa-solid fa-file-arrow-down"></i>
+                    <span>Word Raporunu İndir (.doc)</span>
                 </button>
             </div>
         </div>
@@ -4805,6 +4906,710 @@
 
         
 
+        // --- WORKOUT REPORT (.DOC - DİKEY A4) CONTROLLER ---
+        let currentReportTab = 'single';
+
+        function openWorkoutReportModal() {
+            const modal = document.getElementById('workout-report-modal');
+            const singleDateInput = document.getElementById('report-single-date');
+            const rangeStartInput = document.getElementById('report-range-start');
+            const rangeEndInput = document.getElementById('report-range-end');
+
+            const todayStr = getLocalDateString();
+            const currentSelected = selectedDate || todayStr;
+
+            if (singleDateInput) singleDateInput.value = currentSelected;
+
+            // Default range: Last 30 days up to today
+            if (rangeEndInput) rangeEndInput.value = todayStr;
+            if (rangeStartInput) {
+                const startDate = new Date();
+                startDate.setDate(startDate.getDate() - 30);
+                const sy = startDate.getFullYear();
+                const sm = String(startDate.getMonth() + 1).padStart(2, '0');
+                const sd = String(startDate.getDate()).padStart(2, '0');
+                rangeStartInput.value = `${sy}-${sm}-${sd}`;
+            }
+
+            switchReportTab(currentReportTab || 'single');
+            updateReportSinglePreview();
+            updateReportRangePreview();
+
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeWorkoutReportModal() {
+            const modal = document.getElementById('workout-report-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function switchReportTab(tab) {
+            currentReportTab = tab;
+            const singleTabBtn = document.getElementById('tab-report-single');
+            const rangeTabBtn = document.getElementById('tab-report-range');
+            const singleContent = document.getElementById('report-tab-single-content');
+            const rangeContent = document.getElementById('report-tab-range-content');
+
+            if (tab === 'single') {
+                if (singleTabBtn) {
+                    singleTabBtn.className = 'flex-1 py-2 rounded-xl text-xs font-bold text-brandBlue bg-white shadow-sm transition-all flex items-center justify-center space-x-1.5 cursor-pointer';
+                }
+                if (rangeTabBtn) {
+                    rangeTabBtn.className = 'flex-1 py-2 rounded-xl text-xs font-bold text-gray-500 hover:text-gray-800 transition-all flex items-center justify-center space-x-1.5 cursor-pointer';
+                }
+                if (singleContent) singleContent.classList.remove('hidden');
+                if (rangeContent) rangeContent.classList.add('hidden');
+                updateReportSinglePreview();
+            } else {
+                if (rangeTabBtn) {
+                    rangeTabBtn.className = 'flex-1 py-2 rounded-xl text-xs font-bold text-brandBlue bg-white shadow-sm transition-all flex items-center justify-center space-x-1.5 cursor-pointer';
+                }
+                if (singleTabBtn) {
+                    singleTabBtn.className = 'flex-1 py-2 rounded-xl text-xs font-bold text-gray-500 hover:text-gray-800 transition-all flex items-center justify-center space-x-1.5 cursor-pointer';
+                }
+                if (rangeContent) rangeContent.classList.remove('hidden');
+                if (singleContent) singleContent.classList.add('hidden');
+                updateReportRangePreview();
+            }
+        }
+
+        function setReportRangeShortcut(shortcut) {
+            const startInput = document.getElementById('report-range-start');
+            const endInput = document.getElementById('report-range-end');
+            const now = new Date();
+            const todayStr = getLocalDateString();
+            if (endInput) endInput.value = todayStr;
+
+            if (shortcut === 'this_week') {
+                const day = now.getDay();
+                const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday
+                const monday = new Date(now.setDate(diff));
+                const my = monday.getFullYear();
+                const mm = String(monday.getMonth() + 1).padStart(2, '0');
+                const md = String(monday.getDate()).padStart(2, '0');
+                if (startInput) startInput.value = `${my}-${mm}-${md}`;
+            } else if (shortcut === 'this_month') {
+                const my = now.getFullYear();
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                if (startInput) startInput.value = `${my}-${mm}-01`;
+            } else if (shortcut === 'last_30') {
+                const past = new Date();
+                past.setDate(past.getDate() - 30);
+                const py = past.getFullYear();
+                const pm = String(past.getMonth() + 1).padStart(2, '0');
+                const pd = String(past.getDate()).padStart(2, '0');
+                if (startInput) startInput.value = `${py}-${pm}-${pd}`;
+            } else if (shortcut === 'all_time') {
+                if (startInput) startInput.value = '2020-01-01';
+            }
+            updateReportRangePreview();
+        }
+
+        function updateReportSinglePreview() {
+            const dateInput = document.getElementById('report-single-date');
+            const targetDate = dateInput ? dateInput.value : selectedDate;
+            const badge = document.getElementById('report-single-date-badge');
+            const details = document.getElementById('report-single-details');
+
+            let cleanDateStr = targetDate || getLocalDateString();
+            const parts = cleanDateStr.split('-');
+            if (parts.length === 3) cleanDateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
+
+            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            const sets = allSets.filter(s => s.date === targetDate && isCoachSet(s));
+            const totalVol = sets.reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+
+            if (badge) badge.textContent = cleanDateStr;
+            if (details) details.textContent = `${sets.length} Set Planı • Toplam ${totalVol} Metre`;
+        }
+
+        function updateReportRangePreview() {
+            const startInput = document.getElementById('report-range-start');
+            const endInput = document.getElementById('report-range-end');
+            const badge = document.getElementById('report-range-date-badge');
+            const details = document.getElementById('report-range-details');
+
+            const start = startInput ? startInput.value : '';
+            const end = endInput ? endInput.value : '';
+
+            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            const sets = allSets.filter(s => {
+                if (!isCoachSet(s)) return false;
+                if (start && s.date < start) return false;
+                if (end && s.date > end) return false;
+                return true;
+            });
+
+            const uniqueDates = new Set(sets.map(s => s.date));
+            const totalVol = sets.reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+
+            if (badge) {
+                let sFmt = start.split('-').reverse().join('.');
+                let eFmt = end.split('-').reverse().join('.');
+                badge.textContent = `${sFmt || 'Başlangıç'} - ${eFmt || 'Bitiş'}`;
+            }
+            if (details) {
+                details.textContent = `${uniqueDates.size} Antrenman Günü • Toplam ${totalVol} Metre`;
+            }
+        }
+
+        function downloadSelectedWorkoutReport() {
+            if (currentReportTab === 'single') {
+                const dateInput = document.getElementById('report-single-date');
+                const targetDate = dateInput ? dateInput.value : selectedDate;
+                generateAndDownloadSingleDayWord(targetDate);
+            } else {
+                const startInput = document.getElementById('report-range-start');
+                const endInput = document.getElementById('report-range-end');
+                const start = startInput ? startInput.value : '';
+                const end = endInput ? endInput.value : '';
+                generateAndDownloadDateRangeWord(start, end);
+            }
+            closeWorkoutReportModal();
+        }
+
+        // --- WORD DOCUMENT (.DOC) ENGINE ---
+
+        function downloadWordFile(htmlContent, filename) {
+            try {
+                const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/octet-stream;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.setAttribute('download', filename);
+                a.target = '_self';
+                a.style.position = 'fixed';
+                a.style.left = '-9999px';
+                a.style.top = '-9999px';
+                a.style.width = '2px';
+                a.style.height = '2px';
+                a.style.opacity = '0.01';
+                document.body.appendChild(a);
+
+                a.click();
+
+                setTimeout(() => {
+                    try {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    } catch(e) {}
+                }, 40000);
+
+                showDownloadReportToast(`<i class="fa-solid fa-circle-check text-green-400 text-base"></i> <span>Word Raporu (${filename}) indirildi!</span>`);
+            } catch (err) {
+                console.error('Word download error:', err);
+                alert('Dosya indirme hatası: ' + (err.message || err));
+            }
+        }
+
+        function showDownloadReportToast(message) {
+            let toast = document.getElementById('swim-download-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'swim-download-toast';
+                toast.style.position = 'fixed';
+                toast.style.bottom = '24px';
+                toast.style.right = '24px';
+                toast.style.zIndex = '999999';
+                toast.style.padding = '14px 22px';
+                toast.style.borderRadius = '14px';
+                toast.style.backgroundColor = '#000B73';
+                toast.style.color = '#ffffff';
+                toast.style.fontWeight = '800';
+                toast.style.fontSize = '13px';
+                toast.style.boxShadow = '0 12px 30px rgba(0, 11, 115, 0.4)';
+                toast.style.border = '2px solid rgba(255, 255, 255, 0.2)';
+                toast.style.display = 'flex';
+                toast.style.alignItems = 'center';
+                toast.style.gap = '10px';
+                toast.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = message;
+            toast.style.display = 'flex';
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            clearTimeout(window.__reportToastTimer);
+            window.__reportToastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(15px)';
+                setTimeout(() => { toast.style.display = 'none'; }, 350);
+            }, 4000);
+        }
+
+        // 1. TEK GÜN WORD RAPORU (DİKEY A4 FORMATI)
+        function generateAndDownloadSingleDayWord(targetDate) {
+            targetDate = targetDate || selectedDate || getLocalDateString();
+            const dict = translations[currentLang] || translations['en'];
+            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            const dailyNotes = getCoachDailyNotes();
+            const notesText = dailyNotes[targetDate] || '';
+            const attendance = getCoachDailyAttendance();
+            const attendedList = attendance[targetDate] || [];
+
+            const sectionWeights = { 'Warm Up': 1, 'Pre Set': 2, 'Main Set': 3, 'Cool Down': 4 };
+            let sets = allSets.filter(s => s.date === targetDate && isCoachSet(s)).sort((a, b) => {
+                const wA = sectionWeights[a.section] || 99;
+                const wB = sectionWeights[b.section] || 99;
+                if (wA !== wB) return wA - wB;
+                return a.id - b.id;
+            });
+
+            if (sets.length === 0) {
+                sets = [
+                    { id: 1, section: 'Warm Up', reps1: 1, reps2: 1, distance: 400, stroke: 'Freestyle', type: 'Swim', equipment: 'None', targetTime: '', interval: '', zone: 'A1' },
+                    { id: 2, section: 'Main Set', reps1: 4, reps2: 1, distance: 100, stroke: 'Freestyle', type: 'Swim', equipment: 'None', targetTime: '01:20', interval: '01:40', zone: 'End1' },
+                    { id: 3, section: 'Cool Down', reps1: 1, reps2: 1, distance: 200, stroke: 'Freestyle', type: 'Easy', equipment: 'None', targetTime: '', interval: '', zone: 'Easy' }
+                ];
+            }
+
+            let cleanDateStr = targetDate;
+            const parts = targetDate.split('-');
+            if (parts.length === 3) cleanDateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
+
+            const totalVol = sets.reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            const swimVol = sets.filter(s => s.type !== 'Kick' && s.type !== 'Drill').reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            const kickVol = sets.filter(s => s.type === 'Kick').reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            const drillVol = sets.filter(s => s.type === 'Drill').reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+
+            const clubBranding = getCoachClubBranding();
+            const clubName = (clubBranding && clubBranding.clubName) ? clubBranding.clubName : '';
+            const coachName = (currentUser && displayNames[currentUser]) ? displayNames[currentUser] : (currentUser || 'Mustafa Seçkin');
+
+            // Swimmer attendance rows
+            const swimmerNotesMap = getCoachSwimmerDailyNotes()[targetDate] || {};
+            let attendanceRowsHtml = '';
+            if (attendedList.length > 0) {
+                attendedList.forEach((name, idx) => {
+                    const note = swimmerNotesMap[name] || '';
+                    attendanceRowsHtml += `
+                        <tr>
+                            <td style="padding: 4px 6px; width: 24%; border-bottom: 1px dashed #cbd5e1; font-weight: bold; color: #000B73; font-size: 9.5pt;">
+                                ${idx + 1}. ${escapeHtml(name)}:
+                            </td>
+                            <td style="padding: 4px 6px; width: 76%; border-bottom: 1px dotted #94a3b8; font-size: 9.5pt; color: #E5007D; font-weight: bold;">
+                                ${note ? escapeHtml(note) : '&nbsp;'}
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                for (let k = 1; k <= 4; k++) {
+                    attendanceRowsHtml += `
+                        <tr>
+                            <td style="padding: 4px 6px; width: 24%; border-bottom: 1px dashed #cbd5e1; font-weight: bold; color: #000B73; font-size: 9.5pt;">
+                                ${k}. Sporcu:
+                            </td>
+                            <td style="padding: 4px 6px; width: 76%; border-bottom: 1px dotted #cbd5e1;">&nbsp;</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            const wordDocHtml = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset="utf-8">
+                    <title>Swim Coach Pro - ${cleanDateStr}</title>
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <w:WordDocument>
+                            <w:View>Print</w:View>
+                            <w:Zoom>100</w:Zoom>
+                            <w:Orientation>Portrait</w:Orientation>
+                            <w:DoNotOptimizeForBrowser/>
+                        </w:WordDocument>
+                    </xml>
+                    <![endif]-->
+                    <style>
+                        @page Section1 {
+                            size: 595.3pt 841.9pt; /* Strict A4 Portrait */
+                            margin: 1.0cm 1.3cm 1.0cm 1.3cm;
+                            mso-header-margin: 15pt;
+                            mso-footer-margin: 15pt;
+                        }
+                        div.Section1 { page: Section1; }
+                        body {
+                            font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+                            color: #000B73;
+                            margin: 0;
+                            padding: 0;
+                            background: #ffffff;
+                        }
+                        .container {
+                            width: 100%;
+                            text-align: center;
+                        }
+                        .header-title {
+                            font-size: 18pt;
+                            font-weight: 900;
+                            color: #000B73;
+                            margin: 0;
+                            letter-spacing: 0.05em;
+                        }
+                        .header-sub {
+                            font-size: 11pt;
+                            font-weight: 800;
+                            color: #E5007D;
+                            margin-top: 2px;
+                            text-transform: uppercase;
+                        }
+                        .meta-bar {
+                            background-color: #f1f5f9;
+                            border: 1px solid #cbd5e1;
+                            border-radius: 6px;
+                            padding: 5px 12px;
+                            margin: 6px 0 10px 0;
+                            font-size: 10pt;
+                            font-weight: bold;
+                            color: #334155;
+                            text-align: center;
+                        }
+                        table.data-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 8px 0;
+                        }
+                        table.data-table th {
+                            background-color: #000B73;
+                            color: #ffffff;
+                            padding: 5px 3px;
+                            font-size: 8.5pt;
+                            text-transform: uppercase;
+                            font-weight: bold;
+                            border: 1px solid #000B73;
+                            text-align: center;
+                        }
+                        table.data-table td {
+                            padding: 3.5px 3px;
+                            font-size: 8.5pt;
+                            color: #0f172a;
+                            border: 1px solid #cbd5e1;
+                            text-align: center;
+                        }
+                        table.data-table tr:nth-child(even) {
+                            background-color: #f8fafc;
+                        }
+                        .box-card {
+                            border: 1px solid #cbd5e1;
+                            border-radius: 6px;
+                            padding: 6px 10px;
+                            margin-top: 8px;
+                            text-align: left;
+                            background-color: #ffffff;
+                        }
+                        .box-title {
+                            font-size: 9.5pt;
+                            font-weight: 900;
+                            color: #000B73;
+                            border-bottom: 1.5px solid #000B73;
+                            padding-bottom: 2px;
+                            margin-bottom: 4px;
+                            text-transform: uppercase;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="Section1 container">
+                        <div class="header-title">${clubName ? escapeHtml(clubName.toUpperCase()) : 'SWIM COACH PRO'}</div>
+                        <div class="header-sub">GÜNLÜK ANTRENMAN RAPORU</div>
+
+                        <div class="meta-bar">
+                            📅 <b>Tarih:</b> ${cleanDateStr} &nbsp;&bull;&nbsp; 
+                            👑 <b>Antrenör:</b> ${escapeHtml(coachName)} &nbsp;&bull;&nbsp; 
+                            🏊 <b>Toplam:</b> ${totalVol} m (${swimVol}m Swim | ${kickVol}m Kick | ${drillVol}m Drill)
+                        </div>
+
+                        <!-- 10 Sütunlu Set Tablosu -->
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;">No</th>
+                                    <th style="width: 13%;">Bölüm</th>
+                                    <th style="width: 15%;">Set Yapısı</th>
+                                    <th style="width: 11%;">Stil</th>
+                                    <th style="width: 10%;">Tip</th>
+                                    <th style="width: 10%;">Malzeme</th>
+                                    <th style="width: 10%;">Hedef</th>
+                                    <th style="width: 9%;">@ Pace</th>
+                                    <th style="width: 8%;">Şiddet</th>
+                                    <th style="width: 9%;">Toplam</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${sets.map((set, idx) => {
+                                    const setStructure = `${set.reps1 || 1} x ${(set.reps2 && set.reps2 > 1) ? set.reps2 + ' x ' : ''}${set.distance || 0}m`;
+                                    const setTotal = (set.reps1 || 1) * (set.reps2 || 1) * (set.distance || 0);
+                                    return `
+                                        <tr>
+                                            <td style="font-weight: bold; color: #64748b;">${idx + 1}</td>
+                                            <td style="font-weight: bold; color: #000B73;">${escapeHtml(set.section || 'Main Set')}</td>
+                                            <td style="font-weight: bold; color: #E5007D;">${setStructure}</td>
+                                            <td>${escapeHtml(set.stroke || '-')}</td>
+                                            <td>${escapeHtml(set.type || 'Swim')}</td>
+                                            <td>${escapeHtml(set.equipment || '-')}</td>
+                                            <td style="font-weight: bold;">${set.targetTime || '-'}</td>
+                                            <td>${set.interval || '-'}</td>
+                                            <td style="font-weight: bold; color: #16a34a;">${set.zone || 'A1'}</td>
+                                            <td style="font-weight: bold; color: #000B73;">${setTotal} m</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+
+                        <!-- Koç Notları -->
+                        ${notesText ? `
+                            <div class="box-card" style="border-left: 4px solid #E5007D;">
+                                <div class="box-title">📝 Antrenör Notları:</div>
+                                <div style="font-size: 9pt; color: #334155; line-height: 1.4;">${escapeHtml(notesText)}</div>
+                            </div>
+                        ` : ''}
+
+                        <!-- Sporcu Yoklama ve Notları -->
+                        <div class="box-card" style="border-left: 4px solid #000B73;">
+                            <div class="box-title">👥 Katılan Sporcular & Performans Notları (${attendedList.length} Sporcu):</div>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 4px;">
+                                ${attendanceRowsHtml}
+                            </table>
+                        </div>
+
+                        <div style="margin-top: 10px; font-size: 8pt; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 4px;">
+                            Swim Coach Pro &bull; Dikey A4 Formatı &bull; ${escapeHtml(coachName)} &bull; &copy; ${new Date().getFullYear()}
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            downloadWordFile(wordDocHtml, `antrenman_${cleanDateStr}.doc`);
+        }
+
+        // 2. TARİH ARALIĞI TOPLAM İSTATİSTİK RAPORU (DİKEY A4 FORMATI)
+        function generateAndDownloadDateRangeWord(startDate, endDate) {
+            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
+            const sets = allSets.filter(s => {
+                if (!isCoachSet(s)) return false;
+                if (startDate && s.date < startDate) return false;
+                if (endDate && s.date > endDate) return false;
+                return true;
+            });
+
+            if (sets.length === 0) {
+                alert('Seçilen tarih aralığında antrenman verisi bulunamadı.');
+                return;
+            }
+
+            let startFmt = startDate ? startDate.split('-').reverse().join('.') : 'Başlangıç';
+            let endFmt = endDate ? endDate.split('-').reverse().join('.') : 'Bugün';
+
+            const totalVol = sets.reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            const swimVol = sets.filter(s => s.type !== 'Kick' && s.type !== 'Drill').reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            const kickVol = sets.filter(s => s.type === 'Kick').reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+            const drillVol = sets.filter(s => s.type === 'Drill').reduce((sum, s) => sum + ((s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0)), 0);
+
+            // Group by Date for History Table
+            const dateGroups = {};
+            sets.forEach(s => {
+                const d = s.date || 'Belirsiz';
+                if (!dateGroups[d]) {
+                    dateGroups[d] = { date: d, total: 0, swim: 0, kick: 0, drill: 0, count: 0 };
+                }
+                const dist = (s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0);
+                dateGroups[d].total += dist;
+                dateGroups[d].count += 1;
+                if (s.type === 'Kick') dateGroups[d].kick += dist;
+                else if (s.type === 'Drill') dateGroups[d].drill += dist;
+                else dateGroups[d].swim += dist;
+            });
+
+            const sortedDates = Object.values(dateGroups).sort((a, b) => (b.date > a.date ? 1 : -1));
+            const totalDays = sortedDates.length;
+            const avgDailyVol = totalDays > 0 ? Math.round(totalVol / totalDays) : 0;
+
+            // Group by Energy Zone
+            const zoneStats = {};
+            sets.forEach(s => {
+                const z = s.zone || 'A1';
+                const dist = (s.reps1 || 1) * (s.reps2 || 1) * (s.distance || 0);
+                zoneStats[z] = (zoneStats[z] || 0) + dist;
+            });
+
+            const clubBranding = getCoachClubBranding();
+            const clubName = (clubBranding && clubBranding.clubName) ? clubBranding.clubName : '';
+            const coachName = (currentUser && displayNames[currentUser]) ? displayNames[currentUser] : (currentUser || 'Mustafa Seçkin');
+
+            const wordRangeDocHtml = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset="utf-8">
+                    <title>Swim Coach Pro - Dönemsel Rapor (${startFmt} - ${endFmt})</title>
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <w:WordDocument>
+                            <w:View>Print</w:View>
+                            <w:Zoom>100</w:Zoom>
+                            <w:Orientation>Portrait</w:Orientation>
+                            <w:DoNotOptimizeForBrowser/>
+                        </w:WordDocument>
+                    </xml>
+                    <![endif]-->
+                    <style>
+                        @page Section1 {
+                            size: 595.3pt 841.9pt; /* Strict A4 Portrait */
+                            margin: 1.0cm 1.3cm 1.0cm 1.3cm;
+                            mso-header-margin: 15pt;
+                            mso-footer-margin: 15pt;
+                        }
+                        div.Section1 { page: Section1; }
+                        body { font-family: 'Segoe UI', Arial, Helvetica, sans-serif; color: #000B73; margin: 0; padding: 0; }
+                        .container { width: 100%; text-align: center; }
+                        .header-title { font-size: 17pt; font-weight: 900; color: #000B73; margin: 0; }
+                        .header-sub { font-size: 11pt; font-weight: 800; color: #E5007D; margin-top: 2px; text-transform: uppercase; }
+                        .meta-bar {
+                            background-color: #f1f5f9;
+                            border: 1px solid #cbd5e1;
+                            border-radius: 6px;
+                            padding: 6px 12px;
+                            margin: 8px 0 12px 0;
+                            font-size: 9.5pt;
+                            font-weight: bold;
+                            color: #334155;
+                        }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+                        th { background-color: #000B73; color: #ffffff; padding: 6px 4px; font-size: 8.5pt; font-weight: bold; border: 1px solid #000B73; text-align: center; }
+                        td { padding: 4px 4px; font-size: 8.5pt; border: 1px solid #cbd5e1; text-align: center; color: #0f172a; }
+                        tr:nth-child(even) { background-color: #f8fafc; }
+                        .section-card {
+                            border: 1px solid #cbd5e1;
+                            border-radius: 6px;
+                            padding: 8px 10px;
+                            margin-top: 10px;
+                            text-align: left;
+                            background-color: #ffffff;
+                        }
+                        .section-title {
+                            font-size: 10pt;
+                            font-weight: 900;
+                            color: #000B73;
+                            border-bottom: 1.5px solid #000B73;
+                            padding-bottom: 3px;
+                            margin-bottom: 6px;
+                            text-transform: uppercase;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="Section1 container">
+                        <div class="header-title">${clubName ? escapeHtml(clubName.toUpperCase()) : 'SWIM COACH PRO'}</div>
+                        <div class="header-sub">DÖNEMSEL ANTRENMAN & İSTATİSTİK RAPORU</div>
+
+                        <div class="meta-bar">
+                            📅 <b>Tarih Aralığı:</b> ${startFmt} &ndash; ${endFmt} &nbsp;&bull;&nbsp; 
+                            👑 <b>Antrenör:</b> ${escapeHtml(coachName)} &nbsp;&bull;&nbsp; 
+                            🏊 <b>Toplam Antrenman Günü:</b> ${totalDays} Gün
+                        </div>
+
+                        <!-- 1. GENEL HACİM ÖZETİ -->
+                        <div class="section-card" style="border-left: 4px solid #000B73;">
+                            <div class="section-title">📊 Toplam Hacim Dağılımı:</div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Genel Toplam</th>
+                                        <th>Swim (Yüzme)</th>
+                                        <th>Kick (Ayak)</th>
+                                        <th>Drill (Teknik)</th>
+                                        <th>Günlük Ortalama</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="font-weight: bold; font-size: 9.5pt;">
+                                        <td style="color: #000B73; font-weight: 900; background: #e0e7ff;">${totalVol} m</td>
+                                        <td style="color: #16a34a;">${swimVol} m (${totalVol > 0 ? Math.round(swimVol/totalVol*100) : 0}%)</td>
+                                        <td style="color: #E5007D;">${kickVol} m (${totalVol > 0 ? Math.round(kickVol/totalVol*100) : 0}%)</td>
+                                        <td style="color: #9333ea;">${drillVol} m (${totalVol > 0 ? Math.round(drillVol/totalVol*100) : 0}%)</td>
+                                        <td style="color: #000B73;">${avgDailyVol} m / gün</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- 2. FİZYOLOJİK ENERJİ SİSTEMLERİ DAĞILIMI -->
+                        <div class="section-card" style="border-left: 4px solid #E5007D;">
+                            <div class="section-title">⚡ Fizyolojik Enerji Şiddeti Dağılımı:</div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Enerji Bölgesi</th>
+                                        <th>Kategori</th>
+                                        <th>Toplam Metre</th>
+                                        <th>Yüzde (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${Object.keys(zoneStats).sort().map(z => {
+                                        const dist = zoneStats[z];
+                                        const pct = totalVol > 0 ? Math.round((dist / totalVol) * 100) : 0;
+                                        let cat = 'Aerobik Kapasite';
+                                        if (['End1', 'End2', 'End3'].includes(z)) cat = 'Laktat Eşiği & Dayanıklılık';
+                                        else if (['Spr1', 'Spr2', 'Spr3'].includes(z)) cat = 'Sprint & Hız';
+                                        else if (z === 'Easy') cat = 'Toparlanma & Soğuma';
+                                        return `
+                                            <tr>
+                                                <td style="font-weight: bold; color: #000B73;">${z}</td>
+                                                <td>${cat}</td>
+                                                <td style="font-weight: bold;">${dist} m</td>
+                                                <td style="font-weight: bold; color: #E5007D;">%${pct}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- 3. GÜN GÜN ANTRENMAN DÖKÜMÜ -->
+                        <div class="section-card" style="border-left: 4px solid #16a34a;">
+                            <div class="section-title">📅 Gün Gün Antrenman Geçmişi (${totalDays} Gün):</div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 25%;">Tarih</th>
+                                        <th style="width: 20%;">Toplam Hacim</th>
+                                        <th style="width: 20%;">Swim</th>
+                                        <th style="width: 18%;">Kick</th>
+                                        <th style="width: 17%;">Drill</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${sortedDates.map(d => {
+                                        let dFmt = d.date.split('-').reverse().join('.');
+                                        return `
+                                            <tr>
+                                                <td style="font-weight: bold; color: #64748b;">${dFmt}</td>
+                                                <td style="font-weight: bold; color: #000B73;">${d.total} m</td>
+                                                <td style="color: #16a34a;">${d.swim} m</td>
+                                                <td style="color: #E5007D;">${d.kick} m</td>
+                                                <td style="color: #9333ea;">${d.drill} m</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="margin-top: 15px; font-size: 8pt; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 4px;">
+                            Swim Coach Pro &bull; Dikey A4 Formatı &bull; ${escapeHtml(coachName)} &bull; &copy; ${new Date().getFullYear()}
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            downloadWordFile(wordRangeDocHtml, `antrenman_istatistik_${startFmt}_${endFmt}.doc`);
+        }
+
         // Toggle statistics panel visibility
         function toggleStatsPanel() {
             const panel = document.getElementById('statistics-panel');
@@ -6478,6 +7283,7 @@
 
                 // 3. Close modals when clicking outside their dialog box on backdrop
                 const modalIds = [
+                    'workout-report-modal',
                     'time-keypad-modal',
                     'training-modal',
                     'summary-modal',
