@@ -5138,7 +5138,7 @@
             }, 4000);
         }
 
-        // 1. TEK GÜN WORD RAPORU (DİKEY A4 FORMATI)
+        // 1. TEK GÜN WORD RAPORU (DİKEY A4 FORMATI - PREMİUM YÖNETİCİ DÜZENİ)
         function generateAndDownloadSingleDayWord(targetDate) {
             targetDate = targetDate || selectedDate || getLocalDateString();
             const dict = translations[currentLang] || translations['en'];
@@ -5177,7 +5177,7 @@
             const clubName = (clubBranding && clubBranding.clubName) ? clubBranding.clubName : '';
             const coachName = (currentUser && displayNames[currentUser]) ? displayNames[currentUser] : (currentUser || 'Mustafa Seçkin');
 
-            // Swimmer attendance rows
+            // Swimmer attendance rows (Tight layout)
             const swimmerNotesMap = getCoachSwimmerDailyNotes()[targetDate] || {};
             let attendanceRowsHtml = '';
             if (attendedList.length > 0) {
@@ -5185,23 +5185,23 @@
                     const note = swimmerNotesMap[name] || '';
                     attendanceRowsHtml += `
                         <tr>
-                            <td style="padding: 4px 6px; width: 24%; border-bottom: 1px dashed #cbd5e1; font-weight: bold; color: #000B73; font-size: 9.5pt;">
+                            <td style="padding: 2.5px 4px; width: 25%; border-bottom: 1px dashed #cbd5e1; font-weight: bold; color: #000B73; font-size: 8pt; line-height: 1.1;">
                                 ${idx + 1}. ${escapeHtml(name)}:
                             </td>
-                            <td style="padding: 4px 6px; width: 76%; border-bottom: 1px dotted #94a3b8; font-size: 9.5pt; color: #E5007D; font-weight: bold;">
+                            <td style="padding: 2.5px 4px; width: 75%; border-bottom: 1px dotted #94a3b8; font-size: 8pt; color: #E5007D; font-weight: bold; line-height: 1.1;">
                                 ${note ? escapeHtml(note) : '&nbsp;'}
                             </td>
                         </tr>
                     `;
                 });
             } else {
-                for (let k = 1; k <= 4; k++) {
+                for (let k = 1; k <= 3; k++) {
                     attendanceRowsHtml += `
                         <tr>
-                            <td style="padding: 4px 6px; width: 24%; border-bottom: 1px dashed #cbd5e1; font-weight: bold; color: #000B73; font-size: 9.5pt;">
+                            <td style="padding: 2.5px 4px; width: 25%; border-bottom: 1px dashed #cbd5e1; font-weight: bold; color: #64748b; font-size: 8pt; line-height: 1.1;">
                                 ${k}. Sporcu:
                             </td>
-                            <td style="padding: 4px 6px; width: 76%; border-bottom: 1px dotted #cbd5e1;">&nbsp;</td>
+                            <td style="padding: 2.5px 4px; width: 75%; border-bottom: 1px dotted #cbd5e1; font-size: 8pt;">&nbsp;</td>
                         </tr>
                     `;
                 }
@@ -5225,9 +5225,9 @@
                     <style>
                         @page Section1 {
                             size: 595.3pt 841.9pt; /* Strict A4 Portrait */
-                            margin: 1.0cm 1.3cm 1.0cm 1.3cm;
-                            mso-header-margin: 15pt;
-                            mso-footer-margin: 15pt;
+                            margin: 0.9cm 1.2cm 0.9cm 1.2cm;
+                            mso-header-margin: 10pt;
+                            mso-footer-margin: 10pt;
                         }
                         div.Section1 { page: Section1; }
                         body {
@@ -5239,97 +5239,99 @@
                         }
                         .container {
                             width: 100%;
-                            text-align: center;
-                        }
-                        .header-title {
-                            font-size: 18pt;
-                            font-weight: 900;
-                            color: #000B73;
-                            margin: 0;
-                            letter-spacing: 0.05em;
-                        }
-                        .header-sub {
-                            font-size: 11pt;
-                            font-weight: 800;
-                            color: #E5007D;
-                            margin-top: 2px;
-                            text-transform: uppercase;
-                        }
-                        .meta-bar {
-                            background-color: #f1f5f9;
-                            border: 1px solid #cbd5e1;
-                            border-radius: 6px;
-                            padding: 5px 12px;
-                            margin: 6px 0 10px 0;
-                            font-size: 10pt;
-                            font-weight: bold;
-                            color: #334155;
-                            text-align: center;
+                            text-align: left;
                         }
                         table.data-table {
                             width: 100%;
                             border-collapse: collapse;
-                            margin: 8px 0;
+                            margin: 4px 0 6px 0;
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
                         }
                         table.data-table th {
                             background-color: #000B73;
                             color: #ffffff;
-                            padding: 5px 3px;
-                            font-size: 8.5pt;
+                            padding: 2.5px 2px;
+                            font-size: 8pt;
                             text-transform: uppercase;
-                            font-weight: bold;
+                            font-weight: 900;
                             border: 1px solid #000B73;
                             text-align: center;
+                            line-height: 1.1;
                         }
                         table.data-table td {
-                            padding: 3.5px 3px;
-                            font-size: 8.5pt;
+                            padding: 2px 2px;
+                            font-size: 8pt;
                             color: #0f172a;
                             border: 1px solid #cbd5e1;
                             text-align: center;
+                            line-height: 1.1;
                         }
                         table.data-table tr:nth-child(even) {
                             background-color: #f8fafc;
-                        }
-                        .box-card {
-                            border: 1px solid #cbd5e1;
-                            border-radius: 6px;
-                            padding: 6px 10px;
-                            margin-top: 8px;
-                            text-align: left;
-                            background-color: #ffffff;
-                        }
-                        .box-title {
-                            font-size: 9.5pt;
-                            font-weight: 900;
-                            color: #000B73;
-                            border-bottom: 1.5px solid #000B73;
-                            padding-bottom: 2px;
-                            margin-bottom: 4px;
-                            text-transform: uppercase;
                         }
                     </style>
                 </head>
                 <body>
                     <div class="Section1 container">
-                        <div class="header-title">${clubName ? escapeHtml(clubName.toUpperCase()) : 'SWIM COACH PRO'}</div>
-                        <div class="header-sub">GÜNLÜK ANTRENMAN RAPORU</div>
+                        <!-- 1. PREMİUM ÜST BAŞLIK BARI -->
+                        <table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 3px;">
+                            <tr>
+                                <td style="vertical-align: middle; border: none; padding: 0;">
+                                    <div style="font-size: 16pt; font-weight: 900; color: #000B73; letter-spacing: 0.03em; line-height: 1.1;">
+                                        ${clubName ? escapeHtml(clubName.toUpperCase()) : 'SWIM COACH PRO'}
+                                    </div>
+                                    <div style="font-size: 10pt; font-weight: 800; color: #E5007D; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1px;">
+                                        GÜNLÜK ANTRENMAN RAPORU
+                                    </div>
+                                </td>
+                                <td align="right" style="vertical-align: middle; border: none; padding: 0;">
+                                    <div style="display: inline-block; background-color: #000B73; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 8pt; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase;">
+                                        PROFESYONEL ANTRENMAN PLANI
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
 
-                        <div class="meta-bar">
-                            📅 <b>Tarih:</b> ${cleanDateStr} &nbsp;&bull;&nbsp; 
-                            👑 <b>Antrenör:</b> ${escapeHtml(coachName)} &nbsp;&bull;&nbsp; 
-                            🏊 <b>Toplam:</b> ${totalVol} m (${swimVol}m Swim | ${kickVol}m Kick | ${drillVol}m Drill)
-                        </div>
+                        <!-- 2. YAPILANDIRILMIŞ PREMİUM BİLGİ VE METRAJ KARTI (ASLA TAŞMAZ) -->
+                        <table style="width: 100%; border-collapse: collapse; margin: 4px 0 6px 0; border: 1.5px solid #cbd5e1; background-color: #f8fafc;">
+                            <tr>
+                                <!-- Tarih Kutusu -->
+                                <td style="width: 28%; padding: 4px 8px; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+                                    <div style="font-size: 7pt; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em;">TARİH</div>
+                                    <div style="font-size: 9.5pt; font-weight: 900; color: #000B73;">${cleanDateStr}</div>
+                                </td>
+                                <!-- Antrenör Kutusu -->
+                                <td style="width: 34%; padding: 4px 8px; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+                                    <div style="font-size: 7pt; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em;">BAŞANTRENÖR</div>
+                                    <div style="font-size: 9.5pt; font-weight: 900; color: #000B73;">${escapeHtml(coachName)}</div>
+                                </td>
+                                <!-- Toplam Hacim Kutusu -->
+                                <td style="width: 38%; padding: 4px 8px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; background-color: #eff6ff;">
+                                    <div style="font-size: 7pt; font-weight: 800; color: #1e40af; text-transform: uppercase; letter-spacing: 0.04em;">TOPLAM ANTRENMAN HACMİ</div>
+                                    <div style="font-size: 11pt; font-weight: 900; color: #000B73;">${totalVol.toLocaleString('tr-TR')} m</div>
+                                </td>
+                            </tr>
+                            <!-- Metraj Dağılım Şeridi -->
+                            <tr>
+                                <td colspan="3" style="padding: 3px 8px; background-color: #ffffff; font-size: 8pt; font-weight: 700; color: #334155;">
+                                    <span style="color: #64748b; font-weight: 800; text-transform: uppercase; font-size: 7pt; margin-right: 8px;">Hacim Dağılımı:</span>
+                                    <span style="color: #16a34a; font-weight: 900; margin-right: 14px;">🏊 Yüzme (Swim): ${swimVol}m (${totalVol > 0 ? Math.round(swimVol/totalVol*100) : 0}%)</span>
+                                    <span style="color: #E5007D; font-weight: 900; margin-right: 14px;">🦵 Ayak (Kick): ${kickVol}m (${totalVol > 0 ? Math.round(kickVol/totalVol*100) : 0}%)</span>
+                                    <span style="color: #9333ea; font-weight: 900;">⚡ Teknik (Drill): ${drillVol}m (${totalVol > 0 ? Math.round(drillVol/totalVol*100) : 0}%)</span>
+                                </td>
+                            </tr>
+                        </table>
 
-                        <!-- 10 Sütunlu Set Tablosu -->
+                        <!-- 3. DARALTILMIŞ KOMPAKT 10 SÜTUNLU SET TABLOSU -->
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 5%;">No</th>
-                                    <th style="width: 13%;">Bölüm</th>
-                                    <th style="width: 15%;">Set Yapısı</th>
+                                    <th style="width: 4%;">No</th>
+                                    <th style="width: 14%;">Bölüm</th>
+                                    <th style="width: 16%;">Set Yapısı</th>
                                     <th style="width: 11%;">Stil</th>
-                                    <th style="width: 10%;">Tip</th>
+                                    <th style="width: 9%;">Tip</th>
                                     <th style="width: 10%;">Malzeme</th>
                                     <th style="width: 10%;">Hedef</th>
                                     <th style="width: 9%;">@ Pace</th>
@@ -5339,10 +5341,10 @@
                             </thead>
                             <tbody>
                                 ${sets.map((set, idx) => {
-                                    const setStructure = `${set.reps1 || 1} x ${(set.reps2 && set.reps2 > 1) ? set.reps2 + ' x ' : ''}${set.distance || 0}m`;
+                                    const setStructure = `${set.reps1 || 1} x ${(set.reps2 && set.reps2 > 1) ? set.reps2 + 'x' : ''}${set.distance || 0}m`;
                                     const setTotal = (set.reps1 || 1) * (set.reps2 || 1) * (set.distance || 0);
                                     return `
-                                        <tr>
+                                        <tr style="height: 15pt;">
                                             <td style="font-weight: bold; color: #64748b;">${idx + 1}</td>
                                             <td style="font-weight: bold; color: #000B73;">${escapeHtml(set.section || 'Main Set')}</td>
                                             <td style="font-weight: bold; color: #E5007D;">${setStructure}</td>
@@ -5359,23 +5361,34 @@
                             </tbody>
                         </table>
 
-                        <!-- Koç Notları -->
+                        <!-- 4. KOÇ NOTLARI -->
                         ${notesText ? `
-                            <div class="box-card" style="border-left: 4px solid #E5007D;">
-                                <div class="box-title">📝 Antrenör Notları:</div>
-                                <div style="font-size: 9pt; color: #334155; line-height: 1.4;">${escapeHtml(notesText)}</div>
-                            </div>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 4px; border: 1px solid #cbd5e1; border-left: 4px solid #E5007D; background-color: #ffffff;">
+                                <tr>
+                                    <td style="padding: 3px 6px;">
+                                        <div style="font-size: 8pt; font-weight: 900; color: #E5007D; text-transform: uppercase;">📝 Antrenör Notları:</div>
+                                        <div style="font-size: 8pt; color: #334155; line-height: 1.25; margin-top: 2px;">${escapeHtml(notesText)}</div>
+                                    </td>
+                                </tr>
+                            </table>
                         ` : ''}
 
-                        <!-- Sporcu Yoklama ve Notları -->
-                        <div class="box-card" style="border-left: 4px solid #000B73;">
-                            <div class="box-title">👥 Katılan Sporcular & Performans Notları (${attendedList.length} Sporcu):</div>
-                            <table style="width: 100%; border-collapse: collapse; margin-top: 4px;">
-                                ${attendanceRowsHtml}
-                            </table>
-                        </div>
+                        <!-- 5. SPORCU YOKLAMA VE NOTLARI (KOMPAKT) -->
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 4px; border: 1px solid #cbd5e1; border-left: 4px solid #000B73; background-color: #ffffff;">
+                            <tr>
+                                <td style="padding: 3px 6px;">
+                                    <div style="font-size: 8pt; font-weight: 900; color: #000B73; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin-bottom: 3px;">
+                                        👥 Katılan Sporcular & Performans Notları (${attendedList.length} Sporcu):
+                                    </div>
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        ${attendanceRowsHtml}
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
 
-                        <div style="margin-top: 10px; font-size: 8pt; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 4px;">
+                        <!-- FOOTER -->
+                        <div style="margin-top: 6px; font-size: 7.5pt; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 2px;">
                             Swim Coach Pro &bull; Dikey A4 Formatı &bull; ${escapeHtml(coachName)} &bull; &copy; ${new Date().getFullYear()}
                         </div>
                     </div>
@@ -5386,7 +5399,7 @@
             downloadWordFile(wordDocHtml, `antrenman_${cleanDateStr}.doc`);
         }
 
-        // 2. TARİH ARALIĞI TOPLAM İSTATİSTİK RAPORU (DİKEY A4 FORMATI)
+        // 2. TARİH ARALIĞI TOPLAM İSTATİSTİK RAPORU (DİKEY A4 FORMATI - PREMİUM YÖNETİCİ DÜZENİ)
         function generateAndDownloadDateRangeWord(startDate, endDate) {
             const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
             const sets = allSets.filter(s => {
@@ -5458,148 +5471,188 @@
                     <style>
                         @page Section1 {
                             size: 595.3pt 841.9pt; /* Strict A4 Portrait */
-                            margin: 1.0cm 1.3cm 1.0cm 1.3cm;
-                            mso-header-margin: 15pt;
-                            mso-footer-margin: 15pt;
+                            margin: 0.9cm 1.2cm 0.9cm 1.2cm;
+                            mso-header-margin: 10pt;
+                            mso-footer-margin: 10pt;
                         }
                         div.Section1 { page: Section1; }
-                        body { font-family: 'Segoe UI', Arial, Helvetica, sans-serif; color: #000B73; margin: 0; padding: 0; }
-                        .container { width: 100%; text-align: center; }
-                        .header-title { font-size: 17pt; font-weight: 900; color: #000B73; margin: 0; }
-                        .header-sub { font-size: 11pt; font-weight: 800; color: #E5007D; margin-top: 2px; text-transform: uppercase; }
-                        .meta-bar {
-                            background-color: #f1f5f9;
-                            border: 1px solid #cbd5e1;
-                            border-radius: 6px;
-                            padding: 6px 12px;
-                            margin: 8px 0 12px 0;
-                            font-size: 9.5pt;
-                            font-weight: bold;
-                            color: #334155;
-                        }
-                        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-                        th { background-color: #000B73; color: #ffffff; padding: 6px 4px; font-size: 8.5pt; font-weight: bold; border: 1px solid #000B73; text-align: center; }
-                        td { padding: 4px 4px; font-size: 8.5pt; border: 1px solid #cbd5e1; text-align: center; color: #0f172a; }
-                        tr:nth-child(even) { background-color: #f8fafc; }
-                        .section-card {
-                            border: 1px solid #cbd5e1;
-                            border-radius: 6px;
-                            padding: 8px 10px;
-                            margin-top: 10px;
-                            text-align: left;
-                            background-color: #ffffff;
-                        }
-                        .section-title {
-                            font-size: 10pt;
-                            font-weight: 900;
+                        body {
+                            font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
                             color: #000B73;
-                            border-bottom: 1.5px solid #000B73;
-                            padding-bottom: 3px;
-                            margin-bottom: 6px;
-                            text-transform: uppercase;
+                            margin: 0;
+                            padding: 0;
+                            background: #ffffff;
                         }
+                        .container { width: 100%; text-align: left; }
+                        table.comp-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 6px;
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                        }
+                        table.comp-table th {
+                            background-color: #000B73;
+                            color: #ffffff;
+                            padding: 2.5px 3px;
+                            font-size: 8pt;
+                            font-weight: bold;
+                            border: 1px solid #000B73;
+                            text-align: center;
+                            line-height: 1.1;
+                        }
+                        table.comp-table td {
+                            padding: 2px 3px;
+                            font-size: 8pt;
+                            border: 1px solid #cbd5e1;
+                            text-align: center;
+                            color: #0f172a;
+                            line-height: 1.1;
+                        }
+                        table.comp-table tr:nth-child(even) { background-color: #f8fafc; }
                     </style>
                 </head>
                 <body>
                     <div class="Section1 container">
-                        <div class="header-title">${clubName ? escapeHtml(clubName.toUpperCase()) : 'SWIM COACH PRO'}</div>
-                        <div class="header-sub">DÖNEMSEL ANTRENMAN & İSTATİSTİK RAPORU</div>
+                        <!-- ÜST BAŞLIK -->
+                        <table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 3px;">
+                            <tr>
+                                <td style="vertical-align: middle; border: none; padding: 0;">
+                                    <div style="font-size: 16pt; font-weight: 900; color: #000B73; letter-spacing: 0.03em; line-height: 1.1;">
+                                        ${clubName ? escapeHtml(clubName.toUpperCase()) : 'SWIM COACH PRO'}
+                                    </div>
+                                    <div style="font-size: 10pt; font-weight: 800; color: #E5007D; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1px;">
+                                        DÖNEMSEL ANTRENMAN & İSTATİSTİK RAPORU
+                                    </div>
+                                </td>
+                                <td align="right" style="vertical-align: middle; border: none; padding: 0;">
+                                    <div style="display: inline-block; background-color: #000B73; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 8pt; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase;">
+                                        DÖNEM PERFORMANS RAPORU
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
 
-                        <div class="meta-bar">
-                            📅 <b>Tarih Aralığı:</b> ${startFmt} &ndash; ${endFmt} &nbsp;&bull;&nbsp; 
-                            👑 <b>Antrenör:</b> ${escapeHtml(coachName)} &nbsp;&bull;&nbsp; 
-                            🏊 <b>Toplam Antrenman Günü:</b> ${totalDays} Gün
-                        </div>
+                        <!-- BİLGİ KARTI -->
+                        <table style="width: 100%; border-collapse: collapse; margin: 4px 0 6px 0; border: 1.5px solid #cbd5e1; background-color: #f8fafc;">
+                            <tr>
+                                <td style="width: 32%; padding: 4px 8px; border-right: 1px solid #cbd5e1; vertical-align: middle;">
+                                    <div style="font-size: 7pt; font-weight: 800; color: #64748b; text-transform: uppercase;">TARİH ARALIĞI</div>
+                                    <div style="font-size: 9.5pt; font-weight: 900; color: #000B73;">${startFmt} &ndash; ${endFmt}</div>
+                                </td>
+                                <td style="width: 32%; padding: 4px 8px; border-right: 1px solid #cbd5e1; vertical-align: middle;">
+                                    <div style="font-size: 7pt; font-weight: 800; color: #64748b; text-transform: uppercase;">BAŞANTRENÖR</div>
+                                    <div style="font-size: 9.5pt; font-weight: 900; color: #000B73;">${escapeHtml(coachName)}</div>
+                                </td>
+                                <td style="width: 36%; padding: 4px 8px; vertical-align: middle; background-color: #eff6ff;">
+                                    <div style="font-size: 7pt; font-weight: 800; color: #1e40af; text-transform: uppercase;">ANTRENMAN GÜNÜ & HACİM</div>
+                                    <div style="font-size: 11pt; font-weight: 900; color: #000B73;">${totalDays} Gün &bull; ${totalVol.toLocaleString('tr-TR')} m</div>
+                                </td>
+                            </tr>
+                        </table>
 
                         <!-- 1. GENEL HACİM ÖZETİ -->
-                        <div class="section-card" style="border-left: 4px solid #000B73;">
-                            <div class="section-title">📊 Toplam Hacim Dağılımı:</div>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Genel Toplam</th>
-                                        <th>Swim (Yüzme)</th>
-                                        <th>Kick (Ayak)</th>
-                                        <th>Drill (Teknik)</th>
-                                        <th>Günlük Ortalama</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr style="font-weight: bold; font-size: 9.5pt;">
-                                        <td style="color: #000B73; font-weight: 900; background: #e0e7ff;">${totalVol} m</td>
-                                        <td style="color: #16a34a;">${swimVol} m (${totalVol > 0 ? Math.round(swimVol/totalVol*100) : 0}%)</td>
-                                        <td style="color: #E5007D;">${kickVol} m (${totalVol > 0 ? Math.round(kickVol/totalVol*100) : 0}%)</td>
-                                        <td style="color: #9333ea;">${drillVol} m (${totalVol > 0 ? Math.round(drillVol/totalVol*100) : 0}%)</td>
-                                        <td style="color: #000B73;">${avgDailyVol} m / gün</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 4px; border: 1px solid #cbd5e1; border-left: 4px solid #000B73; background-color: #ffffff;">
+                            <tr>
+                                <td style="padding: 4px 6px;">
+                                    <div style="font-size: 8pt; font-weight: 900; color: #000B73; text-transform: uppercase; margin-bottom: 3px;">📊 Toplam Hacim Dağılımı:</div>
+                                    <table class="comp-table" style="margin-bottom: 0;">
+                                        <thead>
+                                            <tr>
+                                                <th>Genel Toplam</th>
+                                                <th>Swim (Yüzme)</th>
+                                                <th>Kick (Ayak)</th>
+                                                <th>Drill (Teknik)</th>
+                                                <th>Günlük Ortalama</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr style="font-weight: bold;">
+                                                <td style="color: #000B73; font-weight: 900; background: #e0e7ff;">${totalVol.toLocaleString('tr-TR')} m</td>
+                                                <td style="color: #16a34a;">${swimVol} m (${totalVol > 0 ? Math.round(swimVol/totalVol*100) : 0}%)</td>
+                                                <td style="color: #E5007D;">${kickVol} m (${totalVol > 0 ? Math.round(kickVol/totalVol*100) : 0}%)</td>
+                                                <td style="color: #9333ea;">${drillVol} m (${totalVol > 0 ? Math.round(drillVol/totalVol*100) : 0}%)</td>
+                                                <td style="color: #000B73;">${avgDailyVol} m / gün</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
 
                         <!-- 2. FİZYOLOJİK ENERJİ SİSTEMLERİ DAĞILIMI -->
-                        <div class="section-card" style="border-left: 4px solid #E5007D;">
-                            <div class="section-title">⚡ Fizyolojik Enerji Şiddeti Dağılımı:</div>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Enerji Bölgesi</th>
-                                        <th>Kategori</th>
-                                        <th>Toplam Metre</th>
-                                        <th>Yüzde (%)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${Object.keys(zoneStats).sort().map(z => {
-                                        const dist = zoneStats[z];
-                                        const pct = totalVol > 0 ? Math.round((dist / totalVol) * 100) : 0;
-                                        let cat = 'Aerobik Kapasite';
-                                        if (['End1', 'End2', 'End3'].includes(z)) cat = 'Laktat Eşiği & Dayanıklılık';
-                                        else if (['Spr1', 'Spr2', 'Spr3'].includes(z)) cat = 'Sprint & Hız';
-                                        else if (z === 'Easy') cat = 'Toparlanma & Soğuma';
-                                        return `
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 4px; border: 1px solid #cbd5e1; border-left: 4px solid #E5007D; background-color: #ffffff;">
+                            <tr>
+                                <td style="padding: 4px 6px;">
+                                    <div style="font-size: 8pt; font-weight: 900; color: #E5007D; text-transform: uppercase; margin-bottom: 3px;">⚡ Fizyolojik Enerji Şiddeti Dağılımı:</div>
+                                    <table class="comp-table" style="margin-bottom: 0;">
+                                        <thead>
                                             <tr>
-                                                <td style="font-weight: bold; color: #000B73;">${z}</td>
-                                                <td>${cat}</td>
-                                                <td style="font-weight: bold;">${dist} m</td>
-                                                <td style="font-weight: bold; color: #E5007D;">%${pct}</td>
+                                                <th>Bölge</th>
+                                                <th>Fizyolojik Kategori</th>
+                                                <th>Toplam Metre</th>
+                                                <th>Yüzde Payı (%)</th>
                                             </tr>
-                                        `;
-                                    }).join('')}
-                                </tbody>
-                            </table>
-                        </div>
+                                        </thead>
+                                        <tbody>
+                                            ${Object.keys(zoneStats).sort().map(z => {
+                                                const dist = zoneStats[z];
+                                                const pct = totalVol > 0 ? Math.round((dist / totalVol) * 100) : 0;
+                                                let cat = 'Aerobik Kapasite';
+                                                if (['End1', 'End2', 'End3'].includes(z)) cat = 'Laktat Eşiği & Dayanıklılık';
+                                                else if (['Spr1', 'Spr2', 'Spr3'].includes(z)) cat = 'Sprint & Hız';
+                                                else if (z === 'Easy') cat = 'Toparlanma & Soğuma';
+                                                return `
+                                                    <tr>
+                                                        <td style="font-weight: bold; color: #000B73;">${z}</td>
+                                                        <td>${cat}</td>
+                                                        <td style="font-weight: bold;">${dist} m</td>
+                                                        <td style="font-weight: bold; color: #E5007D;">%${pct}</td>
+                                                    </tr>
+                                                `;
+                                            }).join('')}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
 
-                        <!-- 3. GÜN GÜN ANTRENMAN DÖKÜMÜ -->
-                        <div class="section-card" style="border-left: 4px solid #16a34a;">
-                            <div class="section-title">📅 Gün Gün Antrenman Geçmişi (${totalDays} Gün):</div>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th style="width: 25%;">Tarih</th>
-                                        <th style="width: 20%;">Toplam Hacim</th>
-                                        <th style="width: 20%;">Swim</th>
-                                        <th style="width: 18%;">Kick</th>
-                                        <th style="width: 17%;">Drill</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${sortedDates.map(d => {
-                                        let dFmt = d.date.split('-').reverse().join('.');
-                                        return `
+                        <!-- 3. GÜN GÜN ANTRENMAN GEÇMİŞİ -->
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 4px; border: 1px solid #cbd5e1; border-left: 4px solid #16a34a; background-color: #ffffff;">
+                            <tr>
+                                <td style="padding: 4px 6px;">
+                                    <div style="font-size: 8pt; font-weight: 900; color: #16a34a; text-transform: uppercase; margin-bottom: 3px;">📅 Gün Gün Antrenman Dökümü (${totalDays} Gün):</div>
+                                    <table class="comp-table" style="margin-bottom: 0;">
+                                        <thead>
                                             <tr>
-                                                <td style="font-weight: bold; color: #64748b;">${dFmt}</td>
-                                                <td style="font-weight: bold; color: #000B73;">${d.total} m</td>
-                                                <td style="color: #16a34a;">${d.swim} m</td>
-                                                <td style="color: #E5007D;">${d.kick} m</td>
-                                                <td style="color: #9333ea;">${d.drill} m</td>
+                                                <th style="width: 25%;">Tarih</th>
+                                                <th style="width: 20%;">Toplam Hacim</th>
+                                                <th style="width: 20%;">Swim</th>
+                                                <th style="width: 18%;">Kick</th>
+                                                <th style="width: 17%;">Drill</th>
                                             </tr>
-                                        `;
-                                    }).join('')}
-                                </tbody>
-                            </table>
-                        </div>
+                                        </thead>
+                                        <tbody>
+                                            ${sortedDates.map(d => {
+                                                let dFmt = d.date.split('-').reverse().join('.');
+                                                return `
+                                                    <tr>
+                                                        <td style="font-weight: bold; color: #64748b;">${dFmt}</td>
+                                                        <td style="font-weight: bold; color: #000B73;">${d.total} m</td>
+                                                        <td style="color: #16a34a;">${d.swim} m</td>
+                                                        <td style="color: #E5007D;">${d.kick} m</td>
+                                                        <td style="color: #9333ea;">${d.drill} m</td>
+                                                    </tr>
+                                                `;
+                                            }).join('')}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
 
-                        <div style="margin-top: 15px; font-size: 8pt; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 4px;">
+                        <!-- FOOTER -->
+                        <div style="margin-top: 6px; font-size: 7.5pt; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 2px;">
                             Swim Coach Pro &bull; Dikey A4 Formatı &bull; ${escapeHtml(coachName)} &bull; &copy; ${new Date().getFullYear()}
                         </div>
                     </div>
@@ -5609,6 +5662,7 @@
 
             downloadWordFile(wordRangeDocHtml, `antrenman_istatistik_${startFmt}_${endFmt}.doc`);
         }
+
 
         // Toggle statistics panel visibility
         function toggleStatsPanel() {
