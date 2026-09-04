@@ -509,9 +509,16 @@
                         </button>
 
                         <!-- 2. Export Button (Word & Excel) -->
-                        <button onclick="openExportModal()" id="export-btn" class="shrink-0 px-2.5 py-1 border border-blue-200 text-blue-600 hover:bg-blue-50 font-bold rounded-lg transition-all duration-300 flex items-center space-x-1.5 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap" title="Antrenmanı Word veya Excel Olarak İndir">
-                            <i class="fa-solid fa-download text-[10px]"></i>
-                            <span>Dışa Aktar (Word / Excel)</span>
+                        <!-- Direct Word Download (1-Tıkla İndir) -->
+                        <button onclick="exportCurrentDayToWord()" id="direct-word-btn" class="shrink-0 px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all duration-300 flex items-center space-x-1.5 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap" title="Bugünkü Antrenmanı Word (.doc - Dikey A4) Olarak İndir">
+                            <i class="fa-solid fa-file-word text-[11px] text-blue-100"></i>
+                            <span>Word İndir (.doc)</span>
+                        </button>
+
+                        <!-- Direct Excel Download (1-Tıkla İndir) -->
+                        <button onclick="exportCurrentDayToExcel()" id="direct-excel-btn" class="shrink-0 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-all duration-300 flex items-center space-x-1.5 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap" title="Bugünkü Antrenmanı Excel (.xls - Dikey A4) Olarak İndir">
+                            <i class="fa-solid fa-file-excel text-[11px] text-emerald-100"></i>
+                            <span>Excel İndir (.xls)</span>
                         </button>
 
                         <!-- 3. Sporcu Kadrosu -->
@@ -5215,6 +5222,42 @@
 
 
 
+        // Visual Toast Notification for Downloads
+        function showDownloadToast(message) {
+            let toast = document.getElementById('swim-download-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'swim-download-toast';
+                toast.style.position = 'fixed';
+                toast.style.bottom = '24px';
+                toast.style.right = '24px';
+                toast.style.zIndex = '999999';
+                toast.style.padding = '14px 22px';
+                toast.style.borderRadius = '14px';
+                toast.style.backgroundColor = '#000B73';
+                toast.style.color = '#ffffff';
+                toast.style.fontWeight = '800';
+                toast.style.fontSize = '13px';
+                toast.style.boxShadow = '0 12px 30px rgba(0, 11, 115, 0.4)';
+                toast.style.border = '2px solid rgba(255, 255, 255, 0.2)';
+                toast.style.display = 'flex';
+                toast.style.alignItems = 'center';
+                toast.style.gap = '10px';
+                toast.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = message;
+            toast.style.display = 'flex';
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            clearTimeout(window.__downloadToastTimer);
+            window.__downloadToastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(15px)';
+                setTimeout(() => { toast.style.display = 'none'; }, 350);
+            }, 4000);
+        }
+
         // Cross-Browser Bulletproof File Downloader (Safari macOS / iOS / Chrome / Edge / Windows)
         function triggerFileDownload(blob, filename) {
             if (window.navigator && window.navigator.msSaveOrOpenBlob) {
@@ -5223,32 +5266,21 @@
             }
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.style.position = 'fixed';
-            a.style.left = '-9999px';
-            a.style.top = '-9999px';
-            a.style.opacity = '0';
+            a.style.display = 'none';
             a.href = url;
             a.download = filename;
-            a.target = '_self';
+            a.setAttribute('download', filename);
             document.body.appendChild(a);
 
-            try {
-                const clickEvent = new MouseEvent('click', {
-                    bubbles: true,
-                    cancelable: true,
-                    view: window
-                });
-                a.dispatchEvent(clickEvent);
-            } catch (err) {
-                a.click();
-            }
+            // Native DOM click triggers browser download directly
+            a.click();
 
             setTimeout(() => {
                 try {
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
                 } catch(e) {}
-            }, 5000);
+            }, 30000);
         }
 
         function openExportModal() {
@@ -5303,6 +5335,7 @@
 
             const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword;charset=utf-8' });
             triggerFileDownload(blob, `swim_coach_pro_${cleanDateStr}.doc`);
+            showDownloadToast('<i class="fa-solid fa-circle-check text-green-400 text-base"></i> <span>Word Belgesi (.doc) indirildi!</span>');
         }
 
         // Seçili günün antrenmanını Excel (.xls) dosyası olarak Yatay A4 ve Ortalanmış düzende dışa aktarır
@@ -5551,6 +5584,7 @@
 
             const blob = new Blob(['\ufeff' + excelHtml], { type: 'application/vnd.ms-excel;charset=utf-8' });
             triggerFileDownload(blob, `swim_coach_pro_${cleanDateStr}.xls`);
+            showDownloadToast('<i class="fa-solid fa-circle-check text-green-400 text-base"></i> <span>Excel Tablosu (.xls) indirildi!</span>');
         }
 
         // Tüm günlerin antrenman hacim özetlerini Word (.doc) dosyası olarak dışa aktarır
