@@ -4200,10 +4200,15 @@
         // --- MULTI-USER ISOLATION HELPERS ---
         function isCoachSet(set) {
             if (!set) return false;
+            if (!currentUser) return true;
             const user = (currentUser || '').toLowerCase();
             const setCoach = (set.coach || '').toLowerCase();
-            if (!setCoach) return user === 'mustafa';
-            return setCoach === user || setCoach === (displayNames[user] || '').toLowerCase();
+            if (!setCoach) return true;
+            if (setCoach === user) return true;
+            if (displayNames[user] && setCoach === displayNames[user].toLowerCase()) return true;
+            if (user.includes('@') && user.split('@')[0] === setCoach) return true;
+            if (setCoach.includes('@') && setCoach.split('@')[0] === user) return true;
+            return false;
         }
 
         function getCoachNotesKey() {
@@ -4821,16 +4826,23 @@
             const attendance = getCoachDailyAttendance();
             const attendedList = attendance[selectedDate] || [];
 
-            const sets = allSets.filter(s => s.date === selectedDate && isCoachSet(s)).sort((a, b) => {
+            let sets = allSets.filter(s => s.date === selectedDate && isCoachSet(s)).sort((a, b) => {
                 const wA = sectionWeights[a.section] || 99;
                 const wB = sectionWeights[b.section] || 99;
                 if (wA !== wB) return wA - wB;
                 return a.id - b.id;
             });
             
-            if (sets.length === 0) {
-                alert(dict.no_export_data || 'No training data to export for this date.');
-                return null;
+            // If coach has not entered sets for this date yet, provide blank template rows so they still get their printable workout sheet!
+            const isPlaceholderMode = sets.length === 0;
+            if (isPlaceholderMode) {
+                sets = [
+                    { id: 1, section: 'Warm Up', reps1: 1, reps2: 1, distance: '', stroke: '', type: 'Swim', equipment: '', targetTime: '', interval: '', zone: 'A1' },
+                    { id: 2, section: 'Pre Set', reps1: '', reps2: '', distance: '', stroke: '', type: 'Drill', equipment: '', targetTime: '', interval: '', zone: 'A1' },
+                    { id: 3, section: 'Main Set', reps1: '', reps2: '', distance: '', stroke: '', type: 'Swim', equipment: '', targetTime: '', interval: '', zone: 'End1' },
+                    { id: 4, section: 'Main Set', reps1: '', reps2: '', distance: '', stroke: '', type: 'Swim', equipment: '', targetTime: '', interval: '', zone: 'Spr1' },
+                    { id: 5, section: 'Cool Down', reps1: 1, reps2: 1, distance: '', stroke: '', type: 'Easy', equipment: '', targetTime: '', interval: '', zone: 'Easy' }
+                ];
             }
             
             let cleanDateStr = selectedDate;
@@ -5223,7 +5235,29 @@
             }
         }
 
+
+        // Reliable cross-browser file download helper that avoids premature URL revocation
+        function triggerFileDownload(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                try {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                } catch(e) {}
+            }, 2500);
+        }
+
         function openExportModal() {
+            const filterInput = document.getElementById('filter-date');
+            if (filterInput && filterInput.value) {
+                selectedDate = filterInput.value;
+            }
             const modal = document.getElementById('export-choice-modal');
             const dateBadge = document.getElementById('export-modal-date-badge');
             const dict = translations[currentLang] || translations['en'];
@@ -5248,31 +5282,20 @@
 
         // Seçili günün antrenmanını Word (.doc) dosyası olarak Yatay A4 formatında dışa aktarır
         function exportCurrentDayToWord() {
-            const dict = translations[currentLang] || translations['en'];
-            const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
-            const sets = allSets.filter(s => s.date === selectedDate && isCoachSet(s));
-
-            if (sets.length === 0) {
-                alert(dict.no_export_data || 'No training data to export for this date.');
-                return;
+            const filterInput = document.getElementById('filter-date');
+            if (filterInput && filterInput.value) {
+                selectedDate = filterInput.value;
             }
 
             const htmlContent = buildLandscapeWorkoutHtml(true);
             if (!htmlContent) return;
 
-            let cleanDateStr = selectedDate;
-            const parts = selectedDate.split('-');
+            let cleanDateStr = selectedDate || getLocalDateString();
+            const parts = cleanDateStr.split('-');
             if (parts.length === 3) cleanDateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
 
             const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `swim_coach_pro_${cleanDateStr}.doc`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            triggerFileDownload(blob, `swim_coach_pro_${cleanDateStr}.doc`);
         }
 
         function handleExportChoice(format) {
@@ -5293,16 +5316,25 @@
             const attendance = getCoachDailyAttendance();
             const attendedList = attendance[selectedDate] || [];
 
-            const sets = allSets.filter(s => s.date === selectedDate && isCoachSet(s)).sort((a, b) => {
+            const filterInput = document.getElementById('filter-date');
+            if (filterInput && filterInput.value) {
+                selectedDate = filterInput.value;
+            }
+
+            let sets = allSets.filter(s => s.date === selectedDate && isCoachSet(s)).sort((a, b) => {
                 const wA = sectionWeights[a.section] || 99;
                 const wB = sectionWeights[b.section] || 99;
                 if (wA !== wB) return wA - wB;
                 return a.id - b.id;
             });
-            
+
             if (sets.length === 0) {
-                alert(dict.no_export_data || 'No training data to export for this date.');
-                return;
+                sets = [
+                    { id: 1, section: 'Warm Up', reps1: 1, reps2: 1, distance: 0, stroke: '', type: 'Swim', equipment: '', targetTime: '', interval: '', zone: 'A1' },
+                    { id: 2, section: 'Pre Set', reps1: 1, reps2: 1, distance: 0, stroke: '', type: 'Drill', equipment: '', targetTime: '', interval: '', zone: 'A1' },
+                    { id: 3, section: 'Main Set', reps1: 1, reps2: 1, distance: 0, stroke: '', type: 'Swim', equipment: '', targetTime: '', interval: '', zone: 'End1' },
+                    { id: 4, section: 'Cool Down', reps1: 1, reps2: 1, distance: 0, stroke: '', type: 'Easy', equipment: '', targetTime: '', interval: '', zone: 'Easy' }
+                ];
             }
             
             let cleanDateStr = selectedDate;
@@ -5519,15 +5551,8 @@
                 </html>
             `;
 
-            const blob = new Blob(['\ufeff' + excelHtml], { type: 'application/vnd.ms-excel' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `swim_coach_pro_${currentLang}_${cleanDateStr}.xls`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            const blob = new Blob(['\ufeff' + excelHtml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+            triggerFileDownload(blob, `swim_coach_pro_${cleanDateStr}.xls`);
         }
 
         // Tüm günlerin antrenman hacim özetlerini Word (.doc) dosyası olarak dışa aktarır
