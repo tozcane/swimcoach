@@ -3773,6 +3773,31 @@
 
         let currentUser = '';
 
+        // Safe displayNames Proxy to prevent ReferenceError across the application
+        const displayNames = new Proxy({
+            'mustafa': 'Mustafa Seçkin',
+            'admin': 'Mustafa Seçkin',
+            'mustafa@swimcoach.pro': 'Mustafa Seçkin'
+        }, {
+            get: function(target, prop) {
+                if (typeof prop !== 'string') return undefined;
+                const lower = prop.toLowerCase();
+                if (target[lower]) return target[lower];
+                try {
+                    const users = getRegisteredUsers();
+                    if (users[prop] && users[prop].displayName) return users[prop].displayName;
+                    if (users[lower] && users[lower].displayName) return users[lower].displayName;
+                    for (const k of Object.keys(users)) {
+                        if (k.toLowerCase() === lower || (users[k].email && users[k].email.toLowerCase() === lower)) {
+                            return users[k].displayName || users[k].fullName || k;
+                        }
+                    }
+                } catch(e) {}
+                const clean = prop.includes('@') ? prop.split('@')[0] : prop;
+                return clean.charAt(0).toUpperCase() + clean.slice(1);
+            }
+        });
+
         // Date helpers
         function getLocalDateString() {
             const d = new Date();
@@ -3885,8 +3910,8 @@
 
             if (!matchedUser) {
                 errorText.innerHTML = isTr
-                    ? `Bu kullanıcı ("<strong>${userInput}</strong>") henüz kayıtlı değil! <button type="button" onclick="quickRegisterAndLogin('${userInput}', '${passwordInput}')" class="underline font-bold text-brandBlue ml-1">Bu Bilgilerle Hemen Gir & Kaydol</button>`
-                    : `Account ("<strong>${userInput}</strong>") not registered yet! <button type="button" onclick="quickRegisterAndLogin('${userInput}', '${passwordInput}')" class="underline font-bold text-brandBlue ml-1">Quick Enter & Register</button>`;
+                    ? `Bu kullanıcı ("<strong>${escapeHtml(userInput)}</strong>") henüz kayıtlı değil! <button type="button" onclick="quickRegisterAndLogin()" class="underline font-bold text-brandBlue hover:text-brandPink ml-1 cursor-pointer">Bu Bilgilerle Hemen Gir & Kaydol</button>`
+                    : `Account ("<strong>${escapeHtml(userInput)}</strong>") not registered yet! <button type="button" onclick="quickRegisterAndLogin()" class="underline font-bold text-brandBlue hover:text-brandPink ml-1 cursor-pointer">Quick Enter & Register</button>`;
                 errorContainer.classList.remove('hidden');
                 return;
             }
@@ -4008,32 +4033,66 @@
 
         // Quick register & login fallback so user is NEVER blocked
         function quickRegisterAndLogin(userInput, password) {
+            // Read dynamically from inputs if not provided or clicked via button
+            if (!userInput) {
+                const emailInput = document.getElementById('login-email');
+                if (emailInput && emailInput.value) userInput = emailInput.value.trim().toLowerCase();
+            }
+            if (!userInput) {
+                const userInputEl = document.getElementById('login-username');
+                if (userInputEl && userInputEl.value) userInput = userInputEl.value.trim().toLowerCase();
+            }
+            if (!userInput) {
+                userInput = 'coach_' + Math.floor(Math.random() * 10000);
+            }
+
+            if (!password) {
+                const pwdInput = document.getElementById('password') || document.getElementById('login-password');
+                if (pwdInput && pwdInput.value) password = pwdInput.value;
+            }
+            password = password || '123456';
+
             const users = getRegisteredUsers();
             const cleanName = userInput.includes('@') ? userInput.split('@')[0] : userInput;
             const displayName = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
             users[userInput] = {
-                password: password || '123',
+                password: password,
                 displayName: displayName,
                 email: userInput,
                 createdAt: new Date().toISOString()
             };
             localStorage.setItem('tan_registered_users', JSON.stringify(users));
-            renderSavedAccountsList();
 
+            // Set session
             currentUser = userInput;
             localStorage.setItem('tan_active_session', userInput);
+
+            // Hide login error box
+            const errorContainer = document.getElementById('login-error');
+            if (errorContainer) errorContainer.classList.add('hidden');
+
             const dict = translations[currentLang] || translations['en'];
-            document.getElementById('user-display-name').textContent = displayName.toLowerCase();
+            const dispNameEl = document.getElementById('user-display-name');
+            if (dispNameEl) dispNameEl.textContent = displayName.toLowerCase();
             const userGreetingEl = document.getElementById('header-username');
             if (userGreetingEl) {
                 userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${displayName.toLowerCase()}`;
             }
-            initSwimSetsData();
-            document.getElementById('filter-date').value = selectedDate;
-            loadNotes();
-            loadSwimSets();
-            loadCustomSelectOptions();
+
+            // Show dashboard FIRST so user is immediately in!
             showView('dashboard');
+
+            // Then safely initialize user data in try-catch
+            try {
+                initSwimSetsData();
+                const filterDateEl = document.getElementById('filter-date');
+                if (filterDateEl) filterDateEl.value = selectedDate;
+                loadNotes();
+                loadSwimSets();
+                loadCustomSelectOptions();
+            } catch(e) {
+                console.warn('Quick login dashboard loader notice:', e);
+            }
         }
 
         // Logout handler
