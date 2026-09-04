@@ -5175,6 +5175,9 @@
 
             const clubBranding = getCoachClubBranding();
             const clubName = (clubBranding && clubBranding.clubName) ? clubBranding.clubName : '';
+            const clubLogoTag = (clubBranding && clubBranding.clubLogo)
+                ? `<img src="${clubBranding.clubLogo}" height="42" style="height: 42px; max-width: 120px; object-fit: contain; vertical-align: middle; margin-right: 8px;">`
+                : '';
             const coachName = (currentUser && displayNames[currentUser]) ? displayNames[currentUser] : (currentUser || 'Mustafa Seçkin');
 
             // Swimmer attendance rows (Tight layout)
@@ -5278,12 +5281,19 @@
                         <table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 3px;">
                             <tr>
                                 <td style="vertical-align: middle; border: none; padding: 0;">
-                                    <div style="font-size: 16pt; font-weight: 900; color: #000B73; letter-spacing: 0.03em; line-height: 1.1;">
-                                        ${clubName ? escapeHtml(clubName.toUpperCase()) : 'SWIM COACH PRO'}
-                                    </div>
-                                    <div style="font-size: 10pt; font-weight: 800; color: #E5007D; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1px;">
-                                        GÜNLÜK ANTRENMAN RAPORU
-                                    </div>
+                                    <table style="border-collapse: collapse; border: none;">
+                                        <tr>
+                                            ${clubLogoTag ? `<td style="border: none; padding: 0 10px 0 0; vertical-align: middle;">${clubLogoTag}</td>` : ''}
+                                            <td style="border: none; padding: 0; vertical-align: middle;">
+                                                <div style="font-size: 16pt; font-weight: 900; color: #000B73; letter-spacing: 0.03em; line-height: 1.1;">
+                                                    ${clubName ? escapeHtml(clubName.toUpperCase()) : 'SWIM COACH PRO'}
+                                                </div>
+                                                <div style="font-size: 10pt; font-weight: 800; color: #E5007D; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1px;">
+                                                    GÜNLÜK ANTRENMAN RAPORU
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </td>
                                 <td align="right" style="vertical-align: middle; border: none; padding: 0;">
                                     <div style="display: inline-block; background-color: #000B73; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 8pt; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase;">
@@ -5388,8 +5398,8 @@
                         </table>
 
                         <!-- FOOTER -->
-                        <div style="margin-top: 6px; font-size: 7.5pt; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 2px;">
-                            Swim Coach Pro &bull; Dikey A4 Formatı &bull; ${escapeHtml(coachName)} &bull; &copy; ${new Date().getFullYear()}
+                        <div style="margin-top: 8px; font-size: 8pt; color: #64748b; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 4px; font-weight: bold;">
+                            © 2026 Swim Coach Pro • by toe^^ • All Rights Reserved.
                         </div>
                     </div>
                 </body>
@@ -5451,6 +5461,9 @@
 
             const clubBranding = getCoachClubBranding();
             const clubName = (clubBranding && clubBranding.clubName) ? clubBranding.clubName : '';
+            const clubLogoTag = (clubBranding && clubBranding.clubLogo)
+                ? `<img src="${clubBranding.clubLogo}" height="42" style="height: 42px; max-width: 120px; object-fit: contain; vertical-align: middle; margin-right: 8px;">`
+                : '';
             const coachName = (currentUser && displayNames[currentUser]) ? displayNames[currentUser] : (currentUser || 'Mustafa Seçkin');
 
             const wordRangeDocHtml = `
@@ -5518,12 +5531,19 @@
                         <table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 3px;">
                             <tr>
                                 <td style="vertical-align: middle; border: none; padding: 0;">
-                                    <div style="font-size: 16pt; font-weight: 900; color: #000B73; letter-spacing: 0.03em; line-height: 1.1;">
-                                        ${clubName ? escapeHtml(clubName.toUpperCase()) : 'SWIM COACH PRO'}
-                                    </div>
-                                    <div style="font-size: 10pt; font-weight: 800; color: #E5007D; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1px;">
-                                        DÖNEMSEL ANTRENMAN & İSTATİSTİK RAPORU
-                                    </div>
+                                    <table style="border-collapse: collapse; border: none;">
+                                        <tr>
+                                            ${clubLogoTag ? `<td style="border: none; padding: 0 10px 0 0; vertical-align: middle;">${clubLogoTag}</td>` : ''}
+                                            <td style="border: none; padding: 0; vertical-align: middle;">
+                                                <div style="font-size: 16pt; font-weight: 900; color: #000B73; letter-spacing: 0.03em; line-height: 1.1;">
+                                                    ${clubName ? escapeHtml(clubName.toUpperCase()) : 'SWIM COACH PRO'}
+                                                </div>
+                                                <div style="font-size: 10pt; font-weight: 800; color: #E5007D; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1px;">
+                                                    DÖNEMSEL ANTRENMAN & İSTATİSTİK RAPORU
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </td>
                                 <td align="right" style="vertical-align: middle; border: none; padding: 0;">
                                     <div style="display: inline-block; background-color: #000B73; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 8pt; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase;">
@@ -5652,8 +5672,8 @@
                         </table>
 
                         <!-- FOOTER -->
-                        <div style="margin-top: 6px; font-size: 7.5pt; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 2px;">
-                            Swim Coach Pro &bull; Dikey A4 Formatı &bull; ${escapeHtml(coachName)} &bull; &copy; ${new Date().getFullYear()}
+                        <div style="margin-top: 8px; font-size: 8pt; color: #64748b; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 4px; font-weight: bold;">
+                            © 2026 Swim Coach Pro • by toe^^ • All Rights Reserved.
                         </div>
                     </div>
                 </body>
