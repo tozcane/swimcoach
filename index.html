@@ -7370,19 +7370,64 @@
             }
         }
 
-        // App Initialization: Start on Landing Welcome Page
+        // App Initialization: Keep coach logged in on refresh if active session exists
         window.addEventListener('DOMContentLoaded', () => {
-            currentUser = '';
-            localStorage.removeItem('tan_active_session');
-            initSwimSetsData();
-            document.getElementById('filter-date').value = selectedDate;
-            
-            // Apply language and trigger sub-loaders
+            // Apply language first
             changeLanguage(currentLang);
             refreshLoginCaptcha();
             refreshRegCaptcha();
 
-            showView('landing');
+            const activeSession = localStorage.getItem('tan_active_session');
+            let sessionRestored = false;
+
+            if (activeSession) {
+                try {
+                    let users = {};
+                    try {
+                        users = JSON.parse(localStorage.getItem('tan_registered_users')) || {};
+                    } catch(e) {
+                        users = {};
+                    }
+
+                    const userObj = users[activeSession] || Object.values(users).find(u => (u && u.email && u.email.toLowerCase() === activeSession.toLowerCase()));
+                    const displayName = (userObj && userObj.displayName) ? userObj.displayName : activeSession;
+
+                    currentUser = activeSession;
+                    const dispNameEl = document.getElementById('user-display-name');
+                    if (dispNameEl) dispNameEl.textContent = displayName.toLowerCase();
+                    const userGreetingEl = document.getElementById('header-username');
+                    if (userGreetingEl) {
+                        const dict = translations[currentLang] || translations['en'];
+                        userGreetingEl.textContent = `${dict['welcome_user'] || 'welcome, '}${displayName.toLowerCase()}`;
+                    }
+
+                    showView('dashboard');
+
+                    try {
+                        initSwimSetsData();
+                        const filterDateEl = document.getElementById('filter-date');
+                        if (filterDateEl) filterDateEl.value = selectedDate;
+                        loadNotes();
+                        loadSwimSets();
+                        loadCustomSelectOptions();
+                        if (typeof updateClubBrandingUI === 'function') updateClubBrandingUI();
+                    } catch(e) {
+                        console.warn('Dashboard session restore loader notice:', e);
+                    }
+
+                    sessionRestored = true;
+                } catch(err) {
+                    console.warn('Failed to restore session, falling back to landing view:', err);
+                }
+            }
+
+            if (!sessionRestored) {
+                currentUser = '';
+                initSwimSetsData();
+                const filterDateEl = document.getElementById('filter-date');
+                if (filterDateEl) filterDateEl.value = selectedDate;
+                showView('landing');
+            }
 
             // Global close listeners for custom dropdown popover, context menu & modal backdrops
             document.addEventListener('click', (e) => {
