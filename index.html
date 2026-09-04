@@ -509,17 +509,43 @@
                         </button>
 
                         <!-- 2. Export Button (Word & Excel) -->
-                        <!-- Direct Word Download (1-Tıkla İndir) -->
-                        <button onclick="exportCurrentDayToWord()" id="direct-word-btn" class="shrink-0 px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all duration-300 flex items-center space-x-1.5 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap" title="Bugünkü Antrenmanı Word (.doc - Dikey A4) Olarak İndir">
-                            <i class="fa-solid fa-file-word text-[11px] text-blue-100"></i>
-                            <span>Word İndir (.doc)</span>
-                        </button>
+                        <!-- 2. Unified Export Dropdown (Dışa Aktar - Word & Excel İçinde) -->
+                        <div class="relative inline-block text-left shrink-0" id="export-dropdown-container">
+                            <button type="button" onclick="toggleExportDropdown(event)" id="export-main-btn"
+                                class="px-2.5 py-1 bg-brandBlue hover:bg-opacity-95 text-white font-bold rounded-lg shadow-sm shadow-brandBlue/20 transition-all duration-300 flex items-center space-x-1.5 text-[10.5px] cursor-pointer whitespace-nowrap"
+                                title="Antrenmanı Word veya Excel Formatında Dışa Aktar">
+                                <i class="fa-solid fa-file-export text-[10.5px] text-yellow-300"></i>
+                                <span data-i18n="export">Dışa Aktar</span>
+                                <i class="fa-solid fa-chevron-down text-[8.5px] text-blue-200 ml-0.5"></i>
+                            </button>
 
-                        <!-- Direct Excel Download (1-Tıkla İndir) -->
-                        <button onclick="exportCurrentDayToExcel()" id="direct-excel-btn" class="shrink-0 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-all duration-300 flex items-center space-x-1.5 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap" title="Bugünkü Antrenmanı Excel (.xls - Dikey A4) Olarak İndir">
-                            <i class="fa-solid fa-file-excel text-[11px] text-emerald-100"></i>
-                            <span>Excel İndir (.xls)</span>
-                        </button>
+                            <!-- Dropdown Menu -->
+                            <div id="export-dropdown-menu" class="hidden absolute left-0 mt-1 w-56 bg-white rounded-2xl shadow-2xl border border-gray-150 py-1.5 z-50 animate-scale-up">
+                                <!-- Option 1: Word -->
+                                <button type="button" onclick="executeExport('word', event)" class="w-full px-3 py-2 hover:bg-blue-50/80 flex items-center space-x-3 text-left transition-colors cursor-pointer group">
+                                    <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-bold group-hover:scale-105 transition-transform flex-shrink-0">
+                                        <i class="fa-solid fa-file-word text-base"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-black text-brandBlue group-hover:text-blue-600">Word Belgesi (.doc)</div>
+                                        <div class="text-[10px] text-gray-500 font-medium">Dikey A4 Sayfa Formatı</div>
+                                    </div>
+                                </button>
+                                
+                                <div class="my-1 border-t border-gray-100"></div>
+
+                                <!-- Option 2: Excel -->
+                                <button type="button" onclick="executeExport('excel', event)" class="w-full px-3 py-2 hover:bg-emerald-50/80 flex items-center space-x-3 text-left transition-colors cursor-pointer group">
+                                    <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-bold group-hover:scale-105 transition-transform flex-shrink-0">
+                                        <i class="fa-solid fa-file-excel text-base"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-black text-brandBlue group-hover:text-emerald-600">Excel Tablosu (.xls)</div>
+                                        <div class="text-[10px] text-gray-500 font-medium">Dikey A4 Sayfa Formatı</div>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
 
                         <!-- 3. Sporcu Kadrosu -->
                         <button onclick="openSquadModal()" class="shrink-0 px-2 py-1 border border-emerald-300 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 font-bold rounded-lg transition-all duration-300 flex items-center space-x-1 text-[10.5px] shadow-sm cursor-pointer whitespace-nowrap" title="Sporcular ve Bireysel Profiller">
@@ -5317,29 +5343,72 @@
             }, 4000);
         }
 
+        // Unified Export Dropdown Controller
+        function toggleExportDropdown(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const menu = document.getElementById('export-dropdown-menu');
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
+        }
+
+        function closeExportDropdown() {
+            const menu = document.getElementById('export-dropdown-menu');
+            if (menu) menu.classList.add('hidden');
+        }
+
+        function executeExport(format, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            closeExportDropdown();
+            closeExportModal();
+            if (format === 'word') {
+                exportCurrentDayToWord();
+            } else if (format === 'excel') {
+                exportCurrentDayToExcel();
+            }
+        }
+
         // Cross-Browser Bulletproof File Downloader (Safari macOS / iOS / Chrome / Edge / Windows)
         function triggerFileDownload(blob, filename) {
-            if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-                window.navigator.msSaveOrOpenBlob(blob, filename);
-                return;
+            try {
+                if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                    window.navigator.msSaveOrOpenBlob(blob, filename);
+                    return;
+                }
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.setAttribute('download', filename);
+                a.target = '_self';
+                // Rendered offscreen so WebKit / Safari never skips the click
+                a.style.position = 'fixed';
+                a.style.left = '-9999px';
+                a.style.top = '-9999px';
+                a.style.width = '2px';
+                a.style.height = '2px';
+                a.style.opacity = '0.01';
+                document.body.appendChild(a);
+
+                // Direct native click
+                a.click();
+
+                setTimeout(() => {
+                    try {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    } catch(e) {}
+                }, 40000);
+            } catch(err) {
+                console.error('File download error:', err);
+                alert('Dosya indirme hatası: ' + (err.message || err));
             }
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = filename;
-            a.setAttribute('download', filename);
-            document.body.appendChild(a);
-
-            // Native DOM click triggers browser download directly
-            a.click();
-
-            setTimeout(() => {
-                try {
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                } catch(e) {}
-            }, 30000);
         }
 
         function openExportModal() {
@@ -5370,31 +5439,35 @@
         }
 
         function handleExportChoice(format) {
-            if (format === 'word') {
-                exportCurrentDayToWord();
-            } else if (format === 'excel') {
-                exportCurrentDayToExcel();
-            }
-            closeExportModal();
+            executeExport(format);
         }
 
         // Seçili günün antrenmanını Word (.doc) dosyası olarak Dikey A4 formatında dışa aktarır
         function exportCurrentDayToWord() {
-            const filterInput = document.getElementById('filter-date');
-            if (filterInput && filterInput.value) {
-                selectedDate = filterInput.value;
+            try {
+                const filterInput = document.getElementById('filter-date');
+                if (filterInput && filterInput.value) {
+                    selectedDate = filterInput.value;
+                }
+
+                const htmlContent = buildLandscapeWorkoutHtml(true);
+                if (!htmlContent) {
+                    alert('Dışa aktarılacak antrenman verisi bulunamadı.');
+                    return;
+                }
+
+                let cleanDateStr = selectedDate || getLocalDateString();
+                const parts = cleanDateStr.split('-');
+                if (parts.length === 3) cleanDateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
+
+                // octet-stream ensures Safari and Windows force direct download
+                const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/octet-stream;charset=utf-8' });
+                triggerFileDownload(blob, `swim_coach_pro_${cleanDateStr}.doc`);
+                showDownloadToast('<i class="fa-solid fa-circle-check text-green-400 text-base"></i> <span>Word Belgesi (.doc) indirildi!</span>');
+            } catch(err) {
+                console.error('Word export error:', err);
+                alert('Word dışa aktarma hatası: ' + (err.message || err));
             }
-
-            const htmlContent = buildLandscapeWorkoutHtml(true);
-            if (!htmlContent) return;
-
-            let cleanDateStr = selectedDate || getLocalDateString();
-            const parts = cleanDateStr.split('-');
-            if (parts.length === 3) cleanDateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
-
-            const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword;charset=utf-8' });
-            triggerFileDownload(blob, `swim_coach_pro_${cleanDateStr}.doc`);
-            showDownloadToast('<i class="fa-solid fa-circle-check text-green-400 text-base"></i> <span>Word Belgesi (.doc) indirildi!</span>');
         }
 
         // Seçili günün antrenmanını Excel (.xls) dosyası olarak Yatay A4 ve Ortalanmış düzende dışa aktarır
@@ -5641,7 +5714,7 @@
                 </html>
             `;
 
-            const blob = new Blob(['\ufeff' + excelHtml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+            const blob = new Blob(['\ufeff' + excelHtml], { type: 'application/octet-stream;charset=utf-8' });
             triggerFileDownload(blob, `swim_coach_pro_${cleanDateStr}.xls`);
             showDownloadToast('<i class="fa-solid fa-circle-check text-green-400 text-base"></i> <span>Excel Tablosu (.xls) indirildi!</span>');
         }
@@ -7428,6 +7501,15 @@
 
             // Global close listeners for custom dropdown popover, context menu & modal backdrops
             document.addEventListener('click', (e) => {
+                // 0. Close export dropdown if clicked outside
+                const exportMenu = document.getElementById('export-dropdown-menu');
+                const exportBtn = document.getElementById('export-main-btn');
+                if (exportMenu && !exportMenu.classList.contains('hidden')) {
+                    if (!exportMenu.contains(e.target) && (!exportBtn || !exportBtn.contains(e.target))) {
+                        exportMenu.classList.add('hidden');
+                    }
+                }
+
                 // 1. Close context menu if clicked outside
                 const ctxMenu = document.getElementById('dropdown-custom-option-context-menu');
                 if (ctxMenu && !ctxMenu.classList.contains('hidden') && !ctxMenu.contains(e.target)) {
