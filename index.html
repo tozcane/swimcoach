@@ -1484,8 +1484,8 @@
                 </div>
 
                 <div>
-                    <label class="block font-bold text-gray-700 mb-1" data-i18n="club_logo_label">Kulüp Logosu (PNG / JPG / SVG)</label>
-                    <div class="border-2 border-dashed border-gray-200 rounded-2xl p-4 text-center hover:border-brandBlue/50 transition-colors bg-gray-50/50 flex flex-col items-center justify-center space-y-3">
+                    <label class="block font-bold text-gray-700 mb-1" data-i18n="club_logo_label">Kulüp Logosu (Tüm Formatlar Desteklenir)</label>
+                    <div id="club-logo-dropzone" ondragover="event.preventDefault(); this.classList.add('border-brandBlue');" ondragleave="this.classList.remove('border-brandBlue');" ondrop="event.preventDefault(); this.classList.remove('border-brandBlue'); if(event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length) handleClubLogoSelected({target:{files:event.dataTransfer.files}});" class="border-2 border-dashed border-gray-200 rounded-2xl p-4 text-center hover:border-brandBlue/50 transition-colors bg-gray-50/50 flex flex-col items-center justify-center space-y-3">
                         <div id="club-logo-preview-box" class="w-24 h-24 rounded-2xl bg-white border border-gray-200 flex items-center justify-center overflow-hidden p-2 shadow-sm">
                             <img id="club-logo-preview-img" src="" alt="Kulüp Logosu" class="hidden max-h-full max-w-full object-contain">
                             <div id="club-logo-placeholder" class="text-gray-300 flex flex-col items-center">
@@ -1493,7 +1493,7 @@
                                 <span class="text-[10px] font-semibold text-gray-400">Logo Yok</span>
                             </div>
                         </div>
-                        <input type="file" id="club-logo-file-input" accept="image/*" class="hidden" onchange="handleClubLogoSelected(event)">
+                        <input type="file" id="club-logo-file-input" accept="image/*,.*" class="hidden" onchange="handleClubLogoSelected(event)">
                         <div class="flex items-center space-x-2">
                             <button type="button" onclick="document.getElementById('club-logo-file-input').click()"
                                 class="px-4 py-2 bg-brandBlue text-white font-bold rounded-xl hover:bg-opacity-95 text-xs shadow-sm flex items-center space-x-1.5 cursor-pointer">
@@ -1501,12 +1501,12 @@
                                 <span data-i18n="upload_logo">Logo Seç & Yükle</span>
                             </button>
                             <button type="button" id="btn-remove-club-logo" onclick="removeClubLogo()"
-                                class="hidden px-3 py-2 bg-gray-100 hover:bg-red-50 text-gray-600 hover:text-red-500 font-semibold rounded-xl text-xs transition-colors">
+                                class="hidden px-3 py-2 bg-gray-100 hover:bg-red-50 text-gray-600 hover:text-red-500 font-semibold rounded-xl text-xs transition-colors cursor-pointer">
                                 <i class="fa-solid fa-trash-can mr-1"></i>
                                 <span data-i18n="remove_logo">Kaldır</span>
                             </button>
                         </div>
-                        <p class="text-[10px] text-gray-400">Önerilen: Şeffaf arka planlı PNG veya kare logo (Maks. 3 MB)</p>
+                        <p class="text-[10px] text-gray-400">PNG, JPG, JPEG, SVG, WebP, GIF veya istediğiniz herhangi bir format yükleyebilirsiniz.</p>
                     </div>
                 </div>
             </div>
@@ -1767,7 +1767,7 @@
                 "club_branding_title": "Club Branding & Logo Management",
                 "club_branding_sub": "Customize your club name and team logo appearing on printouts and interface headers.",
                 "club_name_label": "Club / Team Name",
-                "club_logo_label": "Club Logo (PNG, JPG)",
+                "club_logo_label": "Club Logo (All Formats Supported)",
                 "upload_logo": "Upload Logo",
                 "remove_logo": "Remove Logo",
                 "save_branding": "Save Branding",
@@ -1979,7 +1979,7 @@
                 "club_branding_title": "Kulüp Adı ve Logo Yönetimi",
                 "club_branding_sub": "Çıktılarda ve arayüzde görünecek kulüp ismi ve logosunu özelleştirin.",
                 "club_name_label": "Kulüp / Takım Adı",
-                "club_logo_label": "Kulüp Logosu (PNG, JPG)",
+                "club_logo_label": "Kulüp Logosu (Tüm Formatlar Desteklenir)",
                 "upload_logo": "Logo Yükle",
                 "remove_logo": "Logoyu Kaldır",
                 "save_branding": "Kaydet",
@@ -5850,42 +5850,80 @@
             const file = event.target.files && event.target.files[0];
             if (!file) return;
 
+            function setPreview(src) {
+                tempClubLogoBase64 = src;
+                const previewImg = document.getElementById('club-logo-preview-img');
+                const placeholder = document.getElementById('club-logo-placeholder');
+                const btnRemove = document.getElementById('btn-remove-club-logo');
+
+                if (previewImg) {
+                    previewImg.src = src;
+                    previewImg.classList.remove('hidden');
+                }
+                if (placeholder) placeholder.classList.add('hidden');
+                if (btnRemove) btnRemove.classList.remove('hidden');
+            }
+
             const reader = new FileReader();
             reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                const isSvg = (file.type && file.type.includes('svg')) || (file.name && file.name.toLowerCase().endsWith('.svg'));
+
+                // For SVG vector files, keep direct vector dataUrl for crisp rendering
+                if (isSvg) {
+                    setPreview(dataUrl);
+                    return;
+                }
+
+                // For all other image formats (PNG, JPG, WebP, GIF, BMP, etc.), optimize size via canvas
                 const img = new Image();
+                img.crossOrigin = 'anonymous';
                 img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const maxDim = 320;
-                    let height = img.height;
-                    if (width > height) {
-                        if (width > maxDim) {
-                            height = Math.round((height * maxDim) / width);
-                            width = maxDim;
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const maxDim = 360;
+                        let width = img.naturalWidth || img.width || 300;
+                        let height = img.naturalHeight || img.height || 300;
+
+                        if (width > height) {
+                            if (width > maxDim) {
+                                height = Math.round((height * maxDim) / width);
+                                width = maxDim;
+                            }
+                        } else {
+                            if (height > maxDim) {
+                                width = Math.round((width * maxDim) / height);
+                                height = maxDim;
+                            }
                         }
-                    } else {
-                        if (height > maxDim) {
-                            width = Math.round((width * maxDim) / height);
-                            height = maxDim;
-                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Export as PNG to preserve transparent background and compatibility
+                        const optimizedDataUrl = canvas.toDataURL('image/png', 0.95);
+                        setPreview(optimizedDataUrl);
+                    } catch (canvasErr) {
+                        console.warn("Canvas optimization fallback:", canvasErr);
+                        setPreview(dataUrl);
                     }
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    tempClubLogoBase64 = canvas.toDataURL('image/png');
-                    const previewImg = document.getElementById('club-logo-preview-img');
-                    const placeholder = document.getElementById('club-logo-placeholder');
-                    const btnRemove = document.getElementById('btn-remove-club-logo');
-
-                    previewImg.src = tempClubLogoBase64;
-                    previewImg.classList.remove('hidden');
-                    placeholder.classList.add('hidden');
-                    btnRemove.classList.remove('hidden');
                 };
-                img.src = e.target.result;
+                img.onerror = function(imgErr) {
+                    console.warn("Image load fallback, using raw dataUrl:", imgErr);
+                    setPreview(dataUrl);
+                };
+                img.src = dataUrl;
+            };
+            reader.onerror = function(err) {
+                console.error("FileReader error:", err);
+                alert("Görsel yüklenemedi. Lütfen tekrar deneyin.");
             };
             reader.readAsDataURL(file);
+
+            // Reset input so re-uploading the same file still triggers onchange
+            if (event.target) event.target.value = '';
         }
 
         function removeClubLogo() {
@@ -5895,10 +5933,12 @@
             const btnRemove = document.getElementById('btn-remove-club-logo');
             const fileInput = document.getElementById('club-logo-file-input');
 
-            previewImg.src = '';
-            previewImg.classList.add('hidden');
-            placeholder.classList.remove('hidden');
-            btnRemove.classList.add('hidden');
+            if (previewImg) {
+                previewImg.src = '';
+                previewImg.classList.add('hidden');
+            }
+            if (placeholder) placeholder.classList.remove('hidden');
+            if (btnRemove) btnRemove.classList.add('hidden');
             if (fileInput) fileInput.value = '';
         }
 
@@ -5909,9 +5949,18 @@
                 clubLogo: tempClubLogoBase64 || ''
             };
 
-            localStorage.setItem(getCoachClubBrandingKey(), JSON.stringify(branding));
+            try {
+                localStorage.setItem(getCoachClubBrandingKey(), JSON.stringify(branding));
+            } catch (e) {
+                console.error("Failed to save club branding:", e);
+                alert("Logo boyutu çok büyük olduğu için kaydedilemedi. Lütfen daha küçük boyutlu bir dosya seçin.");
+                return;
+            }
             updateClubBrandingUI();
             closeClubBrandingModal();
+            if (typeof showDownloadReportToast === 'function') {
+                showDownloadReportToast('<i class="fa-solid fa-circle-check text-green-400 text-base"></i> <span>Kulüp ayarları ve logosu başarıyla kaydedildi!</span>');
+            }
         }
 
         // --- SWIMMER SQUAD, METADATA & PROFILE LOGIC ---
