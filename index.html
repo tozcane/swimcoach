@@ -4374,13 +4374,18 @@
             
             const allSets = JSON.parse(localStorage.getItem('tan_swim_sets_v3')) || [];
             
-            // Filter by selectedDate and current Coach, then sort by Section & ID
-            const sets = allSets.filter(s => s.date === selectedDate && isCoachSet(s)).sort((a, b) => {
-                const wA = sectionWeights[a.section] || 99;
-                const wB = sectionWeights[b.section] || 99;
-                if (wA !== wB) return wA - wB;
-                return a.id - b.id;
-            });
+            // Filter by selectedDate and current Coach, then sort strictly from oldest to newest (eskiden yeniye doğru)
+            const sets = allSets
+                .map((s, idx) => ({ ...s, _origIdx: idx }))
+                .filter(s => s.date === selectedDate && isCoachSet(s))
+                .sort((a, b) => {
+                    const idA = Number(a.id);
+                    const idB = Number(b.id);
+                    if (!isNaN(idA) && !isNaN(idB) && idA !== idB) {
+                        return idA - idB;
+                    }
+                    return a._origIdx - b._origIdx;
+                });
             
             // Calculate workout metrics
             let totalVolume = 0;
@@ -5148,13 +5153,18 @@
             const attendance = getCoachDailyAttendance();
             const attendedList = attendance[targetDate] || [];
 
-            const sectionWeights = { 'Warm Up': 1, 'Pre Set': 2, 'Main Set': 3, 'Cool Down': 4 };
-            let sets = allSets.filter(s => s.date === targetDate && isCoachSet(s)).sort((a, b) => {
-                const wA = sectionWeights[a.section] || 99;
-                const wB = sectionWeights[b.section] || 99;
-                if (wA !== wB) return wA - wB;
-                return a.id - b.id;
-            });
+            // Sort strictly from oldest to newest (eskiden yeniye doğru)
+            let sets = allSets
+                .map((s, idx) => ({ ...s, _origIdx: idx }))
+                .filter(s => s.date === targetDate && isCoachSet(s))
+                .sort((a, b) => {
+                    const idA = Number(a.id);
+                    const idB = Number(b.id);
+                    if (!isNaN(idA) && !isNaN(idB) && idA !== idB) {
+                        return idA - idB;
+                    }
+                    return a._origIdx - b._origIdx;
+                });
 
             if (sets.length === 0) {
                 sets = [
